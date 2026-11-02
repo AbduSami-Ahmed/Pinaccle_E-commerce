@@ -1,0 +1,27 @@
+{
+  "name": "pinnacle-ecommerce",
+  "version": "0.1.0",
+  "private": true,
+  "packageManager": "pnpm@12.16.1",
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev",
+    "dev:api": "pnpm --filter @pinnacle/api dev",
+    "dev:web": "pnpm --filter @pinnacle/web dev",
+    "lint": "turbo run lint",
+    "type-check": "turbo run type-check",
+    "test": "turbo run test",
+    "format:check": "prettier --check \"**/*.{ts,tsx,json,md,yml,yaml}\"",
+    "format": "prettier --write \"**/*.{ts,tsx,json,md,yml,yaml}\"",
+    "docker:up": "docker compose up -d",
+    "docker:down": "docker compose down",
+    "clean": "turbo run clean"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "eslint": "^9.17.0",
+    "prettier": "^3.4.2",
+    "turbo": "^2.3.3",
+    "typescript": "^5.7.2"
+  }
+}
