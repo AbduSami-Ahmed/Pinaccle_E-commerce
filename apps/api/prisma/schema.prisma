@@ -1,0 +1,945 @@
+// Pinnacle Automotive Parts E-Commerce Platform
+// Prisma Schema — Phase 4: Database & Domain Foundation
+// Governing Specs: docs/architecture/DOMAIN_MODEL.md & ADR-0004
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ===========================================================================
+// 1. Identity & RBAC Foundation
+// ===========================================================================
+
+model User {
+  id           String    @id @default(uuid())
+  email        String    @unique
+  passwordHash String?   @map("password_hash") // Nullable when using external OIDC (AWS Cognito)
+  isActive     Boolean   @default(true) @map("is_active")
+  isStaff      Boolean   @default(false) @map("is_staff")
+  lastLoginAt  DateTime? @map("last_login_at")
+  createdAt    DateTime  @default(now()) @map("created_at")
+  updatedAt    DateTime  @updatedAt @map("updated_at")
+
+  userRoles           UserRole[]
+  customerProfile     CustomerProfile?
+  staffProfile        StaffProfile?
+  auditLogs           AuditLog[]
+  inventoryMovements  InventoryMovement[] @relation("OperatorMovements")
+  inspectedReturns    ReturnInspection[]  @relation("InspectorReturns")
+  verifiedFitments    ProductFitment[]    @relation("FitmentVerifier")
+
+  @@map("users")
+}
+
+model Role {
+  id          String   @id @default(uuid())
+  key         String   @unique // e.g. "SUPER_ADMIN", "INVENTORY_MGR"
+  name        String
+  description String?
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  userRoles   UserRole[]
+  permissions RolePermission[]
+
+  @@map("roles")
+}
+
+model Permission {
+  id          String   @id @default(uuid())
+  code        String   @unique // e.g. "inventory:stock:adjust"
+  description String?
+  domain      String   // e.g. "inventory", "catalog", "orders"
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  rolePermissions RolePermission[]
+
+  @@map("permissions")
+}
+
+model UserRole {
+  userId String @map("user_id")
+  roleId String @map("role_id")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role Role @relation(fields: [roleId], references: [id], onDelete: Cascade)
+
+  @@id([userId, roleId])
+  @@map("user_roles")
+}
+
+model RolePermission {
+  roleId       String @map("role_id")
+  permissionId String @map("permission_id")
+
+  role       Role       @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  permission Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+
+  @@id([roleId, permissionId])
+  @@map("role_permissions")
+}
+
+model StaffProfile {
+  id        String   @id @default(uuid())
+  userId    String   @unique @map("user_id")
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  firstName String   @map("first_name")
+  lastName  String   @map("last_name")
+  jobTitle  String?  @map("job_title")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("staff_profiles")
+}
+
+model AuditLog {
+  id          String   @id @default(uuid())
+  actorId     String?  @map("actor_id")
+  actor       User?    @relation(fields: [actorId], references: [id], onDelete: SetNull)
+  ipAddress   String?  @map("ip_address")
+  userAgent   String?  @map("user_agent")
+  domain      String
+  action      String
+  entityType  String   @map("entity_type")
+  entityId    String   @map("entity_id")
+  beforeState Json?    @map("before_state")
+  afterState  Json?    @map("after_state")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  @@index([actorId])
+  @@index([entityType, entityId])
+  @@index([domain, action])
+  @@index([createdAt])
+  @@map("audit_logs")
+}
+
+// ===========================================================================
+// 2. Catalogue & Hierarchy
+// ===========================================================================
+
+model Category {
+  id           String     @id @default(uuid())
+  parentId     String?    @map("parent_id")
+  slug         String     @unique
+  name         String
+  description  String?
+  displayOrder Int        @default(0) @map("display_order")
+  isActive     Boolean    @default(true) @map("is_active")
+  createdAt    DateTime   @default(now()) @map("created_at")
+  updatedAt    DateTime   @updatedAt @map("updated_at")
+
+  parent   Category?  @relation("CategoryHierarchy", fields: [parentId], references: [id], onDelete: Restrict)
+  children Category[] @relation("CategoryHierarchy")
+  products Product[]
+
+  @@index([parentId])
+  @@map("categories")
+}
+
+enum ProductType {
+  BULK_QUANTITY            // Brand-new tyres, clips, consumables
+  INDIVIDUALLY_SERIALIZED  // Used seat belts, salvage modules
+}
+
+enum ProductStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+model Product {
+  id            String        @id @default(uuid())
+  categoryId    String        @map("category_id")
+  sku           String        @unique // Base master catalogue SKU
+  title         String
+  slug          String        @unique
+  brand         String
+  oemPartNumber String?       @map("oem_part_number")
+  description   String
+  productType   ProductType   @default(BULK_QUANTITY) @map("product_type")
+  status        ProductStatus @default(DRAFT)
+  createdAt     DateTime      @default(now()) @map("created_at")
+  updatedAt     DateTime      @updatedAt @map("updated_at")
+
+  category               Category                  @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+  media                  ProductMedia[]
+  saleUnits              SaleUnitConfig[]
+  tyreSpecification      TyreSpecification?
+  seatBeltSpecification  SeatBeltSpecification?
+  fitments               ProductFitment[]
+  inventoryItems         InventoryItem[]
+  serializedItems        SerializedInventoryItem[]
+  cartItems              CartItem[]
+  orderItems             OrderItem[]
+
+  @@index([categoryId, status])
+  @@index([brand])
+  @@index([oemPartNumber])
+  @@map("products")
+}
+
+model ProductMedia {
+  id           String   @id @default(uuid())
+  productId    String   @map("product_id")
+  s3Key        String   @map("s3_key")
+  cdnUrl       String   @map("cdn_url")
+  altText      String   @map("alt_text")
+  displayOrder Int      @default(0) @map("display_order")
+  isPrimary    Boolean  @default(false) @map("is_primary")
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@index([productId, displayOrder])
+  @@map("product_media")
+}
+
+// ===========================================================================
+// 3. Category Specifications (Normalized, Dedicated Models)
+// ===========================================================================
+
+enum TyreSeason {
+  SUMMER
+  WINTER
+  ALL_SEASON
+}
+
+enum TyreTerrainType {
+  HIGHWAY
+  ALL_TERRAIN
+  MUD_TERRAIN
+  PERFORMANCE
+}
+
+model TyreSpecification {
+  id                  String          @id @default(uuid())
+  productId           String          @unique @map("product_id")
+  sectionWidth        Int             @map("section_width") // e.g. 205 (mm)
+  aspectRatio         Int             @map("aspect_ratio")  // e.g. 55 (%)
+  rimDiameter         Int             @map("rim_diameter")  // e.g. 16 (inches)
+  loadIndex           Int             @map("load_index")    // e.g. 91
+  speedRating         String          @map("speed_rating")  // e.g. 'V', 'W', 'H'
+  season              TyreSeason      @default(ALL_SEASON)
+  terrainType         TyreTerrainType @default(HIGHWAY) @map("terrain_type")
+  runFlat             Boolean         @default(false) @map("run_flat")
+  extraLoad           Boolean         @default(false) @map("extra_load")
+  fuelEfficiencyClass String?         @map("fuel_efficiency_class") // 'A' through 'E'
+  wetGripClass        String?         @map("wet_grip_class")        // 'A' through 'E'
+  noiseDb             Int?            @map("noise_db")
+  createdAt           DateTime        @default(now()) @map("created_at")
+  updatedAt           DateTime        @updatedAt @map("updated_at")
+
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@index([sectionWidth, aspectRatio, rimDiameter])
+  @@index([season])
+  @@map("tyre_specifications")
+}
+
+enum SeatBeltPosition {
+  FRONT_LEFT_DRIVER
+  FRONT_RIGHT_PASSENGER
+  REAR_LEFT
+  REAR_RIGHT
+  REAR_CENTER
+  THIRD_ROW_LEFT
+  THIRD_ROW_RIGHT
+}
+
+enum SeatBeltComponentType {
+  RETRACTOR_ASSEMBLY
+  BUCKLE_STALK
+  LAP_BELT
+  COMPLETE_ASSEMBLY
+}
+
+enum PretensionerType {
+  PYROTECHNIC
+  MECHANICAL
+  NONE
+}
+
+model SeatBeltSpecification {
+  id               String                @id @default(uuid())
+  productId        String                @unique @map("product_id")
+  position         SeatBeltPosition
+  componentType    SeatBeltComponentType @map("component_type")
+  pretensionerType PretensionerType      @default(NONE) @map("pretensioner_type")
+  webbingColor     String                @default("Black") @map("webbing_color")
+  mountingPoints   Int                   @default(3) @map("mounting_points")
+  oemReferenceTag  String?               @map("oem_reference_tag")
+  createdAt        DateTime              @default(now()) @map("created_at")
+  updatedAt        DateTime              @updatedAt @map("updated_at")
+
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@index([position, componentType])
+  @@map("seat_belt_specifications")
+}
+
+// ===========================================================================
+// 4. Commercial Presentation / Sale Units
+// ===========================================================================
+
+model SaleUnitConfig {
+  id                     String   @id @default(uuid())
+  productId              String   @map("product_id")
+  code                   String   // e.g. "TYRE_SINGLE", "TYRE_PAIR", "TYRE_SET_OF_4"
+  name                   String   // e.g. "Single Tyre", "Pair of 2", "Set of 4"
+  baseQuantityMultiplier Int      @default(1) @map("base_quantity_multiplier") // Physical base units consumed
+  retailPrice            Decimal  @map("retail_price") @db.Decimal(10, 2)
+  compareAtPrice         Decimal? @map("compare_at_price") @db.Decimal(10, 2)
+  isDefault              Boolean  @default(false) @map("is_default")
+  isActive               Boolean  @default(true) @map("is_active")
+  createdAt              DateTime @default(now()) @map("created_at")
+  updatedAt              DateTime @updatedAt @map("updated_at")
+
+  product    Product     @relation(fields: [productId], references: [id], onDelete: Cascade)
+  cartItems  CartItem[]
+  orderItems OrderItem[]
+
+  @@unique([productId, code])
+  @@index([productId, isActive])
+  @@map("sale_unit_configs")
+}
+
+// ===========================================================================
+// 5. Vehicle Taxonomy & Fitment Matrix
+// ===========================================================================
+
+model VehicleMake {
+  id        String         @id @default(uuid())
+  name      String         @unique // e.g. "Toyota", "Ford", "Subaru"
+  slug      String         @unique
+  createdAt DateTime       @default(now()) @map("created_at")
+  updatedAt DateTime       @updatedAt @map("updated_at")
+
+  models VehicleModel[]
+
+  @@map("vehicle_makes")
+}
+
+model VehicleModel {
+  id        String              @id @default(uuid())
+  makeId    String              @map("make_id")
+  name      String              // e.g. "RAV4", "Ranger", "WRX"
+  slug      String
+  createdAt DateTime            @default(now()) @map("created_at")
+  updatedAt DateTime            @updatedAt @map("updated_at")
+
+  make        VehicleMake         @relation(fields: [makeId], references: [id], onDelete: Restrict)
+  generations VehicleGeneration[]
+
+  @@unique([makeId, slug])
+  @@map("vehicle_models")
+}
+
+model VehicleGeneration {
+  id             String          @id @default(uuid())
+  modelId        String          @map("model_id")
+  generationName String          @map("generation_name") // e.g. "5th Gen (XA50)"
+  yearStart      Int             @map("year_start")       // e.g. 2018
+  yearEnd        Int?            @map("year_end")         // e.g. 2024, null if current
+  createdAt      DateTime        @default(now()) @map("created_at")
+  updatedAt      DateTime        @updatedAt @map("updated_at")
+
+  model     VehicleModel     @relation(fields: [modelId], references: [id], onDelete: Restrict)
+  chassis   VehicleChassis[]
+
+  @@index([modelId, yearStart, yearEnd])
+  @@map("vehicle_generations")
+}
+
+model VehicleChassis {
+  id           String            @id @default(uuid())
+  generationId String            @map("generation_id")
+  chassisCode  String            @map("chassis_code") // e.g. "AXAH54", "MXAA52"
+  bodyType     String            @map("body_type")    // e.g. "SUV 5-door", "Dual Cab Ute"
+  engineSpec   String?           @map("engine_spec")  // e.g. "2.5L Hybrid (A25A-FXS)"
+  createdAt    DateTime          @default(now()) @map("created_at")
+  updatedAt    DateTime          @updatedAt @map("updated_at")
+
+  generation    VehicleGeneration @relation(fields: [generationId], references: [id], onDelete: Restrict)
+  fitments      ProductFitment[]
+  savedVehicles SavedVehicle[]
+
+  @@index([generationId, chassisCode])
+  @@map("vehicle_chassis")
+}
+
+enum FitmentVerificationStatus {
+  VERIFIED_OEM_DIRECT // Exact match with OEM catalog parts list
+  UNIVERSAL_FIT       // Compatible across broad standard specification
+  REQUIRES_CHECK      // Needs human / VIN verification before dispatch
+}
+
+model ProductFitment {
+  id                 String                    @id @default(uuid())
+  productId          String                    @map("product_id")
+  vehicleChassisId   String                    @map("vehicle_chassis_id")
+  verificationStatus FitmentVerificationStatus @default(REQUIRES_CHECK) @map("verification_status")
+  fitmentNotes       String?                   @map("fitment_notes")
+  verifiedByUserId   String?                   @map("verified_by_user_id")
+  verifiedAt         DateTime?                 @map("verified_at")
+  createdAt          DateTime                  @default(now()) @map("created_at")
+  updatedAt          DateTime                  @updatedAt @map("updated_at")
+
+  product        Product        @relation(fields: [productId], references: [id], onDelete: Cascade)
+  vehicleChassis VehicleChassis @relation(fields: [vehicleChassisId], references: [id], onDelete: Cascade)
+  verifier       User?          @relation("FitmentVerifier", fields: [verifiedByUserId], references: [id], onDelete: SetNull)
+
+  @@unique([productId, vehicleChassisId])
+  @@index([vehicleChassisId, verificationStatus])
+  @@map("product_fitments")
+}
+
+// ===========================================================================
+// 6. Physical Inventory, Serialized Items & Movements
+// ===========================================================================
+
+model Warehouse {
+  id           String   @id @default(uuid())
+  code         String   @unique // e.g. "SYD-CENTRAL", "MEL-DEPOT"
+  name         String
+  addressLine1 String   @map("address_line1")
+  city         String
+  state        String
+  postalCode   String   @map("postal_code")
+  country      String   @default("AU")
+  isActive     Boolean  @default(true) @map("is_active")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  inventoryItems  InventoryItem[]
+  serializedItems SerializedInventoryItem[]
+  shipments       Shipment[]
+
+  @@map("warehouses")
+}
+
+model InventoryItem {
+  id               String   @id @default(uuid())
+  productId        String   @map("product_id")
+  warehouseId      String   @map("warehouse_id")
+  locationBin      String   @map("location_bin") // e.g. "AISLE-02-RACK-C"
+  quantityOnHand   Int      @default(0) @map("quantity_on_hand") // Physical stock on premises
+  quantityReserved Int      @default(0) @map("quantity_reserved") // Reserved by active checkout holds
+  costPrice        Decimal  @map("cost_price") @db.Decimal(10, 2) // Wholesale unit cost (RBAC protected)
+  createdAt        DateTime @default(now()) @map("created_at")
+  updatedAt        DateTime @updatedAt @map("updated_at")
+
+  product           Product             @relation(fields: [productId], references: [id], onDelete: Restrict)
+  warehouse         Warehouse           @relation(fields: [warehouseId], references: [id], onDelete: Restrict)
+  movements         InventoryMovement[]
+  stockReservations StockReservation[]
+
+  @@unique([productId, warehouseId, locationBin])
+  @@index([warehouseId])
+  @@map("inventory_items")
+}
+
+enum ConditionGrade {
+  NEW_SURPLUS
+  GRADE_A_LIKE_NEW
+  GRADE_B_MINOR_WEAR
+  GRADE_C_FUNCTIONAL_BLEMISH
+}
+
+enum SerializedItemStatus {
+  AVAILABLE
+  RESERVED
+  SOLD
+  SCRAPPED
+  UNDER_INSPECTION
+}
+
+model SerializedInventoryItem {
+  id                          String               @id @default(uuid())
+  productId                   String               @map("product_id")
+  warehouseId                 String               @map("warehouse_id")
+  stockBarcode                String               @unique @map("stock_barcode") // Unique barcode scan tag
+  donorVehicleVin             String?              @map("donor_vehicle_vin")
+  conditionGrade              ConditionGrade       @map("condition_grade")
+  conditionNotes              String               @map("condition_notes")
+  pretensionerResistanceOhms  Decimal?             @map("pretensioner_resistance_ohms") @db.Decimal(4, 2)
+  actualPhotos                Json                 @default("[]") @map("actual_photos") // S3 URLs of actual unit
+  locationBin                 String               @map("location_bin")
+  costPrice                   Decimal              @map("cost_price") @db.Decimal(10, 2)
+  status                      SerializedItemStatus @default(AVAILABLE)
+  createdAt                   DateTime             @default(now()) @map("created_at")
+  updatedAt                   DateTime             @updatedAt @map("updated_at")
+
+  product           Product             @relation(fields: [productId], references: [id], onDelete: Restrict)
+  warehouse         Warehouse           @relation(fields: [warehouseId], references: [id], onDelete: Restrict)
+  movements         InventoryMovement[]
+  cartItem          CartItem?
+  orderItems        OrderItem[]
+  stockReservations StockReservation[]
+
+  @@index([productId, status])
+  @@index([warehouseId, status])
+  @@map("serialized_inventory_items")
+}
+
+enum InventoryMovementType {
+  RECEIPT               // Stock intake / purchase order arrival
+  SALE_DEDUCTION        // Order completed and dispatched
+  RESERVATION_HOLD      // Cart lock placed
+  RESERVATION_RELEASE   // Cart expired without purchase
+  MANUAL_ADJUSTMENT     // Stocktake variance correction
+  RETURN_RESTOCK        // RMA approved and returned to inventory
+  SCRAP_WRITEOFF        // Damaged / failed inspection write-off
+}
+
+model InventoryMovement {
+  id               String                @id @default(uuid())
+  inventoryItemId  String?               @map("inventory_item_id")
+  serializedItemId String?               @map("serialized_item_id")
+  movementType     InventoryMovementType @map("movement_type")
+  quantityChange   Int                   @map("quantity_change") // Signed integer (+/-)
+  previousQuantity Int                   @map("previous_quantity")
+  newQuantity      Int                   @map("new_quantity")
+  reasonCode       String                @map("reason_code")
+  operatorId       String                @map("operator_id")
+  referenceOrderId String?               @map("reference_order_id")
+  createdAt        DateTime              @default(now()) @map("created_at")
+
+  inventoryItem  InventoryItem?           @relation(fields: [inventoryItemId], references: [id], onDelete: SetNull)
+  serializedItem SerializedInventoryItem? @relation(fields: [serializedItemId], references: [id], onDelete: SetNull)
+  operator       User                     @relation("OperatorMovements", fields: [operatorId], references: [id], onDelete: Restrict)
+
+  @@index([inventoryItemId, createdAt])
+  @@index([serializedItemId, createdAt])
+  @@index([referenceOrderId])
+  @@map("inventory_movements")
+}
+
+// ===========================================================================
+// 7. Customers & Saved Vehicles
+// ===========================================================================
+
+enum AccountType {
+  RETAIL
+  TRADE_COMMERCIAL
+}
+
+model CustomerProfile {
+  id          String      @id @default(uuid())
+  userId      String      @unique @map("user_id")
+  firstName   String      @map("first_name")
+  lastName    String      @map("last_name")
+  phone       String?
+  accountType AccountType @default(RETAIL) @map("account_type")
+  createdAt   DateTime    @default(now()) @map("created_at")
+  updatedAt   DateTime    @updatedAt @map("updated_at")
+
+  user          User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  addresses     CustomerAddress[]
+  savedVehicles SavedVehicle[]
+  carts         Cart[]
+  orders        Order[]
+  returnRequests ReturnRequest[]
+
+  @@map("customer_profiles")
+}
+
+model CustomerAddress {
+  id         String   @id @default(uuid())
+  customerId String   @map("customer_id")
+  label      String?  // e.g. "Workshop", "Home"
+  line1      String
+  line2      String?
+  city       String
+  state      String
+  postalCode String   @map("postal_code")
+  country    String   @default("AU")
+  isDefault  Boolean  @default(false) @map("is_default")
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+
+  customer CustomerProfile @relation(fields: [customerId], references: [id], onDelete: Cascade)
+
+  @@index([customerId])
+  @@map("customer_addresses")
+}
+
+model SavedVehicle {
+  id                String   @id @default(uuid())
+  customerId        String   @map("customer_id")
+  vehicleChassisId  String   @map("vehicle_chassis_id")
+  nickname          String?  // e.g. "My 2021 RAV4 Cruiser"
+  registrationPlate String?  @map("registration_plate")
+  isPrimary         Boolean  @default(false) @map("is_primary")
+  createdAt         DateTime @default(now()) @map("created_at")
+
+  customer       CustomerProfile @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  vehicleChassis VehicleChassis  @relation(fields: [vehicleChassisId], references: [id], onDelete: Cascade)
+
+  @@index([customerId])
+  @@map("saved_vehicles")
+}
+
+// ===========================================================================
+// 8. Carts & Soft Stock Reservations
+// ===========================================================================
+
+model Cart {
+  id           String    @id @default(uuid())
+  customerId   String?   @map("customer_id") // Nullable for anonymous guest cart
+  sessionToken String    @unique @map("session_token")
+  currency     String    @default("AUD")
+  expiresAt    DateTime  @map("expires_at")
+  createdAt    DateTime  @default(now()) @map("created_at")
+  updatedAt    DateTime  @updatedAt @map("updated_at")
+
+  customer CustomerProfile? @relation(fields: [customerId], references: [id], onDelete: SetNull)
+  items    CartItem[]
+
+  @@index([customerId])
+  @@index([expiresAt])
+  @@map("carts")
+}
+
+model CartItem {
+  id               String   @id @default(uuid())
+  cartId           String   @map("cart_id")
+  productId        String   @map("product_id")
+  saleUnitConfigId String   @map("sale_unit_config_id")
+  serializedItemId String?  @unique @map("serialized_item_id") // A serialized part can only be in one cart item
+  quantity         Int      @default(1)
+  unitPrice        Decimal  @map("unit_price") @db.Decimal(10, 2)
+  createdAt        DateTime @default(now()) @map("created_at")
+  updatedAt        DateTime @updatedAt @map("updated_at")
+
+  cart           Cart                     @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  product        Product                  @relation(fields: [productId], references: [id], onDelete: Restrict)
+  saleUnit       SaleUnitConfig           @relation(fields: [saleUnitConfigId], references: [id], onDelete: Restrict)
+  serializedItem SerializedInventoryItem? @relation(fields: [serializedItemId], references: [id], onDelete: SetNull)
+  reservation    StockReservation?
+
+  @@index([cartId])
+  @@map("cart_items")
+}
+
+enum ReservationStatus {
+  ACTIVE
+  RELEASED
+  CONVERTED_TO_ORDER
+}
+
+model StockReservation {
+  id               String            @id @default(uuid())
+  cartItemId       String            @unique @map("cart_item_id")
+  inventoryItemId  String?           @map("inventory_item_id")
+  serializedItemId String?           @map("serialized_item_id")
+  reservedQuantity Int               @map("reserved_quantity")
+  expiresAt        DateTime          @map("expires_at") // 15-minute soft reservation timeout
+  status           ReservationStatus @default(ACTIVE)
+  createdAt        DateTime          @default(now()) @map("created_at")
+
+  cartItem       CartItem                 @relation(fields: [cartItemId], references: [id], onDelete: Cascade)
+  inventoryItem  InventoryItem?           @relation(fields: [inventoryItemId], references: [id], onDelete: SetNull)
+  serializedItem SerializedInventoryItem? @relation(fields: [serializedItemId], references: [id], onDelete: SetNull)
+
+  @@index([expiresAt, status])
+  @@map("stock_reservations")
+}
+
+// ===========================================================================
+// 9. Orders & Immutable Line Snapshots
+// ===========================================================================
+
+enum OrderStatus {
+  PENDING_PAYMENT
+  PAID
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELLED
+  REFUNDED
+}
+
+enum PaymentStatus {
+  UNPAID
+  AUTHORIZED
+  PAID
+  PARTIALLY_REFUNDED
+  REFUNDED
+  FAILED
+}
+
+enum FulfillmentStatus {
+  UNFULFILLED
+  PARTIALLY_FULFILLED
+  FULFILLED
+}
+
+model Order {
+  id                String            @id @default(uuid())
+  orderNumber       String            @unique @map("order_number") // e.g. "PIN-2026-10042"
+  customerId        String?           @map("customer_id")
+  customerEmail     String            @map("customer_email")
+  customerPhone     String?           @map("customer_phone")
+  shippingAddress   Json              @map("shipping_address") // Immutable address snapshot
+  billingAddress    Json              @map("billing_address")  // Immutable address snapshot
+  orderStatus       OrderStatus       @default(PENDING_PAYMENT) @map("order_status")
+  paymentStatus     PaymentStatus     @default(UNPAID) @map("payment_status")
+  fulfillmentStatus FulfillmentStatus @default(UNFULFILLED) @map("fulfillment_status")
+  subtotal          Decimal           @db.Decimal(10, 2)
+  discountAmount    Decimal           @default(0.00) @map("discount_amount") @db.Decimal(10, 2)
+  shippingFee       Decimal           @map("shipping_fee") @db.Decimal(10, 2)
+  taxAmount         Decimal           @map("tax_amount") @db.Decimal(10, 2)
+  totalAmount       Decimal           @map("total_amount") @db.Decimal(10, 2)
+  currency          String            @default("AUD")
+  notes             String?
+  createdAt         DateTime          @default(now()) @map("created_at")
+  updatedAt         DateTime          @updatedAt @map("updated_at")
+
+  customer            CustomerProfile?     @relation(fields: [customerId], references: [id], onDelete: SetNull)
+  items               OrderItem[]
+  paymentTransactions PaymentTransaction[]
+  shipments           Shipment[]
+  returnRequests      ReturnRequest[]
+
+  @@index([customerId])
+  @@index([orderStatus, paymentStatus])
+  @@index([createdAt])
+  @@map("orders")
+}
+
+model OrderItem {
+  id                             String   @id @default(uuid())
+  orderId                        String   @map("order_id")
+  productId                      String?  @map("product_id")
+  saleUnitConfigId               String?  @map("sale_unit_config_id")
+  serializedItemId               String?  @map("serialized_item_id")
+  // Immutable purchase-time historical snapshots:
+  skuSnapshot                    String   @map("sku_snapshot")
+  titleSnapshot                  String   @map("title_snapshot")
+  saleUnitCodeSnapshot           String   @map("sale_unit_code_snapshot")
+  saleUnitNameSnapshot           String   @map("sale_unit_name_snapshot")
+  baseQuantityMultiplierSnapshot Int      @map("base_quantity_multiplier_snapshot")
+  quantity                       Int      // Number of sale units purchased
+  baseUnitsConsumed              Int      @map("base_units_consumed") // multiplier * quantity
+  unitPrice                      Decimal  @map("unit_price") @db.Decimal(10, 2)
+  discountAmount                 Decimal  @default(0.00) @map("discount_amount") @db.Decimal(10, 2)
+  taxAmount                      Decimal  @default(0.00) @map("tax_amount") @db.Decimal(10, 2)
+  totalPrice                     Decimal  @map("total_price") @db.Decimal(10, 2)
+  createdAt                      DateTime @default(now()) @map("created_at")
+
+  order          Order                    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product        Product?                 @relation(fields: [productId], references: [id], onDelete: SetNull)
+  saleUnit       SaleUnitConfig?          @relation(fields: [saleUnitConfigId], references: [id], onDelete: SetNull)
+  serializedItem SerializedInventoryItem? @relation(fields: [serializedItemId], references: [id], onDelete: SetNull)
+  shipmentItems  ShipmentItem[]
+  returnItems    ReturnItem[]
+
+  @@index([orderId])
+  @@index([productId])
+  @@map("order_items")
+}
+
+// ===========================================================================
+// 10. Payments & Fulfilment
+// ===========================================================================
+
+enum PaymentProvider {
+  STRIPE
+  PAYPAL
+  MANUAL
+}
+
+enum PaymentTransactionStatus {
+  PENDING
+  SUCCESS
+  FAILED
+  REFUNDED
+}
+
+model PaymentTransaction {
+  id                   String                   @id @default(uuid())
+  orderId              String                   @map("order_id")
+  provider             PaymentProvider          @default(STRIPE)
+  transactionReference String                   @unique @map("transaction_reference") // Gateway Payment Intent ID
+  idempotencyKey       String                   @unique @map("idempotency_key")
+  amount               Decimal                  @db.Decimal(10, 2)
+  currency             String                   @default("AUD")
+  status               PaymentTransactionStatus @default(PENDING)
+  rawResponse          Json?                    @map("raw_response")
+  createdAt            DateTime                 @default(now()) @map("created_at")
+
+  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@index([orderId, status])
+  @@map("payment_transactions")
+}
+
+enum ShipmentStatus {
+  LABEL_CREATED
+  PICKED_UP
+  IN_TRANSIT
+  DELIVERED
+  FAILED_DELIVERY
+}
+
+model Shipment {
+  id             String         @id @default(uuid())
+  orderId        String         @map("order_id")
+  warehouseId    String?        @map("warehouse_id")
+  carrierName    String         @map("carrier_name") // e.g. "Australia Post", "StarTrack"
+  trackingNumber String         @map("tracking_number")
+  trackingUrl    String?        @map("tracking_url")
+  status         ShipmentStatus @default(LABEL_CREATED)
+  shippedAt      DateTime?      @map("shipped_at")
+  deliveredAt    DateTime?      @map("delivered_at")
+  createdAt      DateTime       @default(now()) @map("created_at")
+  updatedAt      DateTime       @updatedAt @map("updated_at")
+
+  order     Order          @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  warehouse Warehouse?     @relation(fields: [warehouseId], references: [id], onDelete: SetNull)
+  items     ShipmentItem[]
+
+  @@index([orderId])
+  @@index([trackingNumber])
+  @@map("shipments")
+}
+
+model ShipmentItem {
+  id              String @id @default(uuid())
+  shipmentId      String @map("shipment_id")
+  orderItemId     String @map("order_item_id")
+  quantityShipped Int    @map("quantity_shipped")
+
+  shipment  Shipment  @relation(fields: [shipmentId], references: [id], onDelete: Cascade)
+  orderItem OrderItem @relation(fields: [orderItemId], references: [id], onDelete: Cascade)
+
+  @@index([shipmentId])
+  @@map("shipment_items")
+}
+
+// ===========================================================================
+// 11. Returns & RMAs
+// ===========================================================================
+
+enum ReturnReasonCode {
+  INCORRECT_FITMENT
+  DEFECTIVE_PART
+  DAMAGED_IN_SHIPPING
+  CUSTOMER_CHANGED_MIND
+}
+
+enum ReturnStatus {
+  PENDING_REVIEW
+  APPROVED
+  REJECTED
+  RECEIVED_AWAITING_INSPECTION
+  RESOLVED
+  CLOSED
+}
+
+model ReturnRequest {
+  id            String           @id @default(uuid())
+  rmaNumber     String           @unique @map("rma_number") // e.g. "RMA-2026-00042"
+  orderId       String           @map("order_id")
+  customerId    String           @map("customer_id")
+  reasonCode    ReturnReasonCode @map("reason_code")
+  customerNotes String           @map("customer_notes")
+  proofPhotos   Json             @default("[]") @map("proof_photos")
+  status        ReturnStatus     @default(PENDING_REVIEW)
+  createdAt     DateTime         @default(now()) @map("created_at")
+  updatedAt     DateTime         @updatedAt @map("updated_at")
+
+  order       Order           @relation(fields: [orderId], references: [id], onDelete: Restrict)
+  customer    CustomerProfile @relation(fields: [customerId], references: [id], onDelete: Restrict)
+  returnItems ReturnItem[]
+
+  @@index([customerId])
+  @@index([orderId])
+  @@map("return_requests")
+}
+
+model ReturnItem {
+  id              String @id @default(uuid())
+  returnRequestId String @map("return_request_id")
+  orderItemId     String @map("order_item_id")
+  quantity        Int    @default(1)
+
+  returnRequest ReturnRequest     @relation(fields: [returnRequestId], references: [id], onDelete: Cascade)
+  orderItem     OrderItem         @relation(fields: [orderItemId], references: [id], onDelete: Restrict)
+  inspection    ReturnInspection?
+
+  @@index([returnRequestId])
+  @@map("return_items")
+}
+
+enum ReturnDisposition {
+  RESTOCK_TO_INVENTORY
+  SCRAP_WRITEOFF
+  RETURN_TO_SENDER
+}
+
+model ReturnInspection {
+  id              String            @id @default(uuid())
+  returnItemId    String            @unique @map("return_item_id")
+  inspectorId     String            @map("inspector_id")
+  disposition     ReturnDisposition
+  inspectionNotes String            @map("inspection_notes")
+  refundEligible  Boolean           @default(true) @map("refund_eligible")
+  completedAt     DateTime          @default(now()) @map("completed_at")
+
+  returnItem ReturnItem @relation(fields: [returnItemId], references: [id], onDelete: Cascade)
+  inspector  User       @relation("InspectorReturns", fields: [inspectorId], references: [id], onDelete: Restrict)
+
+  @@map("return_inspections")
+}
+
+// ===========================================================================
+// 12. Integration Accounts & Sync Events (Foundational)
+// ===========================================================================
+
+enum IntegrationEventStatus {
+  RECEIVED
+  PROCESSING
+  PROCESSED
+  FAILED
+  IGNORED
+}
+
+model IntegrationAccount {
+  id          String   @id @default(uuid())
+  provider    String   // e.g. "STRIPE", "AUSPOST", "STARTRACK"
+  name        String   // e.g. "Primary Stripe Account"
+  environment String   @default("sandbox") // "sandbox" | "production"
+  isActive    Boolean  @default(true) @map("is_active")
+  settings    Json?    // Safe configuration only (endpoints, webhook IDs; NO API secrets)
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  syncEvents IntegrationSyncEvent[]
+
+  @@unique([provider, environment])
+  @@map("integration_accounts")
+}
+
+model IntegrationSyncEvent {
+  id                   String                 @id @default(uuid())
+  integrationAccountId String                 @map("integration_account_id")
+  eventType            String                 @map("event_type") // e.g. "payment_intent.succeeded"
+  externalId           String?                @map("external_id")
+  idempotencyKey       String?                @unique @map("idempotency_key")
+  status               IntegrationEventStatus @default(RECEIVED)
+  payload              Json?
+  errorMessage         String?                @map("error_message")
+  processedAt          DateTime?              @map("processed_at")
+  createdAt            DateTime               @default(now()) @map("created_at")
+
+  account IntegrationAccount @relation(fields: [integrationAccountId], references: [id], onDelete: Cascade)
+
+  @@index([integrationAccountId, eventType, createdAt])
+  @@map("integration_sync_events")
+}

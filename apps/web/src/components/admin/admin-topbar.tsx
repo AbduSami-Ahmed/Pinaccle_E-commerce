@@ -1,8 +1,9 @@
 'use client';
 
 import * as React from 'react';
-import { Menu, Bell } from 'lucide-react';
+import { Menu, Bell, LogOut } from 'lucide-react';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { logoutUser } from '@/lib/auth';
 
 export interface AdminTopbarProps {
   title?: string;
@@ -58,6 +59,15 @@ export function AdminTopbar({ title, breadcrumb, onMobileMenuToggle }: AdminTopb
             <span className="text-xs font-semibold text-slate-900 leading-none">Admin User</span>
             <span className="text-[10px] text-slate-500">Inventory Lead</span>
           </div>
+          <button
+            type="button"
+            onClick={() => void logoutUser()}
+            aria-label="Logout"
+            title="Logout"
+            className="ml-2 rounded-md p-1.5 text-slate-500 hover:bg-slate-100 hover:text-slate-900 transition-colors"
+          >
+            <LogOut className="h-4 w-4" />
+          </button>
         </div>
       </div>
     </header>

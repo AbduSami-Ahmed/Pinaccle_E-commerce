@@ -13,17 +13,17 @@ The initial product catalog focuses on two core categories:
 
 ## 2. Complete Phase Roadmap & Status Checklist
 
-| Phase       | Description                                       | Deliverables                                                                                            |    Status     |
-| ----------- | ------------------------------------------------- | ------------------------------------------------------------------------------------------------------- | :-----------: |
-| **Phase 0** | **Repository Audit & Architecture**               | Complete audit, architecture specs, domain model, role-permission matrix, ADRs, open decisions.         | **COMPLETED** |
-| **Phase 1** | **Monorepo Foundation & Workspace Setup**         | Workspace setup (`apps/web`, `apps/api`, `packages/*`), strict TypeScript, Docker Compose, CI pipeline. | **COMPLETED** |
-| **Phase 2** | **Design System & Application Shells**            | Design tokens, shadcn/ui components, storefront shell, admin shell, page templates, shared states.      | **COMPLETED** |
-| **Phase 3** | **Data Layer & Core Domain Models (Prisma)**      | PostgreSQL schema, Prisma migrations, seed scripts, transactional repositories.                         | Next / Ready  |
-| **Phase 3** | **Backend Modular Monolith (NestJS API & RBAC)**  | REST API, OpenAPI/Swagger, DTO validation, Permission guards, Auth module, Audit log interceptors.      |    Pending    |
-| **Phase 4** | **Admin Back-Office UI (Next.js & shadcn/ui)**    | Inventory management, bulk tyre intake, seat belt serialization, order dispatch, TanStack Table grids.  |    Pending    |
-| **Phase 5** | **Customer Storefront & Vehicle Fitment Search**  | Vehicle selector, tyre dimensional search, PDP with sale-unit selector, seat belt condition view.       |    Pending    |
-| **Phase 6** | **Cart, Checkout & Payment Integration**          | Guest/user cart, 15-min soft reservation hold, Stripe payment adapter, idempotent webhook handler.      |    Pending    |
-| **Phase 7** | **Returns (RMA), Fulfillment & Launch Readiness** | RMA submission & warehouse inspection disposition, shipment dispatch tracking, production hardening.    |    Pending    |
+| Phase       | Description                                       | Deliverables                                                                                              |    Status     |
+| ----------- | ------------------------------------------------- | --------------------------------------------------------------------------------------------------------- | :-----------: |
+| **Phase 0** | **Repository Audit & Architecture**               | Complete audit, architecture specs, domain model, role-permission matrix, ADRs, open decisions.           | **COMPLETED** |
+| **Phase 1** | **Monorepo Foundation & Workspace Setup**         | Workspace setup (`apps/web`, `apps/api`, `packages/*`), strict TypeScript, Docker Compose, CI pipeline.   | **COMPLETED** |
+| **Phase 2** | **Design System & Application Shells**            | Design tokens, shadcn/ui components, storefront shell, admin shell, page templates, shared states.        | **COMPLETED** |
+| **Phase 3** | **Authentication & RBAC Foundation**              | User/Profile Prisma schema, JWT/OIDC validation, Permission & Ownership guards, security tests, ADR-0007. | **COMPLETED** |
+| **Phase 4** | **Data Layer & Core Domain Models (Prisma)**      | PostgreSQL schema for Tyres & Seat Belts, inventory movements, vehicle fitment matrix, seed data.         | **COMPLETED** |
+| **Phase 5** | **Admin Back-Office UI (Next.js & shadcn/ui)**    | Inventory management, bulk tyre intake, seat belt serialization, order dispatch, TanStack Table grids.    | Next / Ready  |
+| **Phase 6** | **Customer Storefront & Vehicle Fitment Search**  | Vehicle selector, tyre dimensional search, PDP with sale-unit selector, seat belt condition view.         |    Pending    |
+| **Phase 7** | **Cart, Checkout & Payment Integration**          | Guest/user cart, 15-min soft reservation hold, Stripe payment adapter, idempotent webhook handler.        |    Pending    |
+| **Phase 8** | **Returns (RMA), Fulfillment & Launch Readiness** | RMA submission & warehouse inspection disposition, shipment dispatch tracking, production hardening.      |    Pending    |
 
 ---
 

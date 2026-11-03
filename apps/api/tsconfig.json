@@ -12,7 +12,8 @@
     "target": "ES2022",
     "sourceMap": true,
     "outDir": "./dist",
-    "baseUrl": "./"
+    "baseUrl": "./",
+    "isolatedModules": true
   },
   "include": ["src/**/*", "test/**/*"]
 }
