@@ -5,6 +5,10 @@ import { HealthModule } from './health/health.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
+import { StorageModule } from './storage/storage.module';
+import { CatalogModule } from './catalog/catalog.module';
+import { InventoryModule } from './inventory/inventory.module';
+import { FitmentModule } from './fitment/fitment.module';
 import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 
 @Module({
@@ -20,6 +24,10 @@ import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
     HealthModule,
     AuthModule,
     UsersModule,
+    StorageModule,
+    CatalogModule,
+    InventoryModule,
+    FitmentModule,
   ],
   controllers: [],
   providers: [

@@ -19,6 +19,7 @@ import {
   Wrench,
   X,
   ExternalLink,
+  Car,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -46,6 +47,7 @@ const navSections: NavSection[] = [
     items: [
       { label: 'Products', href: '/admin/products', icon: Package },
       { label: 'Categories', href: '/admin/categories', icon: Layers },
+      { label: 'Fitment Matrix', href: '/admin/fitment', icon: Car },
     ],
   },
   {

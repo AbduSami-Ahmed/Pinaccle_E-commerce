@@ -1,6 +1,6 @@
 import * as React from 'react';
 import Link from 'next/link';
-import { Disc } from 'lucide-react';
+import { notFound } from 'next/navigation';
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -11,40 +11,55 @@ import {
 } from '@/components/ui/breadcrumb';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { TyrePurchaseCard } from './tyre-purchase-card';
+import { CheckCircle2, AlertTriangle, Wrench, Clock } from 'lucide-react';
+import { fetchStorefrontProductBySlug } from '@/lib/storefront';
+import { ProductGallery } from '@/components/storefront/product-gallery';
+import { SaleUnitPurchaser } from '@/components/storefront/sale-unit-purchaser';
+import { ProductSpecificationsTable } from '@/components/storefront/product-specifications-table';
+import { ProductFitmentTable } from '@/components/storefront/product-fitment-table';
+import { TradeDeliveryWarrantyCard } from '@/components/storefront/trade-delivery-warranty-card';
+import { RelatedProductsSection } from '@/components/storefront/related-products-section';
 
 interface PageProps {
   params: Promise<{ slug: string }>;
 }
 
+export async function generateMetadata({ params }: PageProps) {
+  const { slug } = await params;
+  try {
+    const product = await fetchStorefrontProductBySlug(slug);
+    return {
+      title: `${product.title} (${product.brand}) — Pinnacle Auto Spares`,
+      description: `Commercial & passenger tyre: ${product.title}. In stock: ${product.availability.sellableBaseUnits} units at Prestons NSW depot. Workshop fitting available.`,
+      alternates: {
+        canonical: `/tyres/${slug}`,
+      },
+      openGraph: {
+        title: `${product.title} | Pinnacle Commercial Tyres`,
+        description: product.description.slice(0, 160),
+        images: product.primaryImageUrl ? [{ url: product.primaryImageUrl }] : [],
+      },
+    };
+  } catch {
+    return {
+      title: 'Commercial Tyre Detail — Pinnacle Auto Spares',
+    };
+  }
+}
+
 export default async function TyreDetailPage({ params }: PageProps) {
   const { slug } = await params;
 
-  // DEMO DATA
-  const product = {
-    title: 'Michelin Pilot Sport 4',
-    brand: 'Michelin',
-    sku: `TYRE-${slug.toUpperCase()}-2254517`,
-    spec: '225/45 R17 94Y XL',
-    basePrice: 145.0,
-    fitmentBadge: 'Verified OEM Fitment',
-    specs: [
-      { label: 'Width (Section Width)', value: '225 mm' },
-      { label: 'Aspect Ratio', value: '45%' },
-      { label: 'Rim Diameter', value: '17"' },
-      { label: 'Load Index', value: '94 (670 kg max axle load)' },
-      { label: 'Speed Rating', value: 'Y (up to 300 km/h / 186 mph)' },
-      { label: 'Season / Profile', value: 'Summer Ultra High Performance' },
-      { label: 'Reinforcement', value: 'XL (Extra Load)' },
-      { label: 'EU Fuel Efficiency', value: 'Class C' },
-      { label: 'EU Wet Grip Rating', value: 'Class A' },
-      { label: 'External Noise Level', value: '71 dB (Class B)' },
-    ],
-  };
+  let product;
+  try {
+    product = await fetchStorefrontProductBySlug(slug);
+  } catch {
+    notFound();
+  }
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8 space-y-8">
-      {/* Breadcrumb */}
+      {/* Breadcrumb Navigation */}
       <Breadcrumb>
         <BreadcrumbList>
           <BreadcrumbItem>
@@ -55,139 +70,184 @@ export default async function TyreDetailPage({ params }: PageProps) {
           <BreadcrumbSeparator />
           <BreadcrumbItem>
             <BreadcrumbLink asChild>
-              <Link href="/tyres">Tyres</Link>
+              <Link href="/tyres">Tyres & Rubber</Link>
             </BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator />
           <BreadcrumbItem>
-            <BreadcrumbPage>{product.title}</BreadcrumbPage>
+            <BreadcrumbPage className="font-semibold text-slate-800 line-clamp-1 max-w-md">
+              {product.title}
+            </BreadcrumbPage>
           </BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb>
 
-      {/* Main product area: Left = image placeholder, Right = details & purchase */}
-      <div className="grid grid-cols-1 gap-10 lg:grid-cols-2">
-        {/* Left Column: Image placeholder area */}
-        <div className="space-y-4">
-          <div className="relative flex aspect-square w-full items-center justify-center rounded-lg border border-slate-200 bg-slate-100 text-slate-500 shadow-sm">
-            <div className="flex flex-col items-center gap-3">
-              <Disc className="h-20 w-20 text-slate-300 stroke-[1.25]" />
-              <span className="text-sm font-semibold tracking-wider uppercase text-slate-400">
-                Product Image Placeholder
-              </span>
-              <span className="text-xs text-slate-400 font-mono">{product.spec}</span>
+      {/* Main Grid: Gallery & Details on Left, Purchasing Card on Right */}
+      <div className="grid grid-cols-1 gap-8 lg:grid-cols-12 items-start">
+        {/* Left Column (7 cols) */}
+        <div className="lg:col-span-7 space-y-6">
+          {/* Gallery */}
+          <ProductGallery
+            images={product.allMedia}
+            productTitle={product.title}
+            condition={product.condition}
+            stockBarcode={product.stockNumber}
+          />
+
+          {/* Technical Tabs */}
+          <Tabs defaultValue="specs" className="pt-2">
+            <TabsList className="w-full justify-start border-b border-slate-200 rounded-none bg-transparent p-0 gap-6">
+              <TabsTrigger
+                value="specs"
+                className="rounded-none border-b-2 border-transparent px-1 py-2.5 text-xs font-bold uppercase tracking-wider text-slate-600 data-[state=active]:border-blue-700 data-[state=active]:text-blue-700 data-[state=active]:bg-transparent"
+              >
+                Engineering & Sizing Specs
+              </TabsTrigger>
+              <TabsTrigger
+                value="fitment"
+                className="rounded-none border-b-2 border-transparent px-1 py-2.5 text-xs font-bold uppercase tracking-wider text-slate-600 data-[state=active]:border-blue-700 data-[state=active]:text-blue-700 data-[state=active]:bg-transparent"
+              >
+                Chassis Fitment ({product.fitments.length})
+              </TabsTrigger>
+              <TabsTrigger
+                value="overview"
+                className="rounded-none border-b-2 border-transparent px-1 py-2.5 text-xs font-bold uppercase tracking-wider text-slate-600 data-[state=active]:border-blue-700 data-[state=active]:text-blue-700 data-[state=active]:bg-transparent"
+              >
+                Workshop Fitting & Description
+              </TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="specs" className="pt-4">
+              <ProductSpecificationsTable product={product} />
+            </TabsContent>
+
+            <TabsContent value="fitment" className="pt-4">
+              <ProductFitmentTable
+                fitments={product.fitments}
+                fitmentSummary={product.fitmentSummary}
+              />
+            </TabsContent>
+
+            <TabsContent value="overview" className="pt-4 space-y-4 text-xs text-slate-600">
+              <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-xs space-y-3">
+                <h4 className="font-bold uppercase tracking-wider text-slate-900 text-xs">
+                  Trade Overview & Compound Notes
+                </h4>
+                <p className="leading-relaxed text-slate-700">{product.description}</p>
+              </div>
+
+              {/* In-Yard Fitting Bay Notice */}
+              <div className="rounded-xl border border-blue-200 bg-blue-50/70 p-5 shadow-xs space-y-3">
+                <div className="flex items-center gap-2 text-blue-950 font-bold text-sm">
+                  <Wrench className="h-4 w-4 text-blue-700" />
+                  <span>Sydney Yard Fitting & Balancing Service</span>
+                </div>
+                <p className="text-xs text-blue-900 leading-relaxed">
+                  Need these tyres mounted to your rims? Drive-in fitting bays are operational
+                  Monday to Saturday at our Prestons facility.
+                </p>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-[11px] font-semibold text-blue-950 pt-1">
+                  <div className="rounded bg-white/80 p-2 border border-blue-200">
+                    Mount & Digital Balance: $25/corner
+                  </div>
+                  <div className="rounded bg-white/80 p-2 border border-blue-200">
+                    Old Tyre Environmental Disposal: $8/casing
+                  </div>
+                  <div className="rounded bg-white/80 p-2 border border-blue-200">
+                    TPMS Sensor Calibration: $15/sensor
+                  </div>
+                </div>
+              </div>
+            </TabsContent>
+          </Tabs>
+
+          {/* Delivery & Warranty */}
+          <TradeDeliveryWarrantyCard
+            warehouseLocation={product.warehouseLocation}
+            shippingInfo={product.shippingInfo}
+            warrantyAndReturns={product.warrantyAndReturns}
+          />
+        </div>
+
+        {/* Right Column: Pricing & Purchase Card (5 cols) */}
+        <div className="lg:col-span-5 space-y-6 lg:sticky lg:top-24">
+          <div className="space-y-4">
+            {/* Header info */}
+            <div>
+              <div className="flex items-center justify-between text-xs text-slate-500 mb-1.5">
+                <span className="font-bold uppercase tracking-wider text-blue-700">
+                  {product.brand}
+                </span>
+                <span className="font-mono text-slate-400">SKU: {product.sku}</span>
+              </div>
+
+              <h1 className="text-2xl font-extrabold tracking-tight text-slate-900 leading-tight">
+                {product.title}
+              </h1>
+
+              {/* Status Badges */}
+              <div className="mt-2.5 flex flex-wrap items-center gap-2 text-xs">
+                {product.availability.inStock ? (
+                  <Badge
+                    variant="outline"
+                    className="border-emerald-300 bg-emerald-50 text-emerald-800 font-semibold gap-1"
+                  >
+                    <CheckCircle2 className="h-3 w-3 text-emerald-600" />
+                    {product.availability.label}
+                  </Badge>
+                ) : (
+                  <Badge
+                    variant="outline"
+                    className="border-rose-300 bg-rose-50 text-rose-800 font-semibold gap-1"
+                  >
+                    <AlertTriangle className="h-3 w-3 text-rose-600" />
+                    Out of Stock in Depot
+                  </Badge>
+                )}
+
+                {product.tyreSpec?.runFlat && (
+                  <Badge
+                    variant="outline"
+                    className="border-slate-300 bg-slate-50 text-slate-800 font-semibold"
+                  >
+                    Run-Flat (RFT)
+                  </Badge>
+                )}
+              </div>
             </div>
-          </div>
-          <div className="grid grid-cols-3 gap-3">
-            <div className="flex aspect-video items-center justify-center rounded-md border border-slate-200 bg-slate-50 text-[11px] text-slate-400">
-              Tread Pattern
-            </div>
-            <div className="flex aspect-video items-center justify-center rounded-md border border-slate-200 bg-slate-50 text-[11px] text-slate-400">
-              Sidewall Markings
-            </div>
-            <div className="flex aspect-video items-center justify-center rounded-md border border-slate-200 bg-slate-50 text-[11px] text-slate-400">
-              EU Energy Label
+
+            {/* Sale Unit Purchaser Card */}
+            <SaleUnitPurchaser
+              productId={product.id}
+              productTitle={product.title}
+              basePrice={product.defaultPrice}
+              currency={product.currency}
+              sellableBaseUnits={product.availability.sellableBaseUnits}
+              availableSaleUnits={product.availableSaleUnits}
+              stockNumber={product.stockNumber}
+              categorySlug={product.categorySlug}
+            />
+
+            {/* Workshop Quick Info */}
+            <div className="rounded-lg border border-slate-200 bg-slate-50 p-4 space-y-2 text-xs text-slate-600">
+              <div className="flex items-center gap-2 text-slate-900 font-semibold">
+                <Clock className="h-4 w-4 text-blue-700 shrink-0" />
+                <span>Trade Counter Hours (Prestons NSW):</span>
+              </div>
+              <p className="text-[11px] text-slate-500">
+                Mon – Fri: 7:30 AM – 5:00 PM | Sat: 8:00 AM – 1:00 PM
+              </p>
+              <p className="text-[11px] text-slate-500 border-t border-slate-200 pt-2">
+                Orders placed before <strong>2:00 PM AEST</strong> dispatch same business day via
+                StarTrack Express.
+              </p>
             </div>
           </div>
         </div>
-
-        {/* Right Column: Title, brand, sku, fitment, purchase card */}
-        <div className="space-y-6">
-          <div className="space-y-2">
-            <div className="flex items-center gap-2">
-              <span className="text-xs font-bold uppercase tracking-wider text-slate-500">
-                {product.brand}
-              </span>
-              <Badge variant="success" className="text-xs">
-                {product.fitmentBadge}
-              </Badge>
-            </div>
-            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900">
-              {product.title}
-            </h1>
-            <p className="font-mono text-base font-semibold text-blue-700">{product.spec}</p>
-            <p className="text-xs text-slate-500 font-mono">SKU: {product.sku}</p>
-          </div>
-
-          {/* Quick Specifications Snapshot */}
-          <div className="rounded-md border border-slate-200 bg-slate-50/70 p-4">
-            <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-700 mb-2">
-              Fast Fitment Spec
-            </h3>
-            <div className="grid grid-cols-2 gap-2 text-xs">
-              <div>
-                <span className="text-slate-500">Width: </span>
-                <span className="font-medium text-slate-800">225 mm</span>
-              </div>
-              <div>
-                <span className="text-slate-500">Aspect Ratio: </span>
-                <span className="font-medium text-slate-800">45%</span>
-              </div>
-              <div>
-                <span className="text-slate-500">Rim Diameter: </span>
-                <span className="font-medium text-slate-800">17 inches</span>
-              </div>
-              <div>
-                <span className="text-slate-500">Speed Rating: </span>
-                <span className="font-medium text-slate-800">Y (300 km/h)</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Purchase Card Island */}
-          <TyrePurchaseCard basePrice={product.basePrice} />
-        </div>
       </div>
 
-      {/* Tabs: Description and Specifications */}
-      <div className="pt-8 border-t border-slate-200">
-        <Tabs defaultValue="specifications" className="w-full">
-          <TabsList className="grid w-full max-w-md grid-cols-2">
-            <TabsTrigger value="specifications">Full Specifications</TabsTrigger>
-            <TabsTrigger value="description">Description & Fitment</TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="specifications" className="mt-6">
-            <div className="rounded-lg border border-slate-200 bg-white shadow-sm overflow-hidden">
-              <table className="w-full text-left text-sm text-slate-700">
-                <thead className="border-b border-slate-200 bg-slate-50 text-xs uppercase tracking-wider text-slate-500">
-                  <tr>
-                    <th className="px-6 py-3 font-semibold">Parameter</th>
-                    <th className="px-6 py-3 font-semibold">Specification</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-200">
-                  {product.specs.map((item, idx) => (
-                    <tr key={idx} className="hover:bg-slate-50/50">
-                      <td className="px-6 py-3 font-medium text-slate-600">{item.label}</td>
-                      <td className="px-6 py-3 font-mono font-medium text-slate-900">
-                        {item.value}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </TabsContent>
-
-          <TabsContent value="description" className="mt-6">
-            <div className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm space-y-4 text-sm text-slate-600 leading-relaxed">
-              <h3 className="text-base font-semibold text-slate-900">Engineering & Tread Design</h3>
-              <p>
-                The Michelin Pilot Sport 4 provides precision steering control and reactivity on
-                both dry and wet pavement. Built with dynamic response technology—a hybrid belt of
-                aramid and nylon—it transmits steering instructions instantly to the road.
-              </p>
-              <h4 className="text-sm font-semibold text-slate-900 pt-2">Compound & Safety</h4>
-              <p>
-                A novel mix of functional elastomers and hydrophobic silica delivers high wet grip
-                and short braking distances. Wide longitudinal grooves drain water effectively to
-                resist aquaplaning under heavy highway loads.
-              </p>
-            </div>
-          </TabsContent>
-        </Tabs>
-      </div>
+      {/* Meaningful Related Products */}
+      <RelatedProductsSection relatedProducts={product.relatedProducts} />
     </div>
   );
 }

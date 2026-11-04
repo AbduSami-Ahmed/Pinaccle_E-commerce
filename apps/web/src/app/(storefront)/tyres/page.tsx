@@ -1,308 +1,247 @@
-'use client';
-
 import * as React from 'react';
 import Link from 'next/link';
-import { Disc, ShoppingCart, SlidersHorizontal } from 'lucide-react';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Pagination } from '@/components/ui/pagination';
+import { Disc, Search, RotateCcw } from 'lucide-react';
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from '@/components/ui/breadcrumb';
+import { Button } from '@/components/ui/button';
+import { ProductCard } from '@/components/storefront/product-card';
+import { TyreFilters } from '@/components/storefront/tyre-filters';
+import { SelectedFilterChips, ActiveFilter } from '@/components/storefront/selected-filter-chips';
+import { TyreSortSelector } from './tyre-sort-selector';
+import { TyrePagination } from './tyre-pagination';
+import { fetchStorefrontFilterMeta, fetchStorefrontProducts } from '@/lib/storefront';
 
-interface DemoTyre {
-  id: string;
-  slug: string;
-  brand: string;
-  model: string;
-  spec: string;
-  width: number;
-  aspect: number;
-  rim: number;
-  priceSingle: number;
-  season: string;
-  fitmentBadge: string;
+export const metadata = {
+  title: 'Commercial Tyres Catalogue — Pinnacle Auto Parts',
+  description:
+    'Search and filter verified commercial and passenger car tyres by section width, profile, rim diameter, speed rating, and brand. Real warehouse inventory with single, pair, and set of 4 pricing.',
+  alternates: {
+    canonical: '/tyres',
+  },
+};
+
+interface TyresPageProps {
+  searchParams: Promise<{
+    search?: string;
+    sectionWidth?: string;
+    aspectRatio?: string;
+    rimDiameter?: string;
+    loadIndex?: string;
+    speedRating?: string;
+    season?: string;
+    terrainType?: string;
+    brand?: string;
+    condition?: string;
+    saleUnit?: string;
+    inStockOnly?: string;
+    minPrice?: string;
+    maxPrice?: string;
+    sortBy?: 'price_asc' | 'price_desc' | 'title' | 'createdAt' | 'relevance';
+    sortOrder?: 'asc' | 'desc';
+    page?: string;
+    pageSize?: string;
+  }>;
 }
 
-// DEMO DATA
-const demoTyres: DemoTyre[] = [
-  {
-    id: 'tyre-1',
-    slug: 'michelin-pilot-sport-4',
-    brand: 'Michelin',
-    model: 'Pilot Sport 4',
-    spec: '225/45 R17 94Y XL',
-    width: 225,
-    aspect: 45,
-    rim: 17,
-    priceSingle: 145.0,
-    season: 'Summer',
-    fitmentBadge: 'Verified Fit',
-  },
-  {
-    id: 'tyre-2',
-    slug: 'continental-premiumcontact-6',
-    brand: 'Continental',
-    model: 'PremiumContact 6',
-    spec: '205/55 R16 91V',
-    width: 205,
-    aspect: 55,
-    rim: 16,
-    priceSingle: 112.5,
-    season: 'All-Season',
-    fitmentBadge: 'Verified Fit',
-  },
-  {
-    id: 'tyre-3',
-    slug: 'goodyear-eagle-f1-asymmetric-5',
-    brand: 'Goodyear',
-    model: 'Eagle F1 Asymmetric 5',
-    spec: '225/40 R18 92Y XL',
-    width: 225,
-    aspect: 40,
-    rim: 18,
-    priceSingle: 138.0,
-    season: 'Summer',
-    fitmentBadge: 'High Performance',
-  },
-  {
-    id: 'tyre-4',
-    slug: 'pirelli-cinturato-p7',
-    brand: 'Pirelli',
-    model: 'Cinturato P7 (P7C2)',
-    spec: '215/55 R17 94W',
-    width: 215,
-    aspect: 55,
-    rim: 17,
-    priceSingle: 128.0,
-    season: 'Summer',
-    fitmentBadge: 'Verified Fit',
-  },
-  {
-    id: 'tyre-5',
-    slug: 'bridgestone-turanza-t005',
-    brand: 'Bridgestone',
-    model: 'Turanza T005',
-    spec: '195/65 R15 91H',
-    width: 195,
-    aspect: 65,
-    rim: 15,
-    priceSingle: 95.0,
-    season: 'Touring',
-    fitmentBadge: 'Standard Fit',
-  },
-  {
-    id: 'tyre-6',
-    slug: 'dunlop-sport-maxx-rt2',
-    brand: 'Dunlop',
-    model: 'Sport Maxx RT2',
-    spec: '245/40 R18 97Y XL',
-    width: 245,
-    aspect: 40,
-    rim: 18,
-    priceSingle: 152.0,
-    season: 'Ultra High Performance',
-    fitmentBadge: 'Performance Fit',
-  },
-];
+export default async function TyresListingPage({ searchParams }: TyresPageProps) {
+  const resolvedParams = await searchParams;
 
-export default function TyresCataloguePage() {
+  const [productsRes, filterMeta] = await Promise.all([
+    fetchStorefrontProducts({
+      categorySlug: 'tyres',
+      search: resolvedParams.search,
+      sectionWidth: resolvedParams.sectionWidth ? Number(resolvedParams.sectionWidth) : undefined,
+      aspectRatio: resolvedParams.aspectRatio ? Number(resolvedParams.aspectRatio) : undefined,
+      rimDiameter: resolvedParams.rimDiameter ? Number(resolvedParams.rimDiameter) : undefined,
+      loadIndex: resolvedParams.loadIndex ? Number(resolvedParams.loadIndex) : undefined,
+      speedRating: resolvedParams.speedRating,
+      season: resolvedParams.season,
+      terrainType: resolvedParams.terrainType,
+      brand: resolvedParams.brand,
+      condition: resolvedParams.condition,
+      saleUnit: resolvedParams.saleUnit,
+      inStockOnly: resolvedParams.inStockOnly === 'true',
+      minPrice: resolvedParams.minPrice ? Number(resolvedParams.minPrice) : undefined,
+      maxPrice: resolvedParams.maxPrice ? Number(resolvedParams.maxPrice) : undefined,
+      sortBy: resolvedParams.sortBy,
+      sortOrder: resolvedParams.sortOrder,
+      page: resolvedParams.page ? Number(resolvedParams.page) : 1,
+      pageSize: 12,
+    }),
+    fetchStorefrontFilterMeta('tyres'),
+  ]);
+
+  // Construct active filter chips
+  const activeFilters: ActiveFilter[] = [];
+  if (resolvedParams.search) {
+    activeFilters.push({ key: 'search', label: 'Search', value: resolvedParams.search });
+  }
+  if (resolvedParams.sectionWidth) {
+    activeFilters.push({
+      key: 'sectionWidth',
+      label: 'Width',
+      value: `${resolvedParams.sectionWidth} mm`,
+    });
+  }
+  if (resolvedParams.aspectRatio) {
+    activeFilters.push({
+      key: 'aspectRatio',
+      label: 'Profile',
+      value: `${resolvedParams.aspectRatio}%`,
+    });
+  }
+  if (resolvedParams.rimDiameter) {
+    activeFilters.push({
+      key: 'rimDiameter',
+      label: 'Rim',
+      value: `${resolvedParams.rimDiameter}"`,
+    });
+  }
+  if (resolvedParams.brand) {
+    activeFilters.push({ key: 'brand', label: 'Brand', value: resolvedParams.brand });
+  }
+  if (resolvedParams.season) {
+    activeFilters.push({ key: 'season', label: 'Season', value: resolvedParams.season });
+  }
+  if (resolvedParams.saleUnit) {
+    const unitMap: Record<string, string> = {
+      TYRE_SINGLE: 'Single Tyre',
+      TYRE_PAIR: 'Pair of 2',
+      TYRE_SET_OF_4: 'Set of 4',
+    };
+    activeFilters.push({
+      key: 'saleUnit',
+      label: 'Unit',
+      value: unitMap[resolvedParams.saleUnit] || resolvedParams.saleUnit,
+    });
+  }
+  if (resolvedParams.inStockOnly === 'true') {
+    activeFilters.push({ key: 'inStockOnly', label: 'Availability', value: 'In-Stock Only' });
+  }
+  if (resolvedParams.maxPrice) {
+    activeFilters.push({
+      key: 'maxPrice',
+      label: 'Max Price',
+      value: `$${resolvedParams.maxPrice}`,
+    });
+  }
+
+  const { data: products, meta } = productsRes;
+
   return (
-    <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-      {/* Page Header */}
-      <div className="border-b border-slate-200 pb-5">
-        <h1 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
-          Tyres Catalogue
-        </h1>
-        <p className="mt-1 text-sm text-slate-500">
-          Commercial & passenger radial tyres available as Single, Pair, or Full Axle Set (4).
-        </p>
-      </div>
+    <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8 space-y-6">
+      {/* Breadcrumb */}
+      <Breadcrumb>
+        <BreadcrumbList>
+          <BreadcrumbItem>
+            <BreadcrumbLink asChild>
+              <Link href="/">Home</Link>
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbPage>Tyres</BreadcrumbPage>
+          </BreadcrumbItem>
+        </BreadcrumbList>
+      </Breadcrumb>
 
-      <div className="mt-8 grid grid-cols-1 gap-8 lg:grid-cols-4">
-        {/* Filter Sidebar (Static Options) */}
-        <aside className="space-y-6 lg:col-span-1">
-          <div className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
-            <div className="flex items-center justify-between border-b border-slate-200 pb-3">
-              <div className="flex items-center gap-2">
-                <SlidersHorizontal className="h-4 w-4 text-slate-500" />
-                <h2 className="text-sm font-semibold text-slate-900">Dimension Filters</h2>
-              </div>
-              <button type="button" className="text-xs text-blue-700 hover:underline">
-                Reset
-              </button>
+      {/* Header Banner */}
+      <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-xs">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div>
+            <div className="flex items-center gap-2">
+              <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-50 text-blue-700">
+                <Disc className="h-4 w-4" />
+              </span>
+              <h1 className="text-2xl font-bold tracking-tight text-slate-900">
+                Commercial & Passenger Tyres
+              </h1>
             </div>
-
-            <div className="mt-4 space-y-4">
-              {/* Width Select */}
-              <div className="space-y-1.5">
-                <label className="text-xs font-medium text-slate-700">Tyre Width (mm)</label>
-                <Select defaultValue="all">
-                  <SelectTrigger>
-                    <SelectValue placeholder="All Widths" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All Widths</SelectItem>
-                    <SelectItem value="195">195 mm</SelectItem>
-                    <SelectItem value="205">205 mm</SelectItem>
-                    <SelectItem value="215">215 mm</SelectItem>
-                    <SelectItem value="225">225 mm</SelectItem>
-                    <SelectItem value="245">245 mm</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              {/* Aspect Ratio Select */}
-              <div className="space-y-1.5">
-                <label className="text-xs font-medium text-slate-700">Aspect Ratio (%)</label>
-                <Select defaultValue="all">
-                  <SelectTrigger>
-                    <SelectValue placeholder="All Aspect Ratios" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All Aspect Ratios</SelectItem>
-                    <SelectItem value="40">40</SelectItem>
-                    <SelectItem value="45">45</SelectItem>
-                    <SelectItem value="50">50</SelectItem>
-                    <SelectItem value="55">55</SelectItem>
-                    <SelectItem value="65">65</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              {/* Rim Diameter Select */}
-              <div className="space-y-1.5">
-                <label className="text-xs font-medium text-slate-700">Rim Diameter (inches)</label>
-                <Select defaultValue="all">
-                  <SelectTrigger>
-                    <SelectValue placeholder="All Rim Sizes" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All Rim Sizes</SelectItem>
-                    <SelectItem value="15">15&quot;</SelectItem>
-                    <SelectItem value="16">16&quot;</SelectItem>
-                    <SelectItem value="17">17&quot;</SelectItem>
-                    <SelectItem value="18">18&quot;</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              {/* Season Select */}
-              <div className="space-y-1.5">
-                <label className="text-xs font-medium text-slate-700">Application / Season</label>
-                <Select defaultValue="all">
-                  <SelectTrigger>
-                    <SelectValue placeholder="All Applications" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All Applications</SelectItem>
-                    <SelectItem value="summer">Summer Performance</SelectItem>
-                    <SelectItem value="allseason">All-Season Commercial</SelectItem>
-                    <SelectItem value="touring">Touring Long-Wear</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-          </div>
-
-          <div className="rounded-lg border border-blue-200 bg-blue-50/50 p-4 text-xs text-blue-900">
-            <p className="font-semibold">Direct Multiplier Pricing</p>
-            <p className="mt-1 text-slate-600">
-              Select single tyre, pair (2x), or full set (4x) directly on the product card or detail
-              page.
+            <p className="mt-1 text-xs text-slate-500 max-w-2xl">
+              Direct importer stock from leading manufacturers. Available as singles, axle pairs
+              (2), or full vehicle sets (4) with trade savings. Drive-in fitting & balancing
+              available at our Prestons yard for $25/corner.
             </p>
           </div>
-        </aside>
+
+          <div className="text-right">
+            <span className="text-sm font-semibold text-slate-900">
+              {meta.total} {meta.total === 1 ? 'Product' : 'Products'} Found
+            </span>
+            <div className="text-[11px] text-slate-400">
+              Page {meta.page} of {meta.totalPages}
+            </div>
+          </div>
+        </div>
+
+        {/* Selected Filter Chips */}
+        {activeFilters.length > 0 && (
+          <div className="mt-4 pt-4 border-t border-slate-100">
+            <SelectedFilterChips filters={activeFilters} />
+          </div>
+        )}
+      </div>
+
+      {/* Main Content Layout: Sidebar + Product Grid */}
+      <div className="flex flex-col lg:flex-row gap-8 items-start">
+        {/* Tyre Filter Sidebar / Drawer */}
+        <TyreFilters meta={filterMeta} />
 
         {/* Product Grid Area */}
-        <section className="space-y-6 lg:col-span-3">
-          <div className="flex items-center justify-between text-xs text-slate-500">
-            <span>Showing 6 verified tyres (DEMO DATA)</span>
-            <span>Sorted by Popularity</span>
+        <div className="flex-1 w-full space-y-6">
+          {/* Top Bar: Sort & Result Count */}
+          <div className="flex items-center justify-between rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-xs text-slate-600 shadow-xs">
+            <span>
+              Showing <span className="font-semibold text-slate-900">{products.length}</span> of{' '}
+              <span className="font-semibold text-slate-900">{meta.total}</span> items
+            </span>
+
+            {/* Sort Selector Client Component */}
+            <TyreSortSelector currentSort={resolvedParams.sortBy || 'createdAt'} />
           </div>
 
-          {/* DEMO DATA */}
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {demoTyres.map((tyre) => (
-              <Card key={tyre.id} className="flex flex-col justify-between overflow-hidden">
-                <div>
-                  {/* Image Placeholder */}
-                  <div className="relative flex aspect-video w-full items-center justify-center bg-slate-100 text-slate-400 border-b border-slate-100">
-                    <Disc className="h-10 w-10 text-slate-300" />
-                    <span className="absolute bottom-2 right-2 rounded bg-slate-200 px-1.5 py-0.5 text-[10px] font-mono text-slate-600">
-                      R{tyre.rim}
-                    </span>
-                  </div>
+          {/* Product Cards or Empty State */}
+          {products.length > 0 ? (
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3">
+              {products.map((product) => (
+                <ProductCard key={product.id} product={product} />
+              ))}
+            </div>
+          ) : (
+            <div className="rounded-xl border border-dashed border-slate-300 bg-white p-12 text-center">
+              <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-slate-100 text-slate-400">
+                <Search className="h-6 w-6" />
+              </div>
+              <h3 className="mt-4 text-base font-semibold text-slate-900">
+                No tyres found matching your filter criteria
+              </h3>
+              <p className="mt-1 text-xs text-slate-500 max-w-sm mx-auto">
+                Try widening your dimension parameters or clearing brand and price filters to view
+                more stock.
+              </p>
+              <div className="mt-6">
+                <Button asChild variant="outline" size="sm" className="gap-1.5 text-xs">
+                  <Link href="/tyres">
+                    <RotateCcw className="h-3.5 w-3.5" /> Reset All Filters
+                  </Link>
+                </Button>
+              </div>
+            </div>
+          )}
 
-                  <CardHeader className="p-4 pb-2">
-                    <div className="flex items-center justify-between gap-1">
-                      <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
-                        {tyre.brand}
-                      </span>
-                      <Badge variant="success" className="text-[10px] px-2 py-0">
-                        {tyre.fitmentBadge}
-                      </Badge>
-                    </div>
-                    <CardTitle className="text-base leading-snug">
-                      <Link
-                        href={`/tyres/${tyre.slug}`}
-                        className="hover:text-blue-700 transition-colors"
-                      >
-                        {tyre.model}
-                      </Link>
-                    </CardTitle>
-                    <p className="font-mono text-xs font-semibold text-blue-800">{tyre.spec}</p>
-                  </CardHeader>
-
-                  <CardContent className="p-4 pt-1 space-y-3">
-                    {/* Sale Unit Options Pills */}
-                    <div className="space-y-1">
-                      <span className="text-[11px] text-slate-500 font-medium">
-                        Sale Unit Multipliers:
-                      </span>
-                      <div className="grid grid-cols-3 gap-1 text-[11px] text-center font-medium">
-                        <div className="rounded border border-blue-700 bg-blue-50 py-1 text-blue-700">
-                          Single
-                        </div>
-                        <div className="rounded border border-slate-200 bg-slate-50 py-1 text-slate-600">
-                          Pair (x2)
-                        </div>
-                        <div className="rounded border border-slate-200 bg-slate-50 py-1 text-slate-600">
-                          Set (x4)
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="pt-1">
-                      <span className="text-xs text-slate-500">From</span>
-                      <div className="text-xl font-bold text-slate-900">
-                        ${tyre.priceSingle.toFixed(2)}{' '}
-                        <span className="text-xs font-normal text-slate-500">/ single</span>
-                      </div>
-                    </div>
-                  </CardContent>
-                </div>
-
-                <CardFooter className="p-4 pt-0">
-                  <Button type="button" className="w-full gap-2 text-xs" onClick={() => {}}>
-                    <ShoppingCart className="h-3.5 w-3.5" />
-                    <span>Add to Cart</span>
-                  </Button>
-                </CardFooter>
-              </Card>
-            ))}
-          </div>
-
-          {/* Pagination */}
-          <div className="pt-6 border-t border-slate-200">
-            <Pagination currentPage={1} totalPages={3} onPageChange={() => {}} />
-          </div>
-        </section>
+          {/* Server-Side Pagination */}
+          {meta.totalPages > 1 && (
+            <div className="pt-4 border-t border-slate-200">
+              <TyrePagination currentPage={meta.page} totalPages={meta.totalPages} />
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

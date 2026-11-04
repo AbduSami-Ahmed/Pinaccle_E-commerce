@@ -72,19 +72,23 @@ export function TyrePurchaseCard({ basePrice }: TyrePurchaseCardProps) {
 
       {/* Add to cart button */}
       <div className="space-y-2 pt-2">
-        <Button type="button" size="lg" className="w-full gap-2 text-sm font-semibold">
+        <Button
+          type="button"
+          size="lg"
+          className="w-full gap-2 text-sm font-semibold bg-blue-700 hover:bg-blue-800 text-white"
+        >
           <ShoppingCart className="h-4 w-4" />
           <span>Add {unitConfigs[selectedUnit].label} to Cart</span>
         </Button>
         <p className="text-center text-[11px] text-slate-500">
-          Non-functional demo action &bull; Stock allocated from Depot Central
+          Free collection from Prestons NSW trade counter or calculated freight at checkout
         </p>
       </div>
 
-      {/* Reassurance */}
+      {/* Workshop Guarantee */}
       <div className="border-t border-slate-100 pt-4 flex items-center gap-2 text-xs text-slate-600">
         <ShieldCheck className="h-4 w-4 text-emerald-600 shrink-0" />
-        <span>Pinnacle Guarantee: Verified OEM specification compliance</span>
+        <span>Fresh rubber compounds with verified DOT manufacture date</span>
       </div>
     </div>
   );

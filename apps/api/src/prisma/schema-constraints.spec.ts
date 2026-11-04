@@ -1,10 +1,5 @@
 import { Decimal } from '@prisma/client/runtime/library';
-import {
-  ProductType,
-  OrderStatus,
-  SerializedItemStatus,
-  InventoryMovementType,
-} from '@prisma/client';
+import { ProductType, OrderStatus, SerializedItemStatus } from '@prisma/client';
 
 describe('Domain Model & Schema Constraints (Phase 4 Foundation)', () => {
   // -------------------------------------------------------------------------

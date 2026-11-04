@@ -1,68 +1,77 @@
 import * as React from 'react';
 import Link from 'next/link';
-import {
-  Search,
-  Disc,
-  ShieldAlert,
-  ShieldCheck,
-  CheckCircle2,
-  Truck,
-  ArrowRight,
-} from 'lucide-react';
+import { Disc, ShieldCheck, Truck, ArrowRight, Layers } from 'lucide-react';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
+import { GlobalSearchBar } from '@/components/storefront/global-search-bar';
+import { ProductCard } from '@/components/storefront/product-card';
+import { VehicleFinderWidget } from '@/components/storefront/vehicle-finder-widget';
+import { fetchStorefrontProducts } from '@/lib/storefront';
 
-export default function StorefrontHomePage() {
+export const metadata = {
+  title: 'Pinnacle Auto Spares & Tyres — Trade Tyres & Tested Seat Belts (Prestons NSW)',
+  description:
+    'Licensed Sydney auto dismantler and direct tyre importer. Supplying mechanics, panel shops, and trade fleets with verified tyres and AS/NZS tested replacement seat belts. Orders before 2pm dispatch same day.',
+  alternates: {
+    canonical: '/',
+  },
+};
+
+export default async function StorefrontHomePage() {
+  const [tyresRes, seatBeltsRes] = await Promise.all([
+    fetchStorefrontProducts({ categorySlug: 'tyres', pageSize: 3 }),
+    fetchStorefrontProducts({ categorySlug: 'seat-belts', pageSize: 3 }),
+  ]);
+
   return (
     <div className="space-y-16 pb-20">
       {/* Hero Section */}
-      <section className="border-b border-slate-200 bg-white py-16 sm:py-24">
+      <section className="border-b border-slate-200 bg-gradient-to-b from-slate-50 to-white py-14 sm:py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="max-w-3xl">
-            <Badge
-              variant="outline"
-              className="mb-4 text-xs font-semibold uppercase tracking-wider text-blue-700 border-blue-200 bg-blue-50/50"
-            >
-              Specialist Automotive Catalog
-            </Badge>
+            <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-blue-200 bg-blue-50/90 px-3 py-1 text-xs font-semibold text-blue-900 shadow-xs">
+              <span className="flex h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+              <span>Licensed Auto Recycler & Importer · Yard Pickup (Prestons NSW)</span>
+            </div>
             <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-5xl leading-tight">
-              Commercial-Grade Tyres & Verified Serialized Seat Belts
+              Direct Trade Tyres & Bench-Tested Seat Belts
             </h1>
             <p className="mt-4 text-base sm:text-lg text-slate-600 leading-relaxed">
-              Pinnacle connects automotive workshops, fleets, and individual vehicle owners with
-              guaranteed fitment components, direct stock levels, and safety-tested reconditioned
-              items.
+              We supply workshops, panel beaters, and fleet operators with verified fitment parts.
+              Every seat belt is individually multimeter-tested for pretensioner circuit resistance
+              (2.1–2.4Ω) and mechanical lock. Fresh tyre stock with verified DOT date codes.
             </p>
 
-            {/* Hero Search CTA */}
-            <div className="mt-8">
-              <div className="flex flex-col sm:flex-row gap-3 max-w-xl">
-                <div className="relative flex-1">
-                  <Search className="pointer-events-none absolute left-3.5 top-3 h-4 w-4 text-slate-400" />
-                  <input
-                    type="search"
-                    aria-label="Search parts"
-                    placeholder="Enter tyre specification or vehicle model..."
-                    className="w-full rounded-md border border-slate-300 bg-white px-3.5 py-2.5 pl-10 text-sm text-slate-900 placeholder:text-slate-400 focus:border-blue-700 focus:outline-none focus:ring-1 focus:ring-blue-700"
-                  />
-                </div>
-                <Button type="button" className="h-10 px-6">
-                  Search Catalogue
-                </Button>
-              </div>
-              <div className="mt-3 flex flex-wrap items-center gap-2 text-xs text-slate-500">
-                <span className="font-medium">Popular:</span>
-                <Link href="/tyres" className="underline hover:text-blue-700">
-                  205/55 R16
+            {/* Global Search Bar */}
+            <div className="mt-8 max-w-2xl">
+              <GlobalSearchBar />
+
+              {/* Popular Search Shortcuts */}
+              <div className="mt-4 flex flex-wrap items-center gap-2 text-xs text-slate-500">
+                <span className="font-semibold text-slate-700">Popular Searches:</span>
+                <Link
+                  href="/tyres?sectionWidth=205&aspectRatio=55&rimDiameter=16"
+                  className="rounded-full bg-white px-2.5 py-1 border border-slate-200 text-slate-700 hover:text-blue-700 hover:border-blue-300 shadow-xs"
+                >
+                  205/55 R16 (Corolla / i30)
                 </Link>
-                <span>&bull;</span>
-                <Link href="/tyres" className="underline hover:text-blue-700">
-                  225/45 R17
+                <Link
+                  href="/tyres?sectionWidth=225&aspectRatio=45&rimDiameter=17"
+                  className="rounded-full bg-white px-2.5 py-1 border border-slate-200 text-slate-700 hover:text-blue-700 hover:border-blue-300 shadow-xs"
+                >
+                  225/45 R17 (Golf / Audi / 3-Series)
                 </Link>
-                <span>&bull;</span>
-                <Link href="/seat-belts" className="underline hover:text-blue-700">
-                  Ford Transit Front Belt
+                <Link
+                  href="/seat-belts?make=Ford&model=Transit+Custom"
+                  className="rounded-full bg-white px-2.5 py-1 border border-slate-200 text-slate-700 hover:text-blue-700 hover:border-blue-300 shadow-xs"
+                >
+                  Ford Transit Driver Belt
+                </Link>
+                <Link
+                  href="/seat-belts?make=Toyota&model=RAV4"
+                  className="rounded-full bg-white px-2.5 py-1 border border-slate-200 text-slate-700 hover:text-blue-700 hover:border-blue-300 shadow-xs"
+                >
+                  Toyota RAV4 Front Passenger
                 </Link>
               </div>
             </div>
@@ -70,43 +79,49 @@ export default function StorefrontHomePage() {
         </div>
       </section>
 
-      {/* Shop by Category Section */}
+      {/* Vehicle Fitment Finder Section */}
+      <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 -mt-8 relative z-10">
+        <VehicleFinderWidget />
+      </section>
+
+      {/* Core Departments */}
       <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-8">
           <div>
-            <h2 className="text-2xl font-bold tracking-tight text-slate-900">Shop by Category</h2>
+            <h2 className="text-2xl font-bold tracking-tight text-slate-900">
+              Warehouse Departments
+            </h2>
             <p className="mt-1 text-sm text-slate-500">
-              Select an automotive department to browse verified inventories.
+              Live warehouse inventory ready for immediate trade counter pickup or courier dispatch.
             </p>
           </div>
         </div>
 
-        {/* DEMO DATA */}
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
           {/* Category Card 1: Tyres */}
           <Link href="/tyres" className="group">
-            <Card className="h-full transition-shadow hover:shadow-md border-slate-200">
-              <CardHeader className="flex flex-row items-center gap-4">
-                <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-blue-50 text-blue-700 group-hover:bg-blue-600 group-hover:text-white transition-colors">
+            <Card className="h-full border-slate-200 transition-all duration-200 hover:border-blue-300 hover:shadow-md">
+              <CardHeader className="flex flex-row items-center gap-4 pb-3">
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-blue-50 text-blue-700 group-hover:bg-blue-600 group-hover:text-white transition-colors">
                   <Disc className="h-6 w-6" />
                 </div>
                 <div>
                   <CardTitle className="text-xl group-hover:text-blue-700 transition-colors">
-                    Tyres & Wheel Assemblies
+                    Commercial & Passenger Tyres
                   </CardTitle>
                   <CardDescription>
-                    Bulk inventory with flexible sale units (Single, Pair, Set of 4)
+                    Direct importer pricing · Available as Singles, Pairs (2), or Full Sets (4)
                   </CardDescription>
                 </div>
               </CardHeader>
-              <CardContent>
-                <p className="text-sm text-slate-600 leading-relaxed">
-                  Browse passenger, commercial, and performance tyre lines with full EU label
-                  ratings, load indexes, speed symbols, and fitment calculators.
+              <CardContent className="space-y-4 pt-1">
+                <p className="text-sm text-slate-600">
+                  Direct stock from Michelin, Continental, Goodyear, and Pirelli. Fresh DOT date
+                  codes, full factory tread, and E-mark approval. On-site fitting & balancing
+                  available for $25/corner at our Prestons bays.
                 </p>
-                <div className="mt-4 flex items-center text-xs font-semibold text-blue-700 group-hover:underline">
-                  <span>Explore Tyres</span>
-                  <ArrowRight className="ml-1.5 h-3.5 w-3.5" />
+                <div className="flex items-center gap-2 pt-2 border-t border-slate-100 text-xs font-semibold text-blue-700 group-hover:translate-x-1 transition-transform">
+                  Search Tyre Inventory <ArrowRight className="h-3.5 w-3.5" />
                 </div>
               </CardContent>
             </Card>
@@ -114,28 +129,28 @@ export default function StorefrontHomePage() {
 
           {/* Category Card 2: Seat Belts */}
           <Link href="/seat-belts" className="group">
-            <Card className="h-full transition-shadow hover:shadow-md border-slate-200">
-              <CardHeader className="flex flex-row items-center gap-4">
-                <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-blue-50 text-blue-700 group-hover:bg-blue-600 group-hover:text-white transition-colors">
-                  <ShieldAlert className="h-6 w-6" />
+            <Card className="h-full border-slate-200 transition-all duration-200 hover:border-amber-300 hover:shadow-md">
+              <CardHeader className="flex flex-row items-center gap-4 pb-3">
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-amber-50 text-amber-700 group-hover:bg-amber-600 group-hover:text-white transition-colors">
+                  <ShieldCheck className="h-6 w-6" />
                 </div>
                 <div>
-                  <CardTitle className="text-xl group-hover:text-blue-700 transition-colors">
-                    Seat Belts & Restraints
+                  <CardTitle className="text-xl group-hover:text-amber-700 transition-colors">
+                    Tested Seat Belts & Restraints
                   </CardTitle>
                   <CardDescription>
-                    Serialized items with documented test records and condition grades
+                    Individually serialized safety assemblies · Bench-tested & compliance-checked
                   </CardDescription>
                 </div>
               </CardHeader>
-              <CardContent>
-                <p className="text-sm text-slate-600 leading-relaxed">
-                  Every pre-tensioner and retractor assembly is bench-tested, serial-tracked, and
-                  photographed with Grade A or Grade B quality certification.
+              <CardContent className="space-y-4 pt-1">
+                <p className="text-sm text-slate-600">
+                  Dismantled from low-km donor vehicles. Every retractor and pretensioner undergoes
+                  a pyrotechnic circuit resistance test (2.1–2.4Ω) and mechanical lock check. Actual
+                  inspection photos and donor VIN recorded.
                 </p>
-                <div className="mt-4 flex items-center text-xs font-semibold text-blue-700 group-hover:underline">
-                  <span>Explore Seat Belts</span>
-                  <ArrowRight className="ml-1.5 h-3.5 w-3.5" />
+                <div className="flex items-center gap-2 pt-2 border-t border-slate-100 text-xs font-semibold text-amber-700 group-hover:translate-x-1 transition-transform">
+                  Search Tested Belts <ArrowRight className="h-3.5 w-3.5" />
                 </div>
               </CardContent>
             </Card>
@@ -143,51 +158,100 @@ export default function StorefrontHomePage() {
         </div>
       </section>
 
-      {/* Why Pinnacle Section */}
+      {/* Featured Tyres Showcase */}
       <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="rounded-xl border border-slate-200 bg-white p-8 sm:p-12 shadow-sm">
-          <div className="max-w-2xl">
-            <h2 className="text-2xl font-bold tracking-tight text-slate-900">
-              Why Workshops & Fleets Choose Pinnacle
+        <div className="flex items-center justify-between mb-6">
+          <div>
+            <h2 className="text-xl font-bold tracking-tight text-slate-900">
+              Commercial & Fleet Tyres
             </h2>
-            <p className="mt-2 text-sm text-slate-600">
-              Built specifically for mechanical trade fitters, fleet managers, and private
-              automotive enthusiasts.
+            <p className="text-xs text-slate-500">
+              In-stock in our Sydney depot · Single, pair, or set volume pricing
             </p>
           </div>
+          <Button asChild variant="outline" size="sm" className="gap-1 text-xs">
+            <Link href="/tyres">
+              View All Tyres <ArrowRight className="h-3.5 w-3.5" />
+            </Link>
+          </Button>
+        </div>
 
-          <div className="mt-8 grid grid-cols-1 gap-8 md:grid-cols-3">
-            <div className="flex flex-col space-y-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-emerald-50 text-emerald-700 border border-emerald-200">
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {tyresRes.data.map((product) => (
+            <ProductCard key={product.id} product={product} />
+          ))}
+        </div>
+      </section>
+
+      {/* Featured Serialized Seat Belts Showcase */}
+      <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between mb-6">
+          <div>
+            <h2 className="text-xl font-bold tracking-tight text-slate-900">
+              Bench-Tested Seat Belts (In-Stock)
+            </h2>
+            <p className="text-xs text-slate-500">
+              Barcoded safety assemblies with resistance test & donor VIN records
+            </p>
+          </div>
+          <Button asChild variant="outline" size="sm" className="gap-1 text-xs">
+            <Link href="/seat-belts">
+              View All Seat Belts <ArrowRight className="h-3.5 w-3.5" />
+            </Link>
+          </Button>
+        </div>
+
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {seatBeltsRes.data.map((product) => (
+            <ProductCard key={product.id} product={product} />
+          ))}
+        </div>
+      </section>
+
+      {/* Trade Principles & Workshop Standards Strip */}
+      <section className="border-y border-slate-200 bg-slate-50 py-12">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
+            <div className="flex items-start gap-4">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-emerald-100 text-emerald-800">
                 <ShieldCheck className="h-5 w-5" />
               </div>
-              <h3 className="font-semibold text-slate-900">Verified Fitment</h3>
-              <p className="text-xs leading-relaxed text-slate-600">
-                Zero guesswork: tyre dimensions, load requirements, speed ratings, and seat belt
-                vehicle chassis codes are verified against OEM technical sheets.
-              </p>
-            </div>
-
-            <div className="flex flex-col space-y-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-50 text-blue-700 border border-blue-200">
-                <CheckCircle2 className="h-5 w-5" />
+              <div>
+                <h3 className="text-sm font-bold text-slate-900">AS/NZS 2596 Restraint Testing</h3>
+                <p className="mt-1 text-xs text-slate-600 leading-relaxed">
+                  Every seat belt retractor and pretensioner squib is bench-tested with digital
+                  multimeter (2.1–2.4Ω) and tension-checked before barcoding. No untested safety
+                  parts leave our warehouse.
+                </p>
               </div>
-              <h3 className="font-semibold text-slate-900">Quality Tested</h3>
-              <p className="text-xs leading-relaxed text-slate-600">
-                All serialized safety components undergo retractor lock tests, web inspect checks,
-                and electrical resistance diagnostics before listing.
-              </p>
             </div>
 
-            <div className="flex flex-col space-y-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-amber-50 text-amber-700 border border-amber-200">
+            <div className="flex items-start gap-4">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-blue-100 text-blue-800">
+                <Layers className="h-5 w-5" />
+              </div>
+              <div>
+                <h3 className="text-sm font-bold text-slate-900">Actual Photos & Donor VIN</h3>
+                <p className="mt-1 text-xs text-slate-600 leading-relaxed">
+                  The photos you see are of the exact physical part on our shelf, showing OEM
+                  stamping tags, webbing condition, and donor vehicle details.
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-start gap-4">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-amber-100 text-amber-800">
                 <Truck className="h-5 w-5" />
               </div>
-              <h3 className="font-semibold text-slate-900">Fast Dispatch</h3>
-              <p className="text-xs leading-relaxed text-slate-600">
-                All listed products reflect physical warehouse pallet stock or secure serialized
-                racking ready for immediate carrier dispatch.
-              </p>
+              <div>
+                <h3 className="text-sm font-bold text-slate-900">
+                  2 PM Same-Day Dispatch & Pickup
+                </h3>
+                <p className="mt-1 text-xs text-slate-600 leading-relaxed">
+                  Orders placed by 2:00 PM AEST dispatch same day via StarTrack or TNT express.
+                  30-minute click & collect available from our Prestons trade counter.
+                </p>
+              </div>
             </div>
           </div>
         </div>

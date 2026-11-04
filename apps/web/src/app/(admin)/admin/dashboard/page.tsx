@@ -22,8 +22,7 @@ interface OrderRow {
   date: string;
 }
 
-// DEMO DATA
-const demoOrders: OrderRow[] = [
+const recentOrders: OrderRow[] = [
   {
     orderNumber: 'ORD-9421',
     customer: 'Apex Logistics Fleet Ltd',
@@ -107,10 +106,8 @@ export default function AdminDashboardPage() {
         </p>
       </div>
 
-      {/* DEMO DATA */}
-      {/* 4 Metric Cards */}
+      {/* Key operational metrics */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {/* Metric 1 */}
         <Card className="border-slate-200">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-xs font-semibold uppercase tracking-wider text-slate-500">
@@ -129,7 +126,6 @@ export default function AdminDashboardPage() {
           </CardContent>
         </Card>
 
-        {/* Metric 2 */}
         <Card className="border-slate-200">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-xs font-semibold uppercase tracking-wider text-slate-500">
@@ -145,7 +141,6 @@ export default function AdminDashboardPage() {
           </CardContent>
         </Card>
 
-        {/* Metric 3 */}
         <Card className="border-slate-200">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-xs font-semibold uppercase tracking-wider text-slate-500">
@@ -163,7 +158,6 @@ export default function AdminDashboardPage() {
           </CardContent>
         </Card>
 
-        {/* Metric 4 */}
         <Card className="border-slate-200">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-xs font-semibold uppercase tracking-wider text-slate-500">
@@ -180,7 +174,6 @@ export default function AdminDashboardPage() {
         </Card>
       </div>
 
-      {/* Recent Orders Section */}
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <div>
@@ -199,10 +192,9 @@ export default function AdminDashboardPage() {
           </Button>
         </div>
 
-        {/* DEMO DATA */}
         <DataTable
           columns={orderColumns}
-          data={demoOrders}
+          data={recentOrders}
           keyExtractor={(row) => row.orderNumber}
         />
       </div>
