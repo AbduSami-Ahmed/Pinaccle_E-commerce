@@ -9,6 +9,10 @@ import { StorageModule } from './storage/storage.module';
 import { CatalogModule } from './catalog/catalog.module';
 import { InventoryModule } from './inventory/inventory.module';
 import { FitmentModule } from './fitment/fitment.module';
+import { CustomersModule } from './customers/customers.module';
+import { CartModule } from './cart/cart.module';
+import { PaymentsModule } from './payments/payments.module';
+import { CheckoutModule } from './checkout/checkout.module';
 import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 
 @Module({
@@ -28,6 +32,10 @@ import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
     CatalogModule,
     InventoryModule,
     FitmentModule,
+    CustomersModule,
+    CartModule,
+    PaymentsModule,
+    CheckoutModule,
   ],
   controllers: [],
   providers: [

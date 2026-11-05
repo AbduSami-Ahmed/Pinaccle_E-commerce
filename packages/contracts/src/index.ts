@@ -782,3 +782,277 @@ export interface FitmentSearchQuery {
   page?: number;
   pageSize?: number;
 }
+
+// ---------------------------------------------------------------------------
+// Customer Account & Profile Contracts (Phase 10)
+// ---------------------------------------------------------------------------
+
+export type AccountType = 'RETAIL' | 'TRADE' | 'WHOLESALE';
+
+export interface CustomerProfileDto {
+  id: string;
+  userId: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  phone?: string | null;
+  accountType: AccountType;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+  defaultAddressId?: string | null;
+}
+
+export interface UpdateCustomerProfileDto {
+  firstName?: string;
+  lastName?: string;
+  phone?: string;
+}
+
+export interface CustomerAddressDto {
+  id: string;
+  customerId: string;
+  label?: string | null;
+  line1: string;
+  line2?: string | null;
+  city: string;
+  state: string;
+  postalCode: string;
+  country: string;
+  isDefault: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CreateCustomerAddressDto {
+  label?: string;
+  line1: string;
+  line2?: string;
+  city: string;
+  state: string;
+  postalCode: string;
+  country?: string;
+  isDefault?: boolean;
+}
+
+export interface UpdateCustomerAddressDto {
+  label?: string;
+  line1?: string;
+  line2?: string;
+  city?: string;
+  state?: string;
+  postalCode?: string;
+  country?: string;
+  isDefault?: boolean;
+}
+
+// ---------------------------------------------------------------------------
+// Cart Contracts (Phase 10)
+// ---------------------------------------------------------------------------
+
+export interface CartItemDto {
+  id: string;
+  cartId: string;
+  productId: string;
+  productTitle: string;
+  productSlug: string;
+  productSku: string;
+  productBrand: string;
+  categorySlug: string;
+  primaryImageUrl?: string | null;
+  saleUnitConfigId: string;
+  saleUnitName: string;
+  saleUnitMultiplier: number;
+  quantity: number;
+  totalPhysicalUnits: number;
+  unitPrice: number;
+  lineTotal: number;
+  isAvailable: boolean;
+  maxAvailableQuantity: number;
+  stockAvailabilityMessage?: string;
+  serializedItemId?: string | null;
+  serializedStockBarcode?: string | null;
+  isIndividuallyTracked: boolean;
+}
+
+export interface CartTotalsDto {
+  subtotal: number;
+  taxIncluded: number;
+  shippingEstimate: number;
+  shippingMethod: 'CLICK_AND_COLLECT' | 'EXPRESS_COURIER';
+  total: number;
+  currency: string;
+}
+
+export interface CartDto {
+  id: string;
+  sessionToken: string;
+  customerId?: string | null;
+  currency: string;
+  items: CartItemDto[];
+  totals: CartTotalsDto;
+  totalPacksCount: number;
+  totalPhysicalUnitsCount: number;
+  hasUnavailableItems: boolean;
+  updatedAt: string;
+}
+
+export interface AddToCartDto {
+  productId: string;
+  saleUnitConfigId: string;
+  quantity?: number;
+  serializedItemId?: string;
+}
+
+export interface UpdateCartItemQuantityDto {
+  quantity: number;
+}
+
+export interface MergeCartDto {
+  guestSessionToken: string;
+}
+
+// ---------------------------------------------------------------------------
+// Checkout & Orders Contracts (Phase 11)
+// ---------------------------------------------------------------------------
+
+export type ShippingMethod = 'CLICK_AND_COLLECT' | 'STANDARD_COURIER' | 'EXPRESS_COURIER';
+
+export interface OrderAddressSnapshot {
+  firstName: string;
+  lastName: string;
+  company?: string;
+  line1: string;
+  line2?: string;
+  city: string;
+  state: string;
+  postalCode: string;
+  country: string;
+  phone: string;
+  deliveryNotes?: string;
+}
+
+export interface CheckoutValidationRequestDto {
+  shippingMethod: ShippingMethod;
+  shippingAddress?: Partial<OrderAddressSnapshot>;
+}
+
+export interface CheckoutValidationItemDto {
+  productId: string;
+  productTitle: string;
+  sku: string;
+  saleUnitName: string;
+  quantity: number;
+  unitPrice: number;
+  lineTotal: number;
+  available: boolean;
+  message?: string;
+}
+
+export interface CheckoutTotalsDto {
+  subtotal: number;
+  taxAmount: number;
+  shippingFee: number;
+  discountAmount: number;
+  totalAmount: number;
+  currency: string;
+  taxRatePercent: number;
+  isTaxInclusive: boolean;
+}
+
+export interface CheckoutValidationResponseDto {
+  isValid: boolean;
+  totals: CheckoutTotalsDto;
+  items: CheckoutValidationItemDto[];
+  shippingMethod: ShippingMethod;
+  errors?: string[];
+}
+
+export interface InitiateCheckoutOrderDto {
+  customerEmail: string;
+  customerPhone: string;
+  customerFirstName: string;
+  customerLastName: string;
+  shippingMethod: ShippingMethod;
+  shippingAddress: OrderAddressSnapshot;
+  billingAddress?: OrderAddressSnapshot;
+  notes?: string;
+}
+
+export interface OrderItemSnapshotDto {
+  id: string;
+  productId: string | null;
+  skuSnapshot: string;
+  titleSnapshot: string;
+  saleUnitCodeSnapshot: string;
+  saleUnitNameSnapshot: string;
+  baseQuantityMultiplierSnapshot: number;
+  quantity: number;
+  baseUnitsConsumed: number;
+  unitPrice: number;
+  discountAmount: number;
+  taxAmount: number;
+  totalPrice: number;
+  serializedItemId?: string | null;
+}
+
+export interface OrderDetailsDto {
+  id: string;
+  orderNumber: string;
+  customerId: string | null;
+  customerEmail: string;
+  customerPhone: string | null;
+  orderStatus:
+    'PENDING_PAYMENT' | 'PAID' | 'PROCESSING' | 'SHIPPED' | 'DELIVERED' | 'CANCELLED' | 'REFUNDED';
+  paymentStatus: 'UNPAID' | 'AUTHORIZED' | 'PAID' | 'PARTIALLY_REFUNDED' | 'REFUNDED' | 'FAILED';
+  fulfillmentStatus: 'UNFULFILLED' | 'PARTIALLY_FULFILLED' | 'FULFILLED';
+  subtotal: number;
+  discountAmount: number;
+  shippingFee: number;
+  taxAmount: number;
+  totalAmount: number;
+  currency: string;
+  shippingMethod: ShippingMethod;
+  shippingAddress: OrderAddressSnapshot;
+  billingAddress: OrderAddressSnapshot;
+  notes?: string | null;
+  items: OrderItemSnapshotDto[];
+  reservationExpiresAt?: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+// ---------------------------------------------------------------------------
+// Payment Contracts (Phase 11)
+// ---------------------------------------------------------------------------
+
+export type PaymentGatewayProvider = 'STRIPE' | 'MOCK' | 'PAYPAL' | 'MANUAL';
+
+export interface CreatePaymentIntentDto {
+  orderId: string;
+  provider?: PaymentGatewayProvider;
+}
+
+export interface PaymentSessionResponseDto {
+  orderId: string;
+  orderNumber: string;
+  provider: PaymentGatewayProvider;
+  clientSecret?: string;
+  transactionReference: string;
+  amount: number;
+  currency: string;
+  status: 'PENDING' | 'SUCCESS' | 'FAILED' | 'REFUNDED';
+  reservationExpiresAt?: string;
+}
+
+export interface MockPaymentConfirmDto {
+  transactionReference: string;
+  simulateSuccess?: boolean;
+}
+
+export interface PaymentWebhookResultDto {
+  received: boolean;
+  duplicate?: boolean;
+  status: string;
+  orderNumber?: string;
+}

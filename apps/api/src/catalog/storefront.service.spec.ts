@@ -260,17 +260,17 @@ describe('StorefrontService', () => {
 
       expect(res.data).toHaveLength(2);
       // Bulk tyre: 20 on hand - 4 reserved = 16 sellable base units
-      expect(res.data[0].availability.sellableBaseUnits).toBe(16);
-      expect(res.data[0].availability.inStock).toBe(true);
-      expect(res.data[0].availability.isLowStock).toBe(false);
-      expect(res.data[0].condition).toBe('NEW_SURPLUS');
+      expect(res.data[0]!.availability.sellableBaseUnits).toBe(16);
+      expect(res.data[0]!.availability.inStock).toBe(true);
+      expect(res.data[0]!.availability.isLowStock).toBe(false);
+      expect(res.data[0]!.condition).toBe('NEW_SURPLUS');
 
       // Serialized seat belt: 1 available in stock
-      expect(res.data[1].availability.sellableBaseUnits).toBe(1);
-      expect(res.data[1].availability.inStock).toBe(true);
-      expect(res.data[1].availability.isLowStock).toBe(true); // <= 5 is low stock
-      expect(res.data[1].condition).toBe('GRADE_A_LIKE_NEW');
-      expect(res.data[1].stockNumber).toBe('SB-2024-0891');
+      expect(res.data[1]!.availability.sellableBaseUnits).toBe(1);
+      expect(res.data[1]!.availability.inStock).toBe(true);
+      expect(res.data[1]!.availability.isLowStock).toBe(true); // <= 5 is low stock
+      expect(res.data[1]!.condition).toBe('GRADE_A_LIKE_NEW');
+      expect(res.data[1]!.stockNumber).toBe('SB-2024-0891');
     });
 
     it('sorts by price asc and desc', async () => {
@@ -279,15 +279,15 @@ describe('StorefrontService', () => {
 
       const resAsc = await service.search({ sortBy: 'price_asc' });
       // Seat belt is 89.0, Tyre is 145.0
-      expect(resAsc.data[0].id).toBe('prod-sb-1');
-      expect(resAsc.data[1].id).toBe('prod-tyre-1');
+      expect(resAsc.data[0]!.id).toBe('prod-sb-1');
+      expect(resAsc.data[1]!.id).toBe('prod-tyre-1');
 
       prisma.product.findMany.mockResolvedValueOnce([mockProduct, mockSeatBelt]);
       prisma.product.count.mockResolvedValueOnce(2);
 
       const resDesc = await service.search({ sortBy: 'price_desc' });
-      expect(resDesc.data[0].id).toBe('prod-tyre-1');
-      expect(resDesc.data[1].id).toBe('prod-sb-1');
+      expect(resDesc.data[0]!.id).toBe('prod-tyre-1');
+      expect(resDesc.data[1]!.id).toBe('prod-sb-1');
     });
 
     it('computes correct pagination metadata', async () => {
@@ -391,9 +391,9 @@ describe('StorefrontService', () => {
       const makes = await service.getVehicleTaxonomy();
 
       expect(makes).toHaveLength(1);
-      expect(makes[0].name).toBe('Toyota');
-      expect(makes[0].models[0].name).toBe('RAV4');
-      expect(makes[0].models[0].yearStart).toBe(2018);
+      expect(makes[0]!.name).toBe('Toyota');
+      expect(makes[0]!.models[0]!.name).toBe('RAV4');
+      expect(makes[0]!.models[0]!.yearStart).toBe(2018);
     });
   });
 });

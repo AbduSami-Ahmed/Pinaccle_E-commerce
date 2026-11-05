@@ -453,7 +453,8 @@ export class InventoryService {
 
         const reservation = await tx.stockReservation.create({
           data: {
-            cartItemId: dto.cartItemId,
+            cartItemId: dto.cartItemId || null,
+            orderId: dto.orderId || null,
             serializedItemId: serialized.id,
             reservedQuantity: 1,
             expiresAt,
@@ -508,7 +509,8 @@ export class InventoryService {
 
       const reservation = await tx.stockReservation.create({
         data: {
-          cartItemId: dto.cartItemId,
+          cartItemId: dto.cartItemId || null,
+          orderId: dto.orderId || null,
           inventoryItemId: eligibleItem.id,
           reservedQuantity: baseUnitsToReserve,
           expiresAt,
@@ -690,6 +692,58 @@ export class InventoryService {
         message: `Reservation ${reservationId} committed to order ${orderId}`,
       };
     });
+  }
+
+  /**
+   * 7b. Sweep expired stock reservations (15-min soft reservation expiry).
+   * Automatically releases any ACTIVE reservations where expiresAt < now.
+   */
+  async sweepExpiredReservations(
+    operatorId?: string,
+  ): Promise<{ releasedCount: number; reservationIds: string[] }> {
+    const expiredReservations = await this.prisma.stockReservation.findMany({
+      where: {
+        status: 'ACTIVE',
+        expiresAt: { lt: new Date() },
+      },
+      select: { id: true, orderId: true },
+    });
+
+    const releasedIds: string[] = [];
+    const resolvedOperatorId = operatorId || '00000000-0000-0000-0000-000000000001';
+
+    for (const res of expiredReservations) {
+      try {
+        await this.releaseStockReservation(
+          res.id,
+          resolvedOperatorId,
+          'SOFT_RESERVATION_TIMEOUT_EXPIRED',
+        );
+        releasedIds.push(res.id);
+
+        if (res.orderId) {
+          const remainingActive = await this.prisma.stockReservation.count({
+            where: { orderId: res.orderId, status: 'ACTIVE' },
+          });
+          if (remainingActive === 0) {
+            await this.prisma.order.updateMany({
+              where: {
+                id: res.orderId,
+                orderStatus: 'PENDING_PAYMENT',
+              },
+              data: {
+                orderStatus: 'CANCELLED',
+                notes: 'Order auto-cancelled due to 15-minute reservation timeout.',
+              },
+            });
+          }
+        }
+      } catch {
+        // Skip individual failure and continue sweeping
+      }
+    }
+
+    return { releasedCount: releasedIds.length, reservationIds: releasedIds };
   }
 
   /**

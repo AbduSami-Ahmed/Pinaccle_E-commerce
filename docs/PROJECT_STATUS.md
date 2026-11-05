@@ -13,20 +13,21 @@ The initial product catalog focuses on two core categories:
 
 ## 2. Complete Phase Roadmap & Status Checklist
 
-| Phase        | Description                                                   | Deliverables                                                                                              |    Status     |
-| ------------ | ------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- | :-----------: |
-| **Phase 0**  | **Repository Audit & Architecture**                           | Complete audit, architecture specs, domain model, role-permission matrix, ADRs, open decisions.           | **COMPLETED** |
-| **Phase 1**  | **Monorepo Foundation & Workspace Setup**                     | Workspace setup (`apps/web`, `apps/api`, `packages/*`), strict TypeScript, Docker Compose, CI pipeline.   | **COMPLETED** |
-| **Phase 2**  | **Design System & Application Shells**                        | Design tokens, shadcn/ui components, storefront shell, admin shell, page templates, shared states.        | **COMPLETED** |
-| **Phase 3**  | **Authentication & RBAC Foundation**                          | User/Profile Prisma schema, JWT/OIDC validation, Permission & Ownership guards, security tests, ADR-0007. | **COMPLETED** |
-| **Phase 4**  | **Data Layer & Core Domain Models (Prisma)**                  | PostgreSQL schema for Tyres & Seat Belts, inventory movements, vehicle fitment matrix, seed data.         | **COMPLETED** |
-| **Phase 5**  | **Product Catalogue Module & Admin UI**                       | Catalog NestJS module, tyre/seat-belt specs, S3 object storage abstraction, admin product CRUD & filters. | **COMPLETED** |
-| **Phase 6**  | **Inventory Module (Ledger, Multipliers & Serialized Stock)** | Ledger-based stock movements, sale unit multipliers, serialized units, reservations, admin inventory UI.  | **COMPLETED** |
-| **Phase 7**  | **Storefront Catalogue, Search & Discovery**                  | Multi-faceted tyre & seat belt search, dynamic filter chips, PDPs, SEO, canonical URLs.                   | **COMPLETED** |
-| **Phase 8**  | **Vehicle Finder & Fitment Module**                           | Cascading vehicle finder, tyre dimension search, part # search, fitment confidence badges, admin matrix.  | **COMPLETED** |
+| Phase        | Description                                                   | Deliverables                                                                                                                                 |    Status     |
+| ------------ | ------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- | :-----------: |
+| **Phase 0**  | **Repository Audit & Architecture**                           | Complete audit, architecture specs, domain model, role-permission matrix, ADRs, open decisions.                                              | **COMPLETED** |
+| **Phase 1**  | **Monorepo Foundation & Workspace Setup**                     | Workspace setup (`apps/web`, `apps/api`, `packages/*`), strict TypeScript, Docker Compose, CI pipeline.                                      | **COMPLETED** |
+| **Phase 2**  | **Design System & Application Shells**                        | Design tokens, shadcn/ui components, storefront shell, admin shell, page templates, shared states.                                           | **COMPLETED** |
+| **Phase 3**  | **Authentication & RBAC Foundation**                          | User/Profile Prisma schema, JWT/OIDC validation, Permission & Ownership guards, security tests, ADR-0007.                                    | **COMPLETED** |
+| **Phase 4**  | **Data Layer & Core Domain Models (Prisma)**                  | PostgreSQL schema for Tyres & Seat Belts, inventory movements, vehicle fitment matrix, seed data.                                            | **COMPLETED** |
+| **Phase 5**  | **Product Catalogue Module & Admin UI**                       | Catalog NestJS module, tyre/seat-belt specs, S3 object storage abstraction, admin product CRUD & filters.                                    | **COMPLETED** |
+| **Phase 6**  | **Inventory Module (Ledger, Multipliers & Serialized Stock)** | Ledger-based stock movements, sale unit multipliers, serialized units, reservations, admin inventory UI.                                     | **COMPLETED** |
+| **Phase 7**  | **Storefront Catalogue, Search & Discovery**                  | Multi-faceted tyre & seat belt search, dynamic filter chips, PDPs, SEO, canonical URLs.                                                      | **COMPLETED** |
+| **Phase 8**  | **Vehicle Finder & Fitment Module**                           | Cascading vehicle finder, tyre dimension search, part # search, fitment confidence badges, admin matrix.                                     | **COMPLETED** |
 | **Phase 9**  | **Product Detail Experience (PDP)**                           | Accessible gallery, dynamic sale unit multipliers, stock-bounded quantity selector, donor VIN / inspection records, Australian trade polish. | **COMPLETED** |
-| **Phase 10** | **Cart, Checkout & Payment Integration**                      | Guest/user cart, 15-min soft reservation hold, Stripe payment adapter, idempotent webhook handler.        | Next / Ready  |
-| **Phase 11** | **Returns (RMA), Fulfillment & Launch Readiness**             | RMA submission & warehouse inspection disposition, shipment dispatch tracking, production hardening.      |    Pending    |
+| **Phase 10** | **Customer Account & Cart Workflow**                          | Customer self-service boundary (profile, addresses, sign out), guest/auth cart lifecycle, real-time stock/price recomputation, safe merge.   | **COMPLETED** |
+| **Phase 11** | **Checkout, Payment & Order Pipeline**                        | 15-min soft reservation hold, Stripe payment adapter, immutable order snapshot, idempotent webhook handler.                                  | Next / Ready  |
+| **Phase 12** | **Returns (RMA), Fulfillment & Launch Readiness**             | RMA submission & warehouse inspection disposition, shipment dispatch tracking, production hardening.                                         |    Pending    |
 
 ---
 
@@ -139,3 +140,21 @@ The following items (detailed in `docs/OPEN_DECISIONS.md` and `docs/ROLE_PERMISS
 3. **Shipping Rules & Pickup Locations**: Confirm initial shipping table rate structure and Click & Collect depot addresses.
 4. **Wholesale Cost Price Access**: Confirm whether Warehouse Managers can view unit cost prices or if it remains restricted to Super Admin / Business Admin.
 5. **Stock Adjustment & Refund Limits**: Confirm whether manual stock write-offs and customer refunds above a threshold (e.g. \$250) require dual-step managerial sign-off.
+
+---
+
+## 8. Milestone Execution Progress
+
+| Phase        | Module / Scope                            |  Status   | Verification & Artifacts                                                                                                                                                                                                                                       |
+| :----------- | :---------------------------------------- | :-------: | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Phase 1**  | Workspace & Tooling Foundation            | COMPLETED | Turborepo, pnpm workspaces, ESLint, Prettier, TypeScript strict mode                                                                                                                                                                                           |
+| **Phase 2**  | Architecture, Contracts & RBAC Definition | COMPLETED | Architectural decisions ADR 0001–0006, `@pinnacle/contracts` shared library                                                                                                                                                                                    |
+| **Phase 3**  | Backend Foundation, Auth & Security       | COMPLETED | NestJS modular monolith, JWT cookies/headers, atomic RBAC permissions, Swagger                                                                                                                                                                                 |
+| **Phase 4**  | Administration Dashboard & Layout         | COMPLETED | Next.js admin shell, responsive layout, navigation, role-aware guard                                                                                                                                                                                           |
+| **Phase 5**  | Product Catalogue Module                  | COMPLETED | CRUD, multi-image upload abstraction, validated tyre & seat belt specifications, admin filters                                                                                                                                                                 |
+| **Phase 6**  | Auditable Inventory Ledger                | COMPLETED | Ledger-based movements, stock balances, bulk quantity vs serialized items, pack multipliers                                                                                                                                                                    |
+| **Phase 7**  | Storefront Discovery & Search             | COMPLETED | Homepage, category landing pages, backend faceted filtering, responsive filter drawers                                                                                                                                                                         |
+| **Phase 8**  | Vehicle Finder & Fitment Matrix           | COMPLETED | Normalized taxonomy (Make/Model/Gen/Chassis), dependent dropdowns, confidence badges                                                                                                                                                                           |
+| **Phase 9**  | Product Detail Experience                 | COMPLETED | Multi-angle photo gallery, live sellable stock calculations, unit multiplier disclosures                                                                                                                                                                       |
+| **Phase 10** | Customer Account & Cart                   | COMPLETED | Customer profile/address management, ownership guards, real-time cart recalculations                                                                                                                                                                           |
+| **Phase 11** | Checkout Design & Implementation          | COMPLETED | Server-side cart revalidation, 15-min soft stock reservations, ATO statutory 10% GST, Click & Collect vs Courier freight, Payment Gateway Adapter (Stripe + Mock), idempotent webhook processing with replay protection, database-verified confirmation screen |

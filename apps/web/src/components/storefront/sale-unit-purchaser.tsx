@@ -11,9 +11,11 @@ import {
   PhoneCall,
   Sparkles,
 } from 'lucide-react';
+import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
+import { addToCart } from '@/lib/cart';
 
 export interface SaleUnitOption {
   code: string;
@@ -59,6 +61,7 @@ export function SaleUnitPurchaser({
   const [selectedUnitCode, setSelectedUnitCode] = React.useState<string>(initialCode);
   const [quantity, setQuantity] = React.useState<number>(1);
   const [addedToastMessage, setAddedToastMessage] = React.useState<string | null>(null);
+  const [addingToCart, setAddingToCart] = React.useState<boolean>(false);
 
   const activeUnit: SaleUnitOption =
     units.find((u) => u.code === selectedUnitCode) ?? units[0] ?? fallbackUnit;
@@ -105,11 +108,25 @@ export function SaleUnitPurchaser({
   const totalPrice = activeUnit.price * quantity;
   const totalBaseUnitsConsumed = quantity * activeUnit.multiplier;
 
-  const handleAddToCart = () => {
+  const handleAddToCart = async () => {
     if (isOutOfStock || quantity <= 0) return;
-    setAddedToastMessage(
-      `Staged ${quantity}x ${activeUnit.name} (${totalBaseUnitsConsumed} physical base units) for checkout. Order & Cart pipeline will connect in Phase 10.`,
-    );
+    setAddingToCart(true);
+    setAddedToastMessage(null);
+
+    try {
+      await addToCart({
+        productId: _productId,
+        saleUnitConfigId: activeUnit.code,
+        quantity,
+      });
+      setAddedToastMessage(
+        `Added ${quantity}x ${activeUnit.name} (${totalBaseUnitsConsumed} physical base units) to your parts cart.`,
+      );
+    } catch (err) {
+      alert(err instanceof Error ? err.message : 'Error adding to cart');
+    } finally {
+      setAddingToCart(false);
+    }
   };
 
   return (
@@ -292,11 +309,14 @@ export function SaleUnitPurchaser({
             type="button"
             size="lg"
             onClick={handleAddToCart}
-            className="w-full gap-2 text-sm font-semibold bg-blue-700 hover:bg-blue-800 text-white shadow-sm"
+            disabled={addingToCart}
+            className="w-full gap-2 text-sm font-semibold bg-blue-700 hover:bg-blue-800 text-white shadow-sm disabled:opacity-70"
           >
             <ShoppingCart className="h-4 w-4" />
             <span>
-              Add {quantity}x {activeUnit.name} to Cart — ${totalPrice.toFixed(2)}
+              {addingToCart
+                ? 'Adding to Cart...'
+                : `Add ${quantity}x ${activeUnit.name} to Cart — $${totalPrice.toFixed(2)}`}
             </span>
           </Button>
         </div>
@@ -337,9 +357,18 @@ export function SaleUnitPurchaser({
 
       {/* Confirmation Banner */}
       {addedToastMessage && (
-        <div className="rounded-lg border border-emerald-200 bg-emerald-50 p-3 text-xs text-emerald-900 flex items-start gap-2 animate-in fade-in-50 duration-200">
-          <Sparkles className="h-4 w-4 text-emerald-600 shrink-0 mt-0.5" />
-          <p className="leading-relaxed">{addedToastMessage}</p>
+        <div className="rounded-lg border border-emerald-200 bg-emerald-50 p-3.5 text-xs text-emerald-950 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2.5 animate-in fade-in-50 duration-200">
+          <div className="flex items-start gap-2">
+            <Sparkles className="h-4 w-4 text-emerald-600 shrink-0 mt-0.5" />
+            <p className="leading-relaxed">{addedToastMessage}</p>
+          </div>
+          <Button
+            asChild
+            size="sm"
+            className="bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold shrink-0 self-end sm:self-auto"
+          >
+            <Link href="/cart">View Cart & Checkout</Link>
+          </Button>
         </div>
       )}
     </div>

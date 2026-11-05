@@ -481,13 +481,13 @@ export class StorefrontService {
         id: f.id,
         make: make.name,
         model: model.name,
-        generation: gen.name,
+        generation: gen.generationName,
         yearRange: gen.yearStart ? `${gen.yearStart}–${gen.yearEnd ?? 'Current'}` : undefined,
         chassisCode: chassis.chassisCode,
         bodyType: chassis.bodyType ?? undefined,
         engineSpec: chassis.engineSpec ?? undefined,
         verificationStatus: f.verificationStatus,
-        isOemDirect: f.isOemDirect,
+        isOemDirect: f.verificationStatus === 'VERIFIED_OEM_DIRECT',
         fitmentNotes: f.fitmentNotes,
       };
     });

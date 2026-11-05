@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { BadRequestException, ConflictException, NotFoundException } from '@nestjs/common';
+import { BadRequestException, ConflictException } from '@nestjs/common';
 import { FitmentService } from './fitment.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { StorefrontService } from '../catalog/storefront.service';
@@ -145,22 +145,22 @@ describe('FitmentService', () => {
     it('returns normalized vehicle makes', async () => {
       const makes = await service.getMakes({});
       expect(makes).toHaveLength(1);
-      expect(makes[0].name).toBe('Toyota');
-      expect(makes[0].modelsCount).toBe(3);
+      expect(makes[0]!.name).toBe('Toyota');
+      expect(makes[0]!.modelsCount).toBe(3);
     });
 
     it('returns dependent models for a make', async () => {
       const models = await service.getModels({ make: 'toyota' });
       expect(models).toHaveLength(1);
-      expect(models[0].name).toBe('RAV4');
-      expect(models[0].yearsRange).toBe('2018–Current');
+      expect(models[0]!.name).toBe('RAV4');
+      expect(models[0]!.yearsRange).toBe('2018–Current');
     });
 
     it('returns years and generations for a model', async () => {
       const res = await service.getYears({ model: 'rav4' });
       expect(res.years).toContain(2018);
       expect(res.years).toContain(2024);
-      expect(res.generations[0].name).toBe('5th Gen (XA50)');
+      expect(res.generations[0]!.name).toBe('5th Gen (XA50)');
     });
 
     it('returns dependent variants for model and year', async () => {
@@ -180,7 +180,7 @@ describe('FitmentService', () => {
 
       const variants = await service.getVariants({ model: 'rav4', year: 2021 });
       expect(variants).toHaveLength(1);
-      expect(variants[0].chassisCode).toBe('AXAH54');
+      expect(variants[0]!.chassisCode).toBe('AXAH54');
     });
   });
 
@@ -192,11 +192,11 @@ describe('FitmentService', () => {
     it('returns verified OEM exact match with CONFIRMED_EXACT confidence', async () => {
       const res = await service.searchFitment({ make: 'toyota', model: 'rav4' });
       expect(res.data).toHaveLength(1);
-      expect(res.data[0].fitmentConfidence).toBe('CONFIRMED_EXACT');
-      expect(res.data[0].isOemDirect).toBe(true);
-      expect(res.data[0].verificationStatus).toBe('VERIFIED_OEM_DIRECT');
-      expect(res.data[0].matchedChassisCode).toBe('AXAH54');
-      expect(res.data[0].product.sku).toBe('SB-TOY-RAV4-FR');
+      expect(res.data[0]!.fitmentConfidence).toBe('CONFIRMED_EXACT');
+      expect(res.data[0]!.isOemDirect).toBe(true);
+      expect(res.data[0]!.verificationStatus).toBe('VERIFIED_OEM_DIRECT');
+      expect(res.data[0]!.matchedChassisCode).toBe('AXAH54');
+      expect(res.data[0]!.product.sku).toBe('SB-TOY-RAV4-FR');
     });
 
     it('returns universal fitment with UNIVERSAL_COMPATIBLE confidence', async () => {
@@ -205,8 +205,8 @@ describe('FitmentService', () => {
       ]);
 
       const res = await service.searchFitment({ make: 'toyota' });
-      expect(res.data[0].fitmentConfidence).toBe('UNIVERSAL_COMPATIBLE');
-      expect(res.data[0].isOemDirect).toBe(false);
+      expect(res.data[0]!.fitmentConfidence).toBe('UNIVERSAL_COMPATIBLE');
+      expect(res.data[0]!.isOemDirect).toBe(false);
     });
 
     it('returns partial match with PARTIAL_REQUIRES_CHECK confidence', async () => {
@@ -215,8 +215,8 @@ describe('FitmentService', () => {
       ]);
 
       const res = await service.searchFitment({ make: 'toyota' });
-      expect(res.data[0].fitmentConfidence).toBe('PARTIAL_REQUIRES_CHECK');
-      expect(res.data[0].isOemDirect).toBe(false);
+      expect(res.data[0]!.fitmentConfidence).toBe('PARTIAL_REQUIRES_CHECK');
+      expect(res.data[0]!.isOemDirect).toBe(false);
     });
 
     it('filters out non-exact matches when minConfidence is CONFIRMED_EXACT', async () => {

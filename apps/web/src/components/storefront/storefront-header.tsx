@@ -14,12 +14,20 @@ import {
   ShieldCheck,
   Disc,
 } from 'lucide-react';
+import { fetchCart } from '@/lib/cart';
 
 export function StorefrontHeader() {
   const router = useRouter();
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
   const [tyresDropdownOpen, setTyresDropdownOpen] = React.useState(false);
   const [navSearch, setNavSearch] = React.useState('');
+  const [cartCount, setCartCount] = React.useState<number>(0);
+
+  React.useEffect(() => {
+    fetchCart().then((c) => {
+      setCartCount(c.items.length);
+    });
+  }, []);
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -145,24 +153,26 @@ export function StorefrontHeader() {
             Staff Portal
           </Link>
 
-          <button
-            type="button"
-            aria-label="Account"
+          <Link
+            href="/account"
+            aria-label="Customer Account"
             className="rounded-full p-2 text-slate-700 hover:bg-slate-100 hover:text-slate-900"
           >
             <User className="h-5 w-5" />
-          </button>
+          </Link>
 
-          <button
-            type="button"
-            aria-label="Shopping Cart"
+          <Link
+            href="/cart"
+            aria-label="Parts Cart"
             className="relative rounded-full p-2 text-slate-700 hover:bg-slate-100 hover:text-slate-900"
           >
             <ShoppingCart className="h-5 w-5" />
-            <span className="absolute -top-0.5 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-blue-700 text-[10px] font-bold text-white">
-              2
-            </span>
-          </button>
+            {cartCount > 0 && (
+              <span className="absolute -top-0.5 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-blue-700 text-[10px] font-bold text-white">
+                {cartCount}
+              </span>
+            )}
+          </Link>
         </div>
       </div>
 
@@ -242,6 +252,25 @@ export function StorefrontHeader() {
                 className="block rounded-md px-3 py-2 text-sm font-medium text-slate-900 hover:bg-slate-100"
               >
                 Seat Belts (Serialized)
+              </Link>
+              <Link
+                href="/cart"
+                onClick={() => setMobileMenuOpen(false)}
+                className="flex items-center justify-between rounded-md px-3 py-2 text-sm font-medium text-slate-900 hover:bg-slate-100"
+              >
+                <span>Parts Cart</span>
+                {cartCount > 0 && (
+                  <span className="rounded-full bg-blue-700 px-2 py-0.5 text-xs text-white font-bold">
+                    {cartCount}
+                  </span>
+                )}
+              </Link>
+              <Link
+                href="/account"
+                onClick={() => setMobileMenuOpen(false)}
+                className="block rounded-md px-3 py-2 text-sm font-medium text-slate-900 hover:bg-slate-100"
+              >
+                Customer Account
               </Link>
               <div className="pt-4 border-t border-slate-200">
                 <Link
