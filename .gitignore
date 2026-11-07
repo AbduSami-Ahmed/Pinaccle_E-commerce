@@ -20,10 +20,14 @@ build/
 .env.production.local
 .env.*
 !.env.example
-apps/*/.env
-apps/*/.env.local
-apps/*/.env.*
-!apps/*/.env.example
+frontend/.env
+frontend/.env.local
+frontend/.env.*
+!frontend/.env.example
+backend/.env
+backend/.env.local
+backend/.env.*
+!backend/.env.example
 
 # Logs and diagnostic reports
 logs/

@@ -17,6 +17,7 @@ import {
   UserCheck,
   FileText,
   Wrench,
+  Cpu,
   X,
   ExternalLink,
   Car,
@@ -75,6 +76,7 @@ const navSections: NavSection[] = [
     title: 'System & Security',
     items: [
       { label: 'Store Settings', href: '/admin/settings', icon: Settings },
+      { label: 'Integrations', href: '/admin/integrations', icon: Cpu },
       { label: 'Staff & Roles', href: '/admin/staff', icon: UserCheck },
       { label: 'Audit Trail', href: '/admin/audit-log', icon: FileText },
     ],

@@ -1608,3 +1608,104 @@ export interface NotificationPageDto {
   limit: number;
   totalPages: number;
 }
+
+// ===========================================================================
+// Phase 15: External Integration Framework
+// ===========================================================================
+
+export type IntegrationCapability =
+  | 'INVENTORY_SYNC_INBOUND'
+  | 'INVENTORY_SYNC_OUTBOUND'
+  | 'CATALOG_PUBLISH'
+  | 'ORDERS_IMPORT'
+  | 'ORDERS_STATUS_UPDATE'
+  | 'VEHICLE_FITMENT_QUERY'
+  | 'WEBHOOK_INGESTION';
+
+export type IntegrationAccountStatusContract =
+  | 'CONNECTED'
+  | 'DISCONNECTED'
+  | 'SYNCING'
+  | 'ERROR';
+
+export type SyncJobStatusContract =
+  | 'PENDING'
+  | 'PROCESSING'
+  | 'COMPLETED'
+  | 'FAILED'
+  | 'DEAD_LETTER';
+
+export type SyncDirectionContract = 'INBOUND' | 'OUTBOUND';
+
+export interface IntegrationAccountDto {
+  id: string;
+  provider: string;
+  name: string;
+  environment: string;
+  status: IntegrationAccountStatusContract;
+  isActive: boolean;
+  capabilities: IntegrationCapability[];
+  settings: Record<string, unknown> | null;
+  hasConfiguredSecrets: boolean;
+  lastSyncAt: string | null;
+  lastError: string | null;
+  createdAt: string;
+}
+
+export interface ConfigureIntegrationSecretsDto {
+  credentials: Record<string, string>;
+}
+
+export interface UpdateIntegrationAccountDto {
+  name?: string;
+  environment?: string;
+  isActive?: boolean;
+  settings?: Record<string, unknown>;
+  capabilities?: IntegrationCapability[];
+}
+
+export interface IntegrationSyncJobDto {
+  id: string;
+  integrationAccountId: string;
+  provider: string;
+  direction: SyncDirectionContract;
+  jobType: string;
+  status: SyncJobStatusContract;
+  attempts: number;
+  maxAttempts: number;
+  correlationId: string;
+  idempotencyKey: string | null;
+  lastError: string | null;
+  nextRetryAt: string | null;
+  startedAt: string | null;
+  completedAt: string | null;
+  createdAt: string;
+}
+
+export interface ExternalIdMappingDto {
+  id: string;
+  provider: string;
+  entityType: 'PRODUCT' | 'LISTING' | 'CUSTOMER' | 'ORDER';
+  internalId: string;
+  externalId: string;
+  externalVersion: string | null;
+  syncHash: string | null;
+  lastSyncedAt: string;
+}
+
+export interface CreateExternalMappingDto {
+  provider: string;
+  entityType: 'PRODUCT' | 'LISTING' | 'CUSTOMER' | 'ORDER';
+  internalId: string;
+  externalId: string;
+  externalVersion?: string;
+  syncHash?: string;
+  metadata?: Record<string, unknown>;
+}
+
+export interface WebhookIngestionResultDto {
+  received: boolean;
+  status: 'PROCESSED' | 'DUPLICATE_IGNORED' | 'INVALID_SIGNATURE' | 'REPLAY_REJECTED' | 'FAILED';
+  correlationId: string;
+  message?: string;
+}

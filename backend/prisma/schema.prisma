@@ -917,8 +917,15 @@ model ReturnInspection {
 }
 
 // ===========================================================================
-// 12. Integration Accounts & Sync Events (Foundational)
+// 12. Integration Accounts, Sync Jobs & External ID Mappings
 // ===========================================================================
+
+enum IntegrationAccountStatus {
+  CONNECTED
+  DISCONNECTED
+  SYNCING
+  ERROR
+}
 
 enum IntegrationEventStatus {
   RECEIVED
@@ -928,17 +935,39 @@ enum IntegrationEventStatus {
   IGNORED
 }
 
+enum SyncDirection {
+  INBOUND
+  OUTBOUND
+}
+
+enum SyncJobStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+  DEAD_LETTER
+}
+
 model IntegrationAccount {
-  id          String   @id @default(uuid())
-  provider    String   // e.g. "STRIPE", "AUSPOST", "STARTRACK"
-  name        String   // e.g. "Primary Stripe Account"
-  environment String   @default("sandbox") // "sandbox" | "production"
-  isActive    Boolean  @default(true) @map("is_active")
-  settings    Json?    // Safe configuration only (endpoints, webhook IDs; NO API secrets)
-  createdAt   DateTime @default(now()) @map("created_at")
-  updatedAt   DateTime @updatedAt @map("updated_at")
+  id               String                   @id @default(uuid())
+  provider         String                   // e.g. "MOCK_MARKETPLACE", "TRADE_ME", "EBAY", "SHOPIFY", "CARJAM", "PARTSTRADER", "CAP_EZI"
+  name             String                   // e.g. "Trade Me NZ Sandbox"
+  environment      String                   @default("sandbox") // "sandbox" | "production"
+  status           IntegrationAccountStatus @default(DISCONNECTED)
+  isActive         Boolean                  @default(true) @map("is_active")
+  settings         Json?                    // Safe configuration only (endpoints, webhook IDs; NO API secrets)
+  encryptedSecrets String?                  @map("encrypted_secrets") // AES-256-GCM encrypted secrets
+  secretsIv        String?                  @map("secrets_iv")
+  secretsTag       String?                  @map("secrets_tag")
+  keyVersion       Int                      @default(1) @map("key_version")
+  capabilities     Json?                    // Supported capabilities array
+  lastSyncAt       DateTime?                @map("last_sync_at")
+  lastError        String?                  @map("last_error")
+  createdAt        DateTime                 @default(now()) @map("created_at")
+  updatedAt        DateTime                 @updatedAt @map("updated_at")
 
   syncEvents IntegrationSyncEvent[]
+  syncJobs   IntegrationSyncJob[]
 
   @@unique([provider, environment])
   @@map("integration_accounts")
@@ -947,7 +976,7 @@ model IntegrationAccount {
 model IntegrationSyncEvent {
   id                   String                 @id @default(uuid())
   integrationAccountId String                 @map("integration_account_id")
-  eventType            String                 @map("event_type") // e.g. "payment_intent.succeeded"
+  eventType            String                 @map("event_type") // e.g. "order.created", "inventory.updated"
   externalId           String?                @map("external_id")
   idempotencyKey       String?                @unique @map("idempotency_key")
   status               IntegrationEventStatus @default(RECEIVED)
@@ -960,6 +989,51 @@ model IntegrationSyncEvent {
 
   @@index([integrationAccountId, eventType, createdAt])
   @@map("integration_sync_events")
+}
+
+model IntegrationSyncJob {
+  id                   String        @id @default(uuid())
+  integrationAccountId String        @map("integration_account_id")
+  direction            SyncDirection @default(INBOUND)
+  jobType              String        @map("job_type") // e.g. "STOCK_SYNC", "ORDER_IMPORT", "CATALOG_EXPORT"
+  status               SyncJobStatus @default(PENDING)
+  attempts             Int           @default(0)
+  maxAttempts          Int           @default(5) @map("max_attempts")
+  correlationId        String        @map("correlation_id")
+  idempotencyKey       String?       @unique @map("idempotency_key")
+  payload              Json?         // Sanitized task payload
+  lastError            String?       @map("last_error")
+  nextRetryAt          DateTime?     @map("next_retry_at")
+  startedAt            DateTime?     @map("started_at")
+  completedAt          DateTime?     @map("completed_at")
+  createdAt            DateTime      @default(now()) @map("created_at")
+  updatedAt            DateTime      @updatedAt @map("updated_at")
+
+  account IntegrationAccount @relation(fields: [integrationAccountId], references: [id], onDelete: Cascade)
+
+  @@index([integrationAccountId, status])
+  @@index([correlationId])
+  @@index([nextRetryAt])
+  @@map("integration_sync_jobs")
+}
+
+model ExternalIdMapping {
+  id              String   @id @default(uuid())
+  provider        String   // e.g. "MOCK_MARKETPLACE", "SHOPIFY", "EBAY", "TRADEME"
+  entityType      String   @map("entity_type") // "PRODUCT", "LISTING", "CUSTOMER", "ORDER"
+  internalId      String   @map("internal_id") // Local entity UUID
+  externalId      String   @map("external_id") // External marketplace ID or external SKU
+  externalVersion String?  @map("external_version")
+  syncHash        String?  @map("sync_hash") // Hash of payload to prevent ping-pong update loops
+  metadata        Json?
+  lastSyncedAt    DateTime @default(now()) @map("last_synced_at")
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  @@unique([provider, entityType, internalId])
+  @@unique([provider, entityType, externalId])
+  @@index([provider, entityType])
+  @@map("external_id_mappings")
 }
 
 // ===========================================================================

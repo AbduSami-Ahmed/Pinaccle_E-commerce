@@ -19,6 +19,7 @@ import { SettingsModule } from './settings/settings.module';
 import { AdminModule } from './admin/admin.module';
 import { DocumentsModule } from './documents/documents.module';
 import { NotificationsModule } from './notifications/notifications.module';
+import { IntegrationsModule } from './integrations/integrations.module';
 import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 
 @Module({
@@ -48,6 +49,7 @@ import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
     AdminModule,
     DocumentsModule,
     NotificationsModule,
+    IntegrationsModule,
   ],
   controllers: [],
   providers: [

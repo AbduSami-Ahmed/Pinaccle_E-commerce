@@ -13,7 +13,7 @@ import {
   UpdateBusinessSettingsDto,
 } from '@pinnacle/contracts';
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+const API_BASE = (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000/api/v1').replace(/\/+$/, '');
 
 /**
  * Fetch unified dashboard performance summary.
@@ -22,7 +22,7 @@ export async function fetchDashboardSummary(
   range: DashboardDateRange = '30d',
 ): Promise<DashboardSummaryDto> {
   try {
-    const res = await fetch(`${API_BASE}/api/admin/dashboard/summary?range=${range}`, {
+    const res = await fetch(`${API_BASE}/admin/dashboard/summary?range=${range}`, {
       credentials: 'include',
       headers: { 'Content-Type': 'application/json' },
     });
@@ -52,7 +52,7 @@ export async function fetchAdminCustomers(params: {
     if (params.page) query.set('page', String(params.page));
     if (params.limit) query.set('limit', String(params.limit));
 
-    const res = await fetch(`${API_BASE}/api/customers?${query.toString()}`, {
+    const res = await fetch(`${API_BASE}/customers?${query.toString()}`, {
       credentials: 'include',
     });
     if (res.ok) {
@@ -70,7 +70,7 @@ export async function fetchAdminCustomers(params: {
  */
 export async function fetchAdminCustomerDetail(id: string): Promise<AdminCustomerDetailDto> {
   try {
-    const res = await fetch(`${API_BASE}/api/customers/${id}/detail`, {
+    const res = await fetch(`${API_BASE}/customers/${id}/detail`, {
       credentials: 'include',
     });
     if (res.ok) {
@@ -90,7 +90,7 @@ export async function fetchAdminCustomerDetail(id: string): Promise<AdminCustome
 export async function fetchStaffMembers(search?: string): Promise<StaffUserDto[]> {
   try {
     const query = search ? `?search=${encodeURIComponent(search)}` : '';
-    const res = await fetch(`${API_BASE}/api/users/staff${query}`, {
+    const res = await fetch(`${API_BASE}/users/staff${query}`, {
       credentials: 'include',
     });
     if (res.ok) {
@@ -109,7 +109,7 @@ export async function fetchStaffMembers(search?: string): Promise<StaffUserDto[]
  */
 export async function fetchPlatformRoles(): Promise<RoleWithPermissionsDto[]> {
   try {
-    const res = await fetch(`${API_BASE}/api/users/roles`, {
+    const res = await fetch(`${API_BASE}/users/roles`, {
       credentials: 'include',
     });
     if (res.ok) {
@@ -127,7 +127,7 @@ export async function fetchPlatformRoles(): Promise<RoleWithPermissionsDto[]> {
  * Assign roles to staff member.
  */
 export async function updateStaffRoles(userId: string, roleIds: string[]): Promise<StaffUserDto> {
-  const res = await fetch(`${API_BASE}/api/users/${userId}/roles`, {
+  const res = await fetch(`${API_BASE}/users/${userId}/roles`, {
     method: 'PUT',
     credentials: 'include',
     headers: { 'Content-Type': 'application/json' },
@@ -147,7 +147,7 @@ export async function updateStaffRoles(userId: string, roleIds: string[]): Promi
  * Toggle active status of a staff member.
  */
 export async function toggleStaffActive(userId: string, isActive: boolean): Promise<StaffUserDto> {
-  const res = await fetch(`${API_BASE}/api/users/${userId}/active`, {
+  const res = await fetch(`${API_BASE}/users/${userId}/active`, {
     method: 'PATCH',
     credentials: 'include',
     headers: { 'Content-Type': 'application/json' },
@@ -168,7 +168,7 @@ export async function toggleStaffActive(userId: string, isActive: boolean): Prom
  */
 export async function fetchBusinessSettings(): Promise<BusinessSettingsDto> {
   try {
-    const res = await fetch(`${API_BASE}/api/settings`, {
+    const res = await fetch(`${API_BASE}/settings`, {
       credentials: 'include',
     });
     if (res.ok) {
@@ -188,7 +188,7 @@ export async function fetchBusinessSettings(): Promise<BusinessSettingsDto> {
 export async function updateBusinessSettings(
   dto: UpdateBusinessSettingsDto,
 ): Promise<BusinessSettingsDto> {
-  const res = await fetch(`${API_BASE}/api/settings`, {
+  const res = await fetch(`${API_BASE}/settings`, {
     method: 'PATCH',
     credentials: 'include',
     headers: { 'Content-Type': 'application/json' },
@@ -215,7 +215,7 @@ export async function fetchAuditLogs(query: AuditLogQueryDto): Promise<AuditLogP
     if (query.page) searchParams.set('page', String(query.page));
     if (query.limit) searchParams.set('limit', String(query.limit));
 
-    const res = await fetch(`${API_BASE}/api/audit-logs?${searchParams.toString()}`, {
+    const res = await fetch(`${API_BASE}/audit-logs?${searchParams.toString()}`, {
       credentials: 'include',
     });
     if (res.ok) {
@@ -242,7 +242,7 @@ export async function fetchWarehouseMovements(params: {
     if (params.page) q.set('page', String(params.page));
     if (params.limit) q.set('limit', String(params.limit));
 
-    const res = await fetch(`${API_BASE}/api/inventory/movements?${q.toString()}`, {
+    const res = await fetch(`${API_BASE}/inventory/movements?${q.toString()}`, {
       credentials: 'include',
     });
     if (res.ok) {
@@ -256,15 +256,15 @@ export async function fetchWarehouseMovements(params: {
 }
 
 export function getExportOrdersUrl(range: DashboardDateRange = '30d'): string {
-  return `${API_BASE}/api/admin/export/orders?range=${range}`;
+  return `${API_BASE}/admin/export/orders?range=${range}`;
 }
 
 export function getExportInventoryUrl(): string {
-  return `${API_BASE}/api/admin/export/inventory`;
+  return `${API_BASE}/admin/export/inventory`;
 }
 
 export function getExportAuditLogsUrl(): string {
-  return `${API_BASE}/api/audit-logs/export`;
+  return `${API_BASE}/audit-logs/export`;
 }
 
 // ===========================================================================

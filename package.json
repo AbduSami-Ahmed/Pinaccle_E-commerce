@@ -3,9 +3,16 @@
   "version": "0.1.0",
   "private": true,
   "packageManager": "pnpm@12.16.1",
+  "workspaces": [
+    "frontend",
+    "backend",
+    "packages/*"
+  ],
   "scripts": {
     "build": "turbo run build",
     "dev": "turbo run dev",
+    "dev:backend": "pnpm --filter @pinnacle/api dev",
+    "dev:frontend": "pnpm --filter @pinnacle/web dev",
     "dev:api": "pnpm --filter @pinnacle/api dev",
     "dev:web": "pnpm --filter @pinnacle/web dev",
     "lint": "turbo run lint",
