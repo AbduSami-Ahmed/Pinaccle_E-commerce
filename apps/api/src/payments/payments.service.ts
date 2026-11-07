@@ -4,10 +4,12 @@ import {
   Injectable,
   Logger,
   NotFoundException,
+  Optional,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PrismaService } from '../prisma/prisma.service';
 import { InventoryService } from '../inventory/inventory.service';
+import { NotificationsService } from '../notifications/notifications.service';
 import { MockPaymentGatewayAdapter } from './mock-payment.adapter';
 import { StripePaymentGatewayAdapter } from './stripe-payment.adapter';
 import { PaymentGatewayAdapter } from './payment-gateway.interface';
@@ -29,6 +31,7 @@ export class PaymentsService {
     private readonly mockAdapter: MockPaymentGatewayAdapter,
     private readonly stripeAdapter: StripePaymentGatewayAdapter,
     private readonly config: ConfigService,
+    @Optional() private readonly notificationsService?: NotificationsService,
   ) {
     this.defaultProvider =
       (this.config.get<string>('PAYMENT_DEFAULT_PROVIDER') as PaymentGatewayProvider) || 'MOCK';
@@ -297,10 +300,41 @@ export class PaymentsService {
         received: true,
         status: verified.status,
         orderNumber: order.orderNumber,
+        orderId: order.id,
+        totalAmount: Number(order.totalAmount),
+        currency: order.currency,
       };
     });
 
-    return result;
+    // Trigger transactional notification asynchronously
+    if (this.notificationsService && result.orderId) {
+      if (verified.status === 'SUCCESS') {
+        this.notificationsService
+          .notifyOrderConfirmed(result.orderId, verified.eventId)
+          .catch((err) =>
+            this.logger.warn(`Could not dispatch order confirmation email: ${err.message}`),
+          );
+      } else if (verified.status === 'FAILED') {
+        this.notificationsService
+          .notifyPaymentStatus(
+            result.orderId,
+            'FAILED',
+            result.totalAmount || 0,
+            result.currency || 'AUD',
+            undefined,
+            verified.eventId,
+          )
+          .catch((err) =>
+            this.logger.warn(`Could not dispatch payment failed email: ${err.message}`),
+          );
+      }
+    }
+
+    return {
+      received: result.received,
+      status: result.status,
+      orderNumber: result.orderNumber,
+    };
   }
 
   // ---------------------------------------------------------------------------
@@ -343,6 +377,87 @@ export class PaymentsService {
       success: webhookResult.status === 'SUCCESS',
       status: webhookResult.status,
       orderNumber: transaction.order.orderNumber,
+    };
+  }
+
+  // ---------------------------------------------------------------------------
+  // 4. Process Refund
+  // ---------------------------------------------------------------------------
+
+  async processRefund(
+    orderId: string,
+    amount?: number,
+    reason = 'Staff initiated refund',
+  ): Promise<{ success: boolean; refundAmount: number; transactionReference: string }> {
+    const order = await this.prisma.order.findUnique({
+      where: { id: orderId },
+      include: {
+        paymentTransactions: {
+          where: { status: 'SUCCESS' },
+          orderBy: { createdAt: 'desc' },
+        },
+      },
+    });
+
+    if (!order) {
+      throw new NotFoundException(`Order ${orderId} not found`);
+    }
+
+    if (order.paymentStatus !== 'PAID' && order.paymentStatus !== 'PARTIALLY_REFUNDED') {
+      throw new BadRequestException(
+        `Cannot issue refund for order ${order.orderNumber} in payment status ${order.paymentStatus}`,
+      );
+    }
+
+    const successfulTx = order.paymentTransactions[0];
+    if (!successfulTx) {
+      throw new BadRequestException(
+        `No successful payment transaction found for order ${order.orderNumber}`,
+      );
+    }
+
+    const refundAmount = amount ?? Number(order.totalAmount);
+    const adapter = this.resolveAdapter(successfulTx.provider as PaymentGatewayProvider);
+
+    let refundRef = `re_${Date.now()}`;
+    if (adapter.processRefund) {
+      const res = await adapter.processRefund({
+        transactionReference: successfulTx.transactionReference,
+        amount: refundAmount,
+        reason,
+      });
+      refundRef = res.refundTransactionReference;
+    }
+
+    await this.prisma.$transaction(async (tx) => {
+      await tx.paymentTransaction.create({
+        data: {
+          orderId: order.id,
+          provider: successfulTx.provider,
+          transactionReference: refundRef,
+          idempotencyKey: `ref_${order.id}_${Date.now()}`,
+          amount: refundAmount,
+          currency: order.currency,
+          status: 'REFUNDED',
+          rawResponse: { reason, originalTransaction: successfulTx.transactionReference },
+        },
+      });
+
+      const isFullRefund = refundAmount >= Number(order.totalAmount);
+
+      await tx.order.update({
+        where: { id: order.id },
+        data: {
+          paymentStatus: isFullRefund ? 'REFUNDED' : 'PARTIALLY_REFUNDED',
+          orderStatus: isFullRefund ? 'REFUNDED' : order.orderStatus,
+        },
+      });
+    });
+
+    return {
+      success: true,
+      refundAmount,
+      transactionReference: refundRef,
     };
   }
 }

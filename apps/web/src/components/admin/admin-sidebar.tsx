@@ -54,29 +54,29 @@ const navSections: NavSection[] = [
     title: 'Inventory',
     items: [
       { label: 'Stock Management', href: '/admin/inventory', icon: Boxes },
-      { label: 'Serialized Items', href: '/admin/serialized-items', icon: Barcode },
+      { label: 'Movement Ledger', href: '/admin/inventory/movements', icon: Barcode },
     ],
   },
   {
     title: 'Orders',
     items: [
       { label: 'All Orders', href: '/admin/orders', icon: ShoppingBag },
-      { label: 'Fulfillment', href: '/admin/fulfillment', icon: Truck },
+      { label: 'Fulfilment Queue', href: '/admin/orders?status=PAID', icon: Truck },
     ],
   },
   {
     title: 'Customers',
     items: [
-      { label: 'Customer List', href: '/admin/customers', icon: Users },
-      { label: 'Returns', href: '/admin/returns', icon: RotateCcw },
+      { label: 'Customer Directory', href: '/admin/customers', icon: Users },
+      { label: 'RMA Returns', href: '/admin/orders?status=REFUNDED', icon: RotateCcw },
     ],
   },
   {
-    title: 'Settings',
+    title: 'System & Security',
     items: [
       { label: 'Store Settings', href: '/admin/settings', icon: Settings },
       { label: 'Staff & Roles', href: '/admin/staff', icon: UserCheck },
-      { label: 'Audit Log', href: '/admin/audit-log', icon: FileText },
+      { label: 'Audit Trail', href: '/admin/audit-log', icon: FileText },
     ],
   },
 ];

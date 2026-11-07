@@ -1,6 +1,9 @@
 import { Injectable, NotFoundException, ForbiddenException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import {
+  AdminCustomerDetailDto,
+  AdminCustomerListItemDto,
+  AuthenticatedUser,
   CustomerProfileDto,
   CustomerAddressDto,
   CreateCustomerAddressDto,
@@ -284,5 +287,206 @@ export class CustomersService {
       createdAt: address.createdAt.toISOString(),
       updatedAt: address.updatedAt.toISOString(),
     };
+  }
+
+  // ---------------------------------------------------------------------------
+  // Staff Customer Directory & Detail
+  // ---------------------------------------------------------------------------
+
+  async searchCustomers(
+    query: { search?: string; page?: number; limit?: number },
+    user: AuthenticatedUser,
+  ): Promise<{
+    customers: AdminCustomerListItemDto[];
+    total: number;
+    page: number;
+    totalPages: number;
+  }> {
+    const page = Math.max(1, Number(query.page) || 1);
+    const limit = Math.min(100, Math.max(1, Number(query.limit) || 20));
+    const skip = (page - 1) * limit;
+
+    const hasPii = user.permissions.includes('customers:view:pii_contact');
+
+    const where: any = {};
+    if (query.search && query.search.trim()) {
+      const term = query.search.trim();
+      where.OR = [
+        { firstName: { contains: term, mode: 'insensitive' } },
+        { lastName: { contains: term, mode: 'insensitive' } },
+        { phone: { contains: term, mode: 'insensitive' } },
+        { user: { email: { contains: term, mode: 'insensitive' } } },
+      ];
+    }
+
+    const [total, profiles] = await Promise.all([
+      this.prisma.customerProfile.count({ where }),
+      this.prisma.customerProfile.findMany({
+        where,
+        skip,
+        take: limit,
+        orderBy: { createdAt: 'desc' },
+        include: {
+          user: { select: { id: true, email: true, createdAt: true } },
+          orders: {
+            where: { orderStatus: { in: ['PAID', 'PROCESSING', 'SHIPPED', 'DELIVERED'] } },
+            select: { totalAmount: true },
+          },
+        },
+      }),
+    ]);
+
+    const customers: AdminCustomerListItemDto[] = profiles.map((p) => {
+      const rawEmail = p.user.email;
+      const rawPhone = p.phone;
+      const ordersCount = p.orders.length;
+      const totalSpend = Number(
+        p.orders.reduce((sum: number, ord: { totalAmount: any }) => sum + Number(ord.totalAmount), 0).toFixed(2),
+      );
+
+      return {
+        id: p.id,
+        userId: p.userId,
+        firstName: p.firstName,
+        lastName: p.lastName,
+        displayName: `${p.firstName} ${p.lastName}`.trim(),
+        email: hasPii ? rawEmail : this.maskEmail(rawEmail),
+        phone: hasPii ? rawPhone : this.maskPhone(rawPhone),
+        companyName: p.accountType === 'TRADE_COMMERCIAL' ? 'Trade Account' : null,
+        ordersCount,
+        totalSpend,
+        isPiiMasked: !hasPii,
+        createdAt: p.createdAt.toISOString(),
+      };
+    });
+
+    return {
+      customers,
+      total,
+      page,
+      totalPages: Math.ceil(total / limit),
+    };
+  }
+
+  async getCustomerDetail(
+    customerId: string,
+    user: AuthenticatedUser,
+  ): Promise<AdminCustomerDetailDto> {
+    const hasPii = user.permissions.includes('customers:view:pii_contact');
+
+    const profile = await this.prisma.customerProfile.findUnique({
+      where: { id: customerId },
+      include: {
+        user: { select: { id: true, email: true, createdAt: true } },
+        addresses: { orderBy: { createdAt: 'desc' } },
+        savedVehicles: {
+          include: {
+            vehicleChassis: {
+              include: {
+                generation: {
+                  include: {
+                    model: {
+                      include: {
+                        make: { select: { name: true } },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+        orders: {
+          take: 10,
+          orderBy: { createdAt: 'desc' },
+          select: {
+            id: true,
+            orderNumber: true,
+            orderStatus: true,
+            paymentStatus: true,
+            totalAmount: true,
+            createdAt: true,
+          },
+        },
+      },
+    });
+
+    if (!profile) {
+      throw new NotFoundException(`Customer profile ${customerId} not found`);
+    }
+
+    const rawEmail = profile.user.email;
+    const rawPhone = profile.phone;
+    const paidOrders = profile.orders.filter((o) =>
+      ['PAID', 'PROCESSING', 'SHIPPED', 'DELIVERED'].includes(o.orderStatus),
+    );
+    const totalSpend = Number(
+      paidOrders.reduce((sum: number, ord: { totalAmount: any }) => sum + Number(ord.totalAmount), 0).toFixed(2),
+    );
+
+    const addresses = profile.addresses.map((a) => {
+      const dto = this.toAddressDto(a);
+      if (!hasPii) {
+        dto.line1 = '[PROTECTED RESIDENTIAL ADDRESS]';
+        dto.line2 = null;
+      }
+      return dto;
+    });
+
+    const savedVehicles = profile.savedVehicles.map((v) => {
+      const chassis = v.vehicleChassis;
+      const gen = chassis?.generation;
+      const model = gen?.model;
+      const make = model?.make;
+      return {
+        id: v.id,
+        make: make?.name ?? 'Unknown Make',
+        model: model?.name ?? 'Unknown Model',
+        year: gen?.yearStart ?? 0,
+        variant: chassis?.chassisCode || chassis?.bodyType || undefined,
+      };
+    });
+
+    const recentOrders = profile.orders.map((o) => ({
+      id: o.id,
+      orderNumber: o.orderNumber,
+      status: o.orderStatus as any,
+      paymentStatus: o.paymentStatus as any,
+      total: Number(o.totalAmount),
+      createdAt: o.createdAt.toISOString(),
+    }));
+
+    return {
+      id: profile.id,
+      userId: profile.userId,
+      firstName: profile.firstName,
+      lastName: profile.lastName,
+      displayName: `${profile.firstName} ${profile.lastName}`.trim(),
+      email: hasPii ? rawEmail : this.maskEmail(rawEmail),
+      phone: hasPii ? rawPhone : this.maskPhone(rawPhone),
+      companyName: profile.accountType === 'TRADE_COMMERCIAL' ? 'Trade Account' : null,
+      ordersCount: profile.orders.length,
+      totalSpend,
+      isPiiMasked: !hasPii,
+      addresses,
+      savedVehicles,
+      recentOrders,
+      createdAt: profile.createdAt.toISOString(),
+    };
+  }
+
+  private maskEmail(email: string): string {
+    const parts = email.split('@');
+    if (parts.length !== 2) return '***@***.***';
+    const user = parts[0] ?? '';
+    const visibleChar = user.length > 0 ? user[0]! : '*';
+    return `${visibleChar}***@${parts[1]}`;
+  }
+
+  private maskPhone(phone?: string | null): string {
+    if (!phone) return '—';
+    const digits = phone.replace(/\D/g, '');
+    if (digits.length <= 4) return '••••';
+    return `+61 •••• •••• ${digits.slice(-4)}`;
   }
 }

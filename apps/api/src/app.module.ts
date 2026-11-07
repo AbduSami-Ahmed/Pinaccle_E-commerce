@@ -13,6 +13,12 @@ import { CustomersModule } from './customers/customers.module';
 import { CartModule } from './cart/cart.module';
 import { PaymentsModule } from './payments/payments.module';
 import { CheckoutModule } from './checkout/checkout.module';
+import { OrdersModule } from './orders/orders.module';
+import { AuditModule } from './audit/audit.module';
+import { SettingsModule } from './settings/settings.module';
+import { AdminModule } from './admin/admin.module';
+import { DocumentsModule } from './documents/documents.module';
+import { NotificationsModule } from './notifications/notifications.module';
 import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 
 @Module({
@@ -36,6 +42,12 @@ import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
     CartModule,
     PaymentsModule,
     CheckoutModule,
+    OrdersModule,
+    AuditModule,
+    SettingsModule,
+    AdminModule,
+    DocumentsModule,
+    NotificationsModule,
   ],
   controllers: [],
   providers: [

@@ -9,6 +9,7 @@ import {
   ParseUUIDPipe,
   Patch,
   Post,
+  Query,
   UseGuards,
   ForbiddenException,
 } from '@nestjs/common';
@@ -23,8 +24,16 @@ import {
 import { CustomersService } from './customers.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CustomerOwnershipGuard } from '../auth/guards/customer-ownership.guard';
+import { PermissionsGuard } from '../auth/guards/permissions.guard';
+import { RequirePermissions } from '../auth/decorators/require-permissions.decorator';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
-import { AuthenticatedUser, CustomerAddressDto, CustomerProfileDto } from '@pinnacle/contracts';
+import {
+  AdminCustomerDetailDto,
+  AdminCustomerListItemDto,
+  AuthenticatedUser,
+  CustomerAddressDto,
+  CustomerProfileDto,
+} from '@pinnacle/contracts';
 import {
   CreateAddressBodyDto,
   UpdateAddressBodyDto,
@@ -38,6 +47,35 @@ import {
 @Controller('customers')
 export class CustomersController {
   constructor(private readonly customersService: CustomersService) {}
+
+  // ---------------------------------------------------------------------------
+  // Staff Customer Directory & Detailed Lookup
+  // ---------------------------------------------------------------------------
+
+  @Get()
+  @UseGuards(PermissionsGuard)
+  @RequirePermissions('customers:view:directory')
+  @ApiOperation({ summary: 'Search and browse customer directory (staff only)' })
+  async searchCustomers(
+    @Query('search') search?: string,
+    @Query('page') page?: number,
+    @Query('limit') limit?: number,
+    @CurrentUser() user?: AuthenticatedUser,
+  ): Promise<{ customers: AdminCustomerListItemDto[]; total: number; page: number; totalPages: number }> {
+    return this.customersService.searchCustomers({ search, page, limit }, user!);
+  }
+
+  @Get(':id/detail')
+  @UseGuards(PermissionsGuard)
+  @RequirePermissions('customers:view:directory')
+  @ApiOperation({ summary: 'Get full customer record including addresses and order history (staff only)' })
+  async getCustomerDetail(
+    @Param('id', ParseUUIDPipe) id: string,
+    @CurrentUser() user: AuthenticatedUser,
+  ): Promise<{ customer: AdminCustomerDetailDto }> {
+    const customer = await this.customersService.getCustomerDetail(id, user);
+    return { customer };
+  }
 
   // ---------------------------------------------------------------------------
   // Profile (Self-Service)

@@ -14,8 +14,10 @@ import { StockReservationDto } from './dto/stock-reservation.dto';
 import { InventoryQueryDto } from './dto/inventory-query.dto';
 import {
   AuthenticatedUser,
+  GlobalInventoryMovementDto,
   InventoryItemDto,
   InventoryMovementDto,
+  InventoryMovementType,
   PaginatedResponse,
   ProductStockSummaryDto,
   ReconciliationResultDto,
@@ -747,6 +749,146 @@ export class InventoryService {
   }
 
   /**
+   * 7c. Restock Order Item (Return to inventory / cancellation restock)
+   * Restores quantityOnHand for bulk batches or sets serialized parts back to AVAILABLE.
+   * Creates an immutable RETURN_RESTOCK InventoryMovement record.
+   */
+  async restockOrderItem(params: {
+    orderId: string;
+    orderItemId: string;
+    quantity: number;
+    operatorId: string;
+    reasonCode: string;
+  }): Promise<{ success: boolean; message: string }> {
+    return this.prisma.$transaction(async (tx) => {
+      const orderItem = await tx.orderItem.findUnique({
+        where: { id: params.orderItemId },
+      });
+
+      if (!orderItem) {
+        throw new NotFoundException(`Order item ${params.orderItemId} not found`);
+      }
+
+      if (orderItem.serializedItemId) {
+        await tx.serializedInventoryItem.update({
+          where: { id: orderItem.serializedItemId },
+          data: { status: 'AVAILABLE' },
+        });
+
+        await tx.inventoryMovement.create({
+          data: {
+            serializedItemId: orderItem.serializedItemId,
+            movementType: 'RETURN_RESTOCK',
+            quantityChange: 1,
+            previousQuantity: 0,
+            newQuantity: 1,
+            reasonCode: params.reasonCode,
+            operatorId: params.operatorId,
+            referenceOrderId: params.orderId,
+          },
+        });
+      } else if (orderItem.productId) {
+        const inventoryItem = await tx.inventoryItem.findFirst({
+          where: { productId: orderItem.productId },
+        });
+
+        if (inventoryItem) {
+          const unitsToRestore = params.quantity * (orderItem.baseQuantityMultiplierSnapshot || 1);
+          const newOnHand = inventoryItem.quantityOnHand + unitsToRestore;
+
+          await tx.inventoryItem.update({
+            where: { id: inventoryItem.id },
+            data: { quantityOnHand: newOnHand },
+          });
+
+          await tx.inventoryMovement.create({
+            data: {
+              inventoryItemId: inventoryItem.id,
+              movementType: 'RETURN_RESTOCK',
+              quantityChange: unitsToRestore,
+              previousQuantity: inventoryItem.quantityOnHand,
+              newQuantity: newOnHand,
+              reasonCode: params.reasonCode,
+              operatorId: params.operatorId,
+              referenceOrderId: params.orderId,
+            },
+          });
+        }
+      }
+
+      return {
+        success: true,
+        message: `Restocked order item ${params.orderItemId} to inventory`,
+      };
+    });
+  }
+
+  /**
+   * 7d. Scrap Returned Item (Write-off after RMA inspection fails safety or functional tests)
+   * Sets serialized item to SCRAPPED and records an immutable SCRAP_WRITEOFF movement.
+   */
+  async scrapReturnedItem(params: {
+    orderId: string;
+    orderItemId: string;
+    operatorId: string;
+    reasonCode: string;
+  }): Promise<{ success: boolean; message: string }> {
+    return this.prisma.$transaction(async (tx) => {
+      const orderItem = await tx.orderItem.findUnique({
+        where: { id: params.orderItemId },
+      });
+
+      if (!orderItem) {
+        throw new NotFoundException(`Order item ${params.orderItemId} not found`);
+      }
+
+      if (orderItem.serializedItemId) {
+        await tx.serializedInventoryItem.update({
+          where: { id: orderItem.serializedItemId },
+          data: { status: 'SCRAPPED' },
+        });
+
+        await tx.inventoryMovement.create({
+          data: {
+            serializedItemId: orderItem.serializedItemId,
+            movementType: 'SCRAP_WRITEOFF',
+            quantityChange: 0,
+            previousQuantity: 0,
+            newQuantity: 0,
+            reasonCode: params.reasonCode,
+            operatorId: params.operatorId,
+            referenceOrderId: params.orderId,
+          },
+        });
+      } else if (orderItem.productId) {
+        const inventoryItem = await tx.inventoryItem.findFirst({
+          where: { productId: orderItem.productId },
+        });
+
+        if (inventoryItem) {
+          await tx.inventoryMovement.create({
+            data: {
+              inventoryItemId: inventoryItem.id,
+              movementType: 'SCRAP_WRITEOFF',
+              quantityChange: 0,
+              previousQuantity: inventoryItem.quantityOnHand,
+              newQuantity: inventoryItem.quantityOnHand,
+              reasonCode: params.reasonCode,
+              operatorId: params.operatorId,
+              referenceOrderId: params.orderId,
+            },
+          });
+        }
+      }
+
+      return {
+        success: true,
+        message: `Scrapped returned item for order item ${params.orderItemId}`,
+      };
+    });
+  }
+
+  /**
    * 8. Inventory Balance Reconciliation against Movement History.
    */
   async reconcileItem(inventoryItemId: string): Promise<ReconciliationResultDto> {
@@ -1097,5 +1239,91 @@ export class InventoryService {
       country: w.country,
       isActive: w.isActive,
     }));
+  }
+
+  /**
+   * 13. Query global warehouse movement ledger.
+   */
+  async getWarehouseMovements(query: {
+    movementType?: InventoryMovementType;
+    limit?: number;
+    page?: number;
+  }): Promise<{
+    items: GlobalInventoryMovementDto[];
+    total: number;
+    page: number;
+    totalPages: number;
+  }> {
+    const page = Math.max(1, Number(query.page) || 1);
+    const limit = Math.min(100, Math.max(1, Number(query.limit) || 20));
+    const skip = (page - 1) * limit;
+
+    const where: Prisma.InventoryMovementWhereInput = {};
+    if (query.movementType) {
+      where.movementType = query.movementType;
+    }
+
+    const [total, movements] = await Promise.all([
+      this.prisma.inventoryMovement.count({ where }),
+      this.prisma.inventoryMovement.findMany({
+        where,
+        take: limit,
+        skip,
+        orderBy: { createdAt: 'desc' },
+        include: {
+          inventoryItem: {
+            include: {
+              product: { select: { id: true, title: true, sku: true } },
+              warehouse: { select: { code: true } },
+            },
+          },
+          serializedItem: {
+            include: {
+              product: { select: { id: true, title: true, sku: true } },
+              warehouse: { select: { code: true } },
+            },
+          },
+          operator: {
+            select: {
+              id: true,
+              email: true,
+              staffProfile: { select: { firstName: true, lastName: true } },
+            },
+          },
+        },
+      }),
+    ]);
+
+    const items: GlobalInventoryMovementDto[] = movements.map((m) => {
+      const product = m.inventoryItem?.product || m.serializedItem?.product;
+      const warehouse = m.inventoryItem?.warehouse || m.serializedItem?.warehouse;
+      const actorName = m.operator?.staffProfile
+        ? `${m.operator.staffProfile.firstName} ${m.operator.staffProfile.lastName}`
+        : m.operator?.email || 'System';
+
+      return {
+        id: m.id,
+        inventoryItemId: m.inventoryItemId ?? undefined,
+        serializedItemId: m.serializedItemId ?? undefined,
+        productId: product?.id || 'unknown',
+        productName: product?.title || 'Unknown Part',
+        sku: product?.sku || 'N/A',
+        movementType: m.movementType as InventoryMovementType,
+        quantity: m.quantityChange,
+        referenceType: m.referenceOrderId ? 'ORDER' : undefined,
+        referenceId: m.referenceOrderId,
+        actorId: m.operatorId,
+        actorName,
+        warehouseCode: warehouse?.code || null,
+        createdAt: m.createdAt.toISOString(),
+      };
+    });
+
+    return {
+      items,
+      total,
+      page,
+      totalPages: Math.ceil(total / limit),
+    };
   }
 }

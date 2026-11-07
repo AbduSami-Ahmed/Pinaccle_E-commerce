@@ -709,6 +709,7 @@ model Order {
   stockReservations   StockReservation[]
   shipments           Shipment[]
   returnRequests      ReturnRequest[]
+  documents           DocumentRecord[]
 
   @@index([customerId])
   @@index([orderStatus, paymentStatus])
@@ -959,4 +960,88 @@ model IntegrationSyncEvent {
 
   @@index([integrationAccountId, eventType, createdAt])
   @@map("integration_sync_events")
+}
+
+// ===========================================================================
+// 13. Notifications & Document Records
+// ===========================================================================
+
+enum NotificationChannel {
+  EMAIL
+  SMS
+  IN_APP
+}
+
+enum NotificationStatus {
+  PENDING
+  SENT
+  FAILED
+  PERMANENTLY_FAILED
+}
+
+enum NotificationType {
+  ORDER_CONFIRMATION
+  PAYMENT_STATUS_UPDATE
+  ORDER_DISPATCHED
+  ORDER_READY_FOR_COLLECTION
+  ORDER_CANCELLED
+  RETURN_UPDATE
+  ACCOUNT_WELCOME
+  PASSWORD_RESET
+}
+
+model NotificationRecord {
+  id             String              @id @default(uuid())
+  channel        NotificationChannel @default(EMAIL)
+  type           NotificationType
+  recipient      String
+  subject        String
+  templateName   String              @map("template_name")
+  status         NotificationStatus  @default(PENDING)
+  payload        Json?
+  errorMessage   String?             @map("error_message")
+  retryCount     Int                 @default(0) @map("retry_count")
+  maxRetries     Int                 @default(3) @map("max_retries")
+  nextRetryAt    DateTime?           @map("next_retry_at")
+  sentAt         DateTime?           @map("sent_at")
+  messageId      String?             @map("message_id")
+  idempotencyKey String?             @unique @map("idempotency_key")
+  orderId        String?             @map("order_id")
+  customerId     String?             @map("customer_id")
+  createdAt      DateTime            @default(now()) @map("created_at")
+  updatedAt      DateTime            @updatedAt @map("updated_at")
+
+  @@index([status, nextRetryAt])
+  @@index([orderId])
+  @@index([customerId])
+  @@map("notifications")
+}
+
+enum DocumentType {
+  TAX_INVOICE
+  RECEIPT
+  CREDIT_NOTE
+  DISPATCH_NOTE
+}
+
+model DocumentRecord {
+  id             String       @id @default(uuid())
+  documentNumber String       @unique @map("document_number") // e.g. "INV-PIN-2026-10042"
+  orderId        String       @map("order_id")
+  documentType   DocumentType @map("document_type")
+  fileName       String       @map("file_name")
+  mimeType       String       @default("application/pdf") @map("mime_type")
+  fileSize       Int          @map("file_size")
+  storageKey     String       @map("storage_key")
+  customerId     String?      @map("customer_id")
+  metadata       Json?
+  createdAt      DateTime     @default(now()) @map("created_at")
+  updatedAt      DateTime     @updatedAt @map("updated_at")
+
+  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@unique([orderId, documentType])
+  @@index([orderId])
+  @@index([customerId])
+  @@map("document_records")
 }

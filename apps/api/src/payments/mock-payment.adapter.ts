@@ -109,4 +109,23 @@ export class MockPaymentGatewayAdapter implements PaymentGatewayAdapter {
       },
     };
   }
+
+  async processRefund(params: {
+    transactionReference: string;
+    amount: number;
+    reason?: string;
+  }): Promise<{ success: boolean; refundTransactionReference: string }> {
+    const intent = this.mockIntents.get(params.transactionReference);
+    if (intent) {
+      intent.status = 'REFUNDED';
+    }
+    const refundRef = `mock_re_${Date.now()}_${randomUUID().slice(0, 8)}`;
+    this.logger.log(
+      `[MockPayment] Processed refund ${refundRef} for transaction ${params.transactionReference} ($${params.amount})`,
+    );
+    return {
+      success: true,
+      refundTransactionReference: refundRef,
+    };
+  }
 }

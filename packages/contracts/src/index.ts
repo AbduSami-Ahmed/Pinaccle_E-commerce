@@ -1056,3 +1056,555 @@ export interface PaymentWebhookResultDto {
   status: string;
   orderNumber?: string;
 }
+
+// ---------------------------------------------------------------------------
+// Phase 12: Order Operations, Fulfilment & RMA Returns
+// ---------------------------------------------------------------------------
+
+export type OrderStatus =
+  'PENDING_PAYMENT' | 'PAID' | 'PROCESSING' | 'SHIPPED' | 'DELIVERED' | 'CANCELLED' | 'REFUNDED';
+
+export type PaymentStatus =
+  'UNPAID' | 'AUTHORIZED' | 'PAID' | 'PARTIALLY_REFUNDED' | 'REFUNDED' | 'FAILED';
+
+export type FulfillmentStatus = 'UNFULFILLED' | 'PARTIALLY_FULFILLED' | 'FULFILLED';
+
+export type ShipmentStatus =
+  'LABEL_CREATED' | 'PICKED_UP' | 'IN_TRANSIT' | 'DELIVERED' | 'FAILED_DELIVERY';
+
+export interface OrderQueryDto {
+  page?: number;
+  pageSize?: number;
+  search?: string;
+  orderStatus?: OrderStatus;
+  paymentStatus?: PaymentStatus;
+  fulfillmentStatus?: FulfillmentStatus;
+  dateFrom?: string;
+  dateTo?: string;
+  sortBy?: 'createdAt' | 'totalAmount' | 'orderNumber';
+  sortDirection?: 'asc' | 'desc';
+}
+
+export interface UpdateOrderStatusDto {
+  status: OrderStatus;
+  notes?: string;
+}
+
+export interface PickPackOrderDto {
+  notes?: string;
+}
+
+export interface DispatchCourierShipmentDto {
+  carrierName: string;
+  trackingNumber: string;
+  trackingUrl?: string;
+  warehouseId?: string;
+  notes?: string;
+}
+
+export interface ConfirmDepotCollectionDto {
+  collectedBy: string;
+  idDocumentType?: string;
+  idReferenceLast4?: string;
+  notes?: string;
+}
+
+export interface ShipmentItemDto {
+  id: string;
+  orderItemId: string;
+  quantityShipped: number;
+  sku?: string;
+  title?: string;
+}
+
+export interface ShipmentDto {
+  id: string;
+  orderId: string;
+  warehouseId?: string | null;
+  carrierName: string;
+  trackingNumber: string;
+  trackingUrl?: string | null;
+  status: ShipmentStatus;
+  shippedAt?: string | null;
+  deliveredAt?: string | null;
+  createdAt: string;
+  items: ShipmentItemDto[];
+}
+
+export interface CancelOrderDto {
+  reason: string;
+  refundPayment?: boolean;
+}
+
+export interface ProcessRefundDto {
+  amount?: number;
+  reason: string;
+}
+
+export interface RefundResultDto {
+  success: boolean;
+  refundAmount: number;
+  transactionReference: string;
+  orderStatus: OrderStatus;
+  paymentStatus: PaymentStatus;
+}
+
+export type ReturnReasonCode =
+  'INCORRECT_FITMENT' | 'DEFECTIVE_PART' | 'DAMAGED_IN_SHIPPING' | 'CUSTOMER_CHANGED_MIND';
+
+export type ReturnStatus =
+  | 'PENDING_REVIEW'
+  | 'APPROVED'
+  | 'REJECTED'
+  | 'RECEIVED_AWAITING_INSPECTION'
+  | 'RESOLVED'
+  | 'CLOSED';
+
+export type ReturnDisposition = 'RESTOCK_TO_INVENTORY' | 'SCRAP_WRITEOFF' | 'RETURN_TO_SENDER';
+
+export interface CreateReturnItemDto {
+  orderItemId: string;
+  quantity: number;
+}
+
+export interface CreateReturnRequestDto {
+  orderId: string;
+  reasonCode: ReturnReasonCode;
+  customerNotes: string;
+  proofPhotos?: string[];
+  items: CreateReturnItemDto[];
+}
+
+export interface ReviewReturnRequestDto {
+  action: 'APPROVE' | 'REJECT';
+  staffNotes?: string;
+}
+
+export interface RecordReturnInspectionDto {
+  returnItemId: string;
+  disposition: ReturnDisposition;
+  inspectionNotes: string;
+  refundEligible: boolean;
+}
+
+export interface ReturnInspectionDto {
+  id: string;
+  returnItemId: string;
+  inspectorId: string;
+  inspectorName: string;
+  disposition: ReturnDisposition;
+  inspectionNotes: string;
+  refundEligible: boolean;
+  completedAt: string;
+}
+
+export interface ReturnItemDto {
+  id: string;
+  orderItemId: string;
+  productTitle: string;
+  sku: string;
+  quantity: number;
+  unitPrice: number;
+  inspection?: ReturnInspectionDto | null;
+}
+
+export interface ReturnRequestDto {
+  id: string;
+  rmaNumber: string;
+  orderId: string;
+  orderNumber: string;
+  customerId: string;
+  customerEmail: string;
+  customerName?: string;
+  reasonCode: ReturnReasonCode;
+  customerNotes: string;
+  proofPhotos: string[];
+  status: ReturnStatus;
+  items: ReturnItemDto[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+export type OrderTimelineEventType =
+  | 'ORDER_PLACED'
+  | 'PAYMENT_CONFIRMED'
+  | 'PROCESSING_STARTED'
+  | 'PICK_PACKED'
+  | 'DISPATCHED'
+  | 'COLLECTED_AT_DEPOT'
+  | 'DELIVERED'
+  | 'CANCELLED'
+  | 'REFUND_PROCESSED'
+  | 'RETURN_REQUESTED'
+  | 'RETURN_APPROVED'
+  | 'RETURN_REJECTED'
+  | 'RETURN_INSPECTED';
+
+export interface OrderTimelineEventDto {
+  id: string;
+  type: OrderTimelineEventType;
+  title: string;
+  description: string;
+  timestamp: string;
+  actor?: string;
+}
+
+export interface OrderAdminDetailsDto extends OrderDetailsDto {
+  isPiiMasked?: boolean;
+  shipments: ShipmentDto[];
+  returnRequests: ReturnRequestDto[];
+  paymentTransactions: {
+    id: string;
+    provider: string;
+    transactionReference: string;
+    amount: number;
+    currency: string;
+    status: string;
+    createdAt: string;
+  }[];
+  timeline: OrderTimelineEventDto[];
+  allowedTransitions: OrderStatus[];
+}
+
+// ===========================================================================
+// Phase 13: Admin Operations, Dashboard & Business Settings Contracts
+// ===========================================================================
+
+export type DashboardDateRange = 'today' | '7d' | '30d' | '90d' | 'all';
+
+export interface DashboardPeriodDto {
+  range: DashboardDateRange;
+  startDate: string;
+  endDate: string;
+  label: string;
+}
+
+export interface DashboardSalesMetricsDto {
+  grossRevenue: number;
+  netRevenue: number;
+  refundedAmount: number;
+  totalOrdersCount: number;
+  paidOrdersCount: number;
+  averageOrderValue: number;
+  currency: string;
+}
+
+export interface DashboardFulfillmentQueuesDto {
+  awaitingPickPackCount: number;
+  inFulfillmentCount: number;
+  pendingPaymentCount: number;
+  shippedCount: number;
+  deliveredCount: number;
+  pendingRmaInspectionCount: number;
+}
+
+export interface StockAlertItemDto {
+  productId: string;
+  productName: string;
+  sku: string;
+  category: string;
+  productType: 'BULK_QUANTITY' | 'INDIVIDUALLY_SERIALIZED';
+  currentStock: number;
+  reservedStock: number;
+  sellableStock: number;
+  threshold?: number;
+}
+
+export interface DashboardStockHealthDto {
+  totalPublishedProducts: number;
+  lowStockCount: number;
+  outOfStockCount: number;
+  lowStockItems: StockAlertItemDto[];
+  outOfStockItems: StockAlertItemDto[];
+}
+
+export interface DashboardCategoryBreakdownDto {
+  categoryId: string;
+  name: string;
+  slug: string;
+  activeProductCount: number;
+}
+
+export interface DashboardRecentActivityDto {
+  recentOrders: {
+    id: string;
+    orderNumber: string;
+    customerName: string;
+    status: OrderStatus;
+    paymentStatus: PaymentStatus;
+    shippingMethod: ShippingMethod;
+    total: number;
+    createdAt: string;
+  }[];
+  recentMovements: {
+    id: string;
+    productName: string;
+    sku: string;
+    movementType: InventoryMovementType;
+    quantity: number;
+    actorName: string;
+    createdAt: string;
+  }[];
+  recentAuditLogs: {
+    id: string;
+    domain: string;
+    action: string;
+    actorName: string;
+    createdAt: string;
+  }[];
+}
+
+export interface DashboardSummaryDto {
+  period: DashboardPeriodDto;
+  sales: DashboardSalesMetricsDto;
+  fulfillmentQueues: DashboardFulfillmentQueuesDto;
+  stockHealth: DashboardStockHealthDto;
+  categoryBreakdown: DashboardCategoryBreakdownDto[];
+  recentActivity: DashboardRecentActivityDto;
+}
+
+export interface AdminCustomerListItemDto {
+  id: string;
+  userId: string;
+  firstName: string;
+  lastName: string;
+  displayName: string;
+  email: string;
+  phone: string | null;
+  companyName: string | null;
+  ordersCount: number;
+  totalSpend: number;
+  isPiiMasked: boolean;
+  createdAt: string;
+}
+
+export interface AdminCustomerDetailDto extends AdminCustomerListItemDto {
+  addresses: CustomerAddressDto[];
+  savedVehicles: {
+    id: string;
+    make: string;
+    model: string;
+    year: number;
+    variant?: string;
+  }[];
+  recentOrders: {
+    id: string;
+    orderNumber: string;
+    status: OrderStatus;
+    paymentStatus: PaymentStatus;
+    total: number;
+    createdAt: string;
+  }[];
+}
+
+export interface StaffUserDto {
+  id: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  department: string | null;
+  phone: string | null;
+  isActive: boolean;
+  isStaff: boolean;
+  roles: {
+    id: string;
+    key: string;
+    name: string;
+  }[];
+  lastLoginAt: string | null;
+  createdAt: string;
+}
+
+export interface RoleWithPermissionsDto {
+  id: string;
+  key: string;
+  name: string;
+  description: string | null;
+  permissions: {
+    id: string;
+    code: string;
+    description: string;
+    domain: string;
+  }[];
+}
+
+export interface UpdateStaffRolesDto {
+  roleIds: string[];
+}
+
+export interface ToggleStaffActiveDto {
+  isActive: boolean;
+}
+
+export interface BusinessSettingsDto {
+  company: {
+    legalName: string;
+    tradeName: string;
+    abn: string;
+    licenseNumber: string;
+    phone: string;
+    email: string;
+    address: string;
+    suburb: string;
+    state: string;
+    postcode: string;
+    operatingHours: string;
+  };
+  financial: {
+    currency: string;
+    currencySymbol: string;
+    taxName: string;
+    taxRatePercent: number;
+    taxInclusive: boolean;
+  };
+  fulfillment: {
+    depotPickupEnabled: boolean;
+    depotName: string;
+    depotAddress: string;
+    depotInstructions: string;
+    depotPickupFee: number;
+    standardShippingFee: number;
+    expressShippingFee: number;
+    freeShippingThreshold: number | null;
+    estimatedStandardTransit: string;
+    estimatedExpressTransit: string;
+  };
+  policies: {
+    returnWindowDays: number;
+    discretionaryRestockingFeePercent: number;
+    warrantyDisclaimer: string;
+  };
+}
+
+export interface UpdateBusinessSettingsDto {
+  company?: Partial<BusinessSettingsDto['company']>;
+  financial?: Partial<BusinessSettingsDto['financial']>;
+  fulfillment?: Partial<BusinessSettingsDto['fulfillment']>;
+  policies?: Partial<BusinessSettingsDto['policies']>;
+}
+
+export interface AuditLogDto {
+  id: string;
+  actorId: string | null;
+  actorName: string | null;
+  actorEmail: string | null;
+  domain: string;
+  action: string;
+  entityType: string;
+  entityId: string;
+  beforeState: Record<string, unknown> | null;
+  afterState: Record<string, unknown> | null;
+  ipAddress: string | null;
+  userAgent: string | null;
+  createdAt: string;
+}
+
+export interface AuditLogQueryDto {
+  domain?: string;
+  action?: string;
+  actorId?: string;
+  startDate?: string;
+  endDate?: string;
+  page?: number;
+  limit?: number;
+}
+
+export interface AuditLogPageDto {
+  items: AuditLogDto[];
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
+}
+
+export interface GlobalInventoryMovementDto {
+  id: string;
+  inventoryItemId?: string;
+  serializedItemId?: string;
+  productId: string;
+  productName: string;
+  sku: string;
+  movementType: InventoryMovementType;
+  quantity: number;
+  referenceType?: string | null;
+  referenceId?: string | null;
+  actorId?: string | null;
+  actorName?: string | null;
+  warehouseCode?: string | null;
+  createdAt: string;
+}
+
+// ===========================================================================
+// Phase 14: Notifications & Documents
+// ===========================================================================
+
+export type NotificationChannelContract = 'EMAIL' | 'SMS' | 'IN_APP';
+
+export type NotificationStatusContract =
+  | 'PENDING'
+  | 'SENT'
+  | 'FAILED'
+  | 'PERMANENTLY_FAILED';
+
+export type NotificationTypeContract =
+  | 'ORDER_CONFIRMATION'
+  | 'PAYMENT_STATUS_UPDATE'
+  | 'ORDER_DISPATCHED'
+  | 'ORDER_READY_FOR_COLLECTION'
+  | 'ORDER_CANCELLED'
+  | 'RETURN_UPDATE'
+  | 'ACCOUNT_WELCOME'
+  | 'PASSWORD_RESET';
+
+export type DocumentTypeContract =
+  | 'TAX_INVOICE'
+  | 'RECEIPT'
+  | 'CREDIT_NOTE'
+  | 'DISPATCH_NOTE';
+
+export interface NotificationRecordDto {
+  id: string;
+  channel: NotificationChannelContract;
+  type: NotificationTypeContract;
+  recipient: string;
+  subject: string;
+  templateName: string;
+  status: NotificationStatusContract;
+  errorMessage: string | null;
+  retryCount: number;
+  maxRetries: number;
+  nextRetryAt: string | null;
+  sentAt: string | null;
+  orderId: string | null;
+  customerId: string | null;
+  createdAt: string;
+}
+
+export interface DocumentRecordDto {
+  id: string;
+  documentNumber: string;
+  orderId: string;
+  documentType: DocumentTypeContract;
+  fileName: string;
+  mimeType: string;
+  fileSize: number;
+  downloadUrl: string;
+  customerId: string | null;
+  createdAt: string;
+}
+
+export interface NotificationQueryDto {
+  status?: NotificationStatusContract;
+  type?: NotificationTypeContract;
+  orderId?: string;
+  page?: number;
+  limit?: number;
+}
+
+export interface NotificationPageDto {
+  items: NotificationRecordDto[];
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
+}

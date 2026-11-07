@@ -13,7 +13,7 @@ import {
 } from '@/components/ui/breadcrumb';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { User, MapPin, LogOut, Building2, LayoutDashboard } from 'lucide-react';
+import { User, MapPin, LogOut, Building2, LayoutDashboard, ShoppingBag } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { logoutUser } from '@/lib/auth';
 import { fetchCustomerProfile } from '@/lib/customer';
@@ -39,6 +39,12 @@ export default function AccountLayout({ children }: { children: React.ReactNode 
       label: 'Account Overview',
       icon: LayoutDashboard,
       active: pathname === '/account',
+    },
+    {
+      href: '/account/orders',
+      label: 'Order History & Returns',
+      icon: ShoppingBag,
+      active: pathname.startsWith('/account/orders'),
     },
     {
       href: '/account/profile',

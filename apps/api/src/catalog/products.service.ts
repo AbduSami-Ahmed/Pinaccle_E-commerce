@@ -351,7 +351,7 @@ export class ProductsService {
     }
 
     // Validate slug uniqueness if changing
-    let updatedSlug = dto.slug;
+    const updatedSlug = dto.slug;
     if (dto.slug && dto.slug !== existing.slug) {
       const slugCollision = await this.prisma.product.findUnique({
         where: { slug: dto.slug },

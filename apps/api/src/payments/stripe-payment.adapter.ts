@@ -177,4 +177,56 @@ export class StripePaymentGatewayAdapter implements PaymentGatewayAdapter {
       rawPayload: event,
     };
   }
+
+  async processRefund(params: {
+    transactionReference: string;
+    amount: number;
+    reason?: string;
+  }): Promise<{ success: boolean; refundTransactionReference: string }> {
+    const amountInCents = Math.round(params.amount * 100);
+
+    if (!this.secretKey) {
+      const simulatedRefund = `re_test_${Date.now().toString(36)}_${crypto.randomBytes(8).toString('hex')}`;
+      this.logger.log(
+        `[Stripe-Simulated] Processed refund ${simulatedRefund} for ${params.transactionReference} ($${params.amount})`,
+      );
+      return {
+        success: true,
+        refundTransactionReference: simulatedRefund,
+      };
+    }
+
+    try {
+      const body = new URLSearchParams({
+        payment_intent: params.transactionReference,
+        amount: amountInCents.toString(),
+      });
+      if (params.reason) {
+        body.append('reason', 'requested_by_customer');
+      }
+
+      const res = await fetch('https://api.stripe.com/v1/refunds', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${this.secretKey}`,
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: body.toString(),
+      });
+
+      const data = (await res.json()) as any;
+      if (!res.ok) {
+        this.logger.error(`Stripe refund failed: ${JSON.stringify(data)}`);
+        throw new Error(data.error?.message || 'Stripe refund failed');
+      }
+
+      return {
+        success: true,
+        refundTransactionReference: data.id,
+      };
+    } catch (err: any) {
+      this.logger.error(`Error processing Stripe refund: ${err.message}`);
+      throw err;
+    }
+  }
 }

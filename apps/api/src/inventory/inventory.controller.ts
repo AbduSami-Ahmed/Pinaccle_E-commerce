@@ -22,8 +22,10 @@ import { StockReservationDto } from './dto/stock-reservation.dto';
 import { InventoryQueryDto } from './dto/inventory-query.dto';
 import {
   AuthenticatedUser,
+  GlobalInventoryMovementDto,
   InventoryItemDto,
   InventoryMovementDto,
+  InventoryMovementType,
   PaginatedResponse,
   ProductStockSummaryDto,
   ReconciliationResultDto,
@@ -56,6 +58,22 @@ export class InventoryController {
     @CurrentUser() user: AuthenticatedUser,
   ): Promise<ProductStockSummaryDto> {
     return this.inventoryService.getProductStockDetails(productId, user);
+  }
+
+  @Get('movements')
+  @RequirePermissions('inventory:stock:view_quantity')
+  @ApiOperation({ summary: 'List recent inventory ledger movements across all products' })
+  async getWarehouseMovements(
+    @Query('movementType') movementType?: InventoryMovementType,
+    @Query('page') page?: number,
+    @Query('limit') limit?: number,
+  ): Promise<{
+    items: GlobalInventoryMovementDto[];
+    total: number;
+    page: number;
+    totalPages: number;
+  }> {
+    return this.inventoryService.getWarehouseMovements({ movementType, page, limit });
   }
 
   @Get('items/:id/movements')

@@ -46,4 +46,10 @@ export interface PaymentGatewayAdapter {
   ): Promise<VerifyWebhookResult>;
 
   confirmPayment?(transactionReference: string): Promise<PaymentIntentResult>;
+
+  processRefund?(params: {
+    transactionReference: string;
+    amount: number;
+    reason?: string;
+  }): Promise<{ success: boolean; refundTransactionReference: string }>;
 }

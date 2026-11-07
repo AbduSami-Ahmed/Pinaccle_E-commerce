@@ -11,6 +11,7 @@ import {
   Mail,
   Calendar,
   Lock,
+  ShoppingBag,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -161,6 +162,31 @@ export default function AccountOverviewPage() {
             </Button>
           </div>
         </div>
+      </div>
+
+      {/* Orders Quick Access Banner */}
+      <div className="rounded-xl border border-blue-200 bg-gradient-to-r from-blue-50/80 to-slate-50 p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="flex items-center gap-3">
+          <div className="h-10 w-10 rounded-lg bg-blue-600 text-white flex items-center justify-center shrink-0">
+            <ShoppingBag className="h-5 w-5" />
+          </div>
+          <div>
+            <h3 className="text-sm font-bold text-slate-900">Your Orders & Tracking</h3>
+            <p className="text-xs text-slate-600">
+              Track courier consignments, verify Gate 2 depot collections, or lodge RMA returns.
+            </p>
+          </div>
+        </div>
+        <Button
+          asChild
+          size="sm"
+          className="bg-slate-900 hover:bg-slate-800 text-white text-xs shrink-0 gap-1.5"
+        >
+          <Link href="/account/orders">
+            <span>View Order History</span>
+            <ArrowRight className="h-3.5 w-3.5" />
+          </Link>
+        </Button>
       </div>
 
       {/* Account Info & Security Boundary Notice */}
