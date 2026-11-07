@@ -13,14 +13,19 @@ import {
   FitmentSearchResultDto,
   PaginatedResponse,
   VehicleChassisDto,
+  VehicleLookupResultDto,
   VehicleMakeDto,
   VehicleModelDto,
 } from '@pinnacle/contracts';
+import { VehicleLookupService } from '../integrations/vehicle-lookup.service';
 
 @ApiTags('Fitment - Customer Vehicle Finder')
 @Controller('fitment')
 export class FitmentController {
-  constructor(private readonly fitmentService: FitmentService) {}
+  constructor(
+    private readonly fitmentService: FitmentService,
+    private readonly vehicleLookupService: VehicleLookupService,
+  ) {}
 
   @Get('makes')
   @Public()
@@ -78,5 +83,28 @@ export class FitmentController {
   @ApiResponse({ status: 200, description: 'Fitment check result with confidence' })
   async checkProductFitment(@Query() query: CheckProductFitmentDto) {
     return this.fitmentService.checkProductFitment(query);
+  }
+
+  @Get('lookup/plate')
+  @Public()
+  @ApiOperation({
+    summary: 'Lookup vehicle specifications by registration plate via vehicle data integration (CarJam / NZTA MVR)',
+  })
+  @ApiResponse({ status: 200, description: 'Normalized vehicle data with mandatory fitment disclaimer' })
+  async lookupByPlate(
+    @Query('plate') plate: string,
+    @Query('country') country?: 'NZ' | 'AU',
+  ): Promise<VehicleLookupResultDto> {
+    return this.vehicleLookupService.lookupVehicle({ plate, country });
+  }
+
+  @Get('lookup/vin')
+  @Public()
+  @ApiOperation({
+    summary: 'Lookup vehicle specifications by 17-character VIN via vehicle data integration',
+  })
+  @ApiResponse({ status: 200, description: 'Normalized vehicle data with mandatory fitment disclaimer' })
+  async lookupByVin(@Query('vin') vin: string): Promise<VehicleLookupResultDto> {
+    return this.vehicleLookupService.lookupVehicle({ vin });
   }
 }

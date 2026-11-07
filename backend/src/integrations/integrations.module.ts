@@ -5,6 +5,9 @@ import { IntegrationsController } from './integrations.controller';
 import { CryptoSecretsService } from './core/crypto-secrets.service';
 import { ProviderRegistryService } from './core/provider-registry.service';
 import { MockIntegrationAdapter } from './adapters/mock-integration.adapter';
+import { MockVehicleAdapter } from './adapters/mock-vehicle.adapter';
+import { CarJamAdapter } from './adapters/carjam.adapter';
+import { VehicleLookupService } from './vehicle-lookup.service';
 
 @Module({
   imports: [PrismaModule],
@@ -14,13 +17,18 @@ import { MockIntegrationAdapter } from './adapters/mock-integration.adapter';
     CryptoSecretsService,
     ProviderRegistryService,
     MockIntegrationAdapter,
+    MockVehicleAdapter,
+    CarJamAdapter,
+    VehicleLookupService,
   ],
   exports: [
     IntegrationsService,
     CryptoSecretsService,
     ProviderRegistryService,
     MockIntegrationAdapter,
+    MockVehicleAdapter,
+    CarJamAdapter,
+    VehicleLookupService,
   ],
 })
 export class IntegrationsModule {}
-

@@ -1,6 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { IntegrationProviderAdapter } from './integration-adapter.interface';
 import { MockIntegrationAdapter } from '../adapters/mock-integration.adapter';
+import { MockVehicleAdapter } from '../adapters/mock-vehicle.adapter';
+import { CarJamAdapter } from '../adapters/carjam.adapter';
 import { IntegrationCapability } from '@pinnacle/contracts';
 
 export interface ProviderDefinition {
@@ -27,6 +29,14 @@ export const KNOWN_PROVIDERS: ProviderDefinition[] = [
       'ORDERS_STATUS_UPDATE',
       'WEBHOOK_INGESTION',
     ],
+  },
+  {
+    key: 'MOCK_VEHICLE_DATA',
+    name: 'Mock Vehicle Data Provider [TEST HARNESS]',
+    description: 'Local test harness for plate and VIN lookups when live NZTA MVR credentials are unprovisioned.',
+    category: 'TEST',
+    isMock: true,
+    capabilities: ['VEHICLE_FITMENT_QUERY'],
   },
   {
     key: 'TRADE_ME',
@@ -102,8 +112,14 @@ export const KNOWN_PROVIDERS: ProviderDefinition[] = [
 export class ProviderRegistryService {
   private readonly adapters = new Map<string, IntegrationProviderAdapter>();
 
-  constructor(private readonly mockAdapter: MockIntegrationAdapter) {
-    this.registerAdapter(this.mockAdapter);
+  constructor(
+    private readonly mockAdapter: MockIntegrationAdapter,
+    private readonly mockVehicleAdapter?: MockVehicleAdapter,
+    private readonly carjamAdapter?: CarJamAdapter,
+  ) {
+    if (this.mockAdapter) this.registerAdapter(this.mockAdapter);
+    if (this.mockVehicleAdapter) this.registerAdapter(this.mockVehicleAdapter);
+    if (this.carjamAdapter) this.registerAdapter(this.carjamAdapter);
   }
 
   registerAdapter(adapter: IntegrationProviderAdapter) {

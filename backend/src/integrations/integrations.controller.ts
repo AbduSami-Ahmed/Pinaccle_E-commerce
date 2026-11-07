@@ -26,6 +26,8 @@ import {
   WebhookIngestionResultDto,
 } from '@pinnacle/contracts';
 import { MockIntegrationAdapter } from './adapters/mock-integration.adapter';
+import { VehicleLookupService } from './vehicle-lookup.service';
+import { VehicleProviderStatusDto } from '@pinnacle/contracts';
 
 @ApiTags('Integrations')
 @Controller('integrations')
@@ -33,6 +35,7 @@ export class IntegrationsController {
   constructor(
     private readonly integrationsService: IntegrationsService,
     private readonly mockAdapter: MockIntegrationAdapter,
+    private readonly vehicleLookupService: VehicleLookupService,
   ) {}
 
   // ---------------------------------------------------------------------------
@@ -156,5 +159,18 @@ export class IntegrationsController {
   ): Promise<WebhookIngestionResultDto> {
     const signed = this.mockAdapter.generateSignedMockWebhook(payload, secret);
     return this.integrationsService.handleWebhook('MOCK_MARKETPLACE', signed.payload, signed.headers);
+  }
+
+  // ---------------------------------------------------------------------------
+  // 6. Vehicle Data Provider Diagnostics
+  // ---------------------------------------------------------------------------
+
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard, PermissionsGuard)
+  @RequirePermissions('system:settings:manage')
+  @Get('vehicle-provider/status')
+  @ApiOperation({ summary: 'Get vehicle data provider connection and blocker status (Admin)' })
+  async getVehicleProviderStatus(): Promise<VehicleProviderStatusDto> {
+    return this.vehicleLookupService.getProviderStatus();
   }
 }

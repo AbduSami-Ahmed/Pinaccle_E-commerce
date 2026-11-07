@@ -1709,3 +1709,54 @@ export interface WebhookIngestionResultDto {
   correlationId: string;
   message?: string;
 }
+
+// ===========================================================================
+// Phase 16A: Vehicle Data Provider Integration
+// ===========================================================================
+
+export const VEHICLE_FITMENT_DISCLAIMER =
+  'Vehicle lookup data is retrieved from official transport authority registration records and identifies vehicle specifications only. Vehicle lookup does not guarantee exact part fitment due to potential model year splits, trim options, or prior vehicle modifications. Always check OEM part numbers, donor VIN, and component specifications before ordering.';
+
+export interface VehicleLookupQueryDto {
+  plate?: string;
+  vin?: string;
+  country?: 'NZ' | 'AU';
+}
+
+export interface VehicleLookupResultDto {
+  found: boolean;
+  plate?: string;
+  vin?: string;
+  make: string;
+  model: string;
+  submodel?: string;
+  year: number;
+  chassisCode?: string;
+  bodyType?: string;
+  engineSpec?: string;
+  ccRating?: number;
+  fuelType?: string;
+  transmission?: string;
+  color?: string;
+  providerKey: string;
+  sourceAttribution: string;
+  cached: boolean;
+  cachedAt?: string;
+  disclaimer: string;
+  matchedChassisId?: string;
+  matchedSelection?: VehicleSelection;
+}
+
+export interface VehicleProviderStatusDto {
+  provider: string;
+  displayName: string;
+  isMock: boolean;
+  status: 'CONNECTED' | 'DISCONNECTED' | 'BLOCKED_MISSING_CREDENTIALS';
+  isLiveConfigured: boolean;
+  blockerReason: string | null;
+  officialDocumentationUrl: string;
+  endpointUrl: string;
+  hasCachedData: boolean;
+  cacheTtlHours: number;
+}
+

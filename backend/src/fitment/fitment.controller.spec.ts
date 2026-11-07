@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { FitmentController } from './fitment.controller';
 import { AdminFitmentController } from './admin-fitment.controller';
 import { FitmentService } from './fitment.service';
+import { VehicleLookupService } from '../integrations/vehicle-lookup.service';
 
 describe('Fitment Controllers', () => {
   let fitmentController: FitmentController;
@@ -17,6 +18,9 @@ describe('Fitment Controllers', () => {
     createFitment: jest.Mock;
     updateVerification: jest.Mock;
     deleteFitment: jest.Mock;
+  };
+  let vehicleLookupService: {
+    lookupVehicle: jest.Mock;
   };
 
   beforeEach(async () => {
@@ -41,9 +45,26 @@ describe('Fitment Controllers', () => {
       deleteFitment: jest.fn().mockResolvedValue({ success: true }),
     };
 
+    vehicleLookupService = {
+      lookupVehicle: jest.fn().mockResolvedValue({
+        found: true,
+        plate: 'HYP360',
+        make: 'Toyota',
+        model: 'RAV4',
+        year: 2021,
+        providerKey: 'CARJAM',
+        sourceAttribution: 'CarJam NZ Transport Agency Motochek Register',
+        cached: false,
+        disclaimer: 'Vehicle lookup does not guarantee exact part fitment.',
+      }),
+    };
+
     const module: TestingModule = await Test.createTestingModule({
       controllers: [FitmentController, AdminFitmentController],
-      providers: [{ provide: FitmentService, useValue: service }],
+      providers: [
+        { provide: FitmentService, useValue: service },
+        { provide: VehicleLookupService, useValue: vehicleLookupService },
+      ],
     }).compile();
 
     fitmentController = module.get<FitmentController>(FitmentController);
@@ -80,6 +101,19 @@ describe('Fitment Controllers', () => {
     it('delegates checkProductFitment to service', async () => {
       await fitmentController.checkProductFitment({ productId: 'p1', make: 'toyota' });
       expect(service.checkProductFitment).toHaveBeenCalledWith({ productId: 'p1', make: 'toyota' });
+    });
+
+    it('delegates lookupByPlate to vehicleLookupService', async () => {
+      const res = await fitmentController.lookupByPlate('HYP360', 'NZ');
+      expect(vehicleLookupService.lookupVehicle).toHaveBeenCalledWith({ plate: 'HYP360', country: 'NZ' });
+      expect(res.found).toBe(true);
+      expect(res.plate).toBe('HYP360');
+    });
+
+    it('delegates lookupByVin to vehicleLookupService', async () => {
+      const res = await fitmentController.lookupByVin('JTMK43FV50D192834');
+      expect(vehicleLookupService.lookupVehicle).toHaveBeenCalledWith({ vin: 'JTMK43FV50D192834' });
+      expect(res.found).toBe(true);
     });
   });
 
