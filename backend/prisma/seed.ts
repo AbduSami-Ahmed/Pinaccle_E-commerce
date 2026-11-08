@@ -1016,6 +1016,36 @@ async function main() {
     update: {},
   });
 
+  await prisma.integrationAccount.upsert({
+    where: { provider_environment: { provider: 'PARTSTRADER', environment: 'sandbox' } },
+    create: {
+      provider: 'PARTSTRADER',
+      name: 'PartsTrader Procurement (NZ)',
+      environment: 'sandbox',
+      status: 'DISCONNECTED',
+      isActive: false,
+      settings: {
+        apiEndpoint: 'https://sandbox.partstrader.co.nz/api/v1',
+      },
+    },
+    update: {},
+  });
+
+  await prisma.integrationAccount.upsert({
+    where: { provider_environment: { provider: 'CAP_EZI', environment: 'sandbox' } },
+    create: {
+      provider: 'CAP_EZI',
+      name: 'CAP Ezi Parts & Interchange Catalogue',
+      environment: 'sandbox',
+      status: 'DISCONNECTED',
+      isActive: false,
+      settings: {
+        apiEndpoint: 'https://sandbox.capezi.infomedia.com.au/v2',
+      },
+    },
+    update: {},
+  });
+
   console.log('------------------------------------------------------------');
   console.log('[Seed] Phase 4 Domain Seed completed successfully! 🎉');
   console.log('------------------------------------------------------------');

@@ -1194,24 +1194,23 @@ export class TradeMeAdapter implements IntegrationProviderAdapter {
   }
 
   private async executeWithRetry<T>(fn: () => Promise<T>, correlationId: string): Promise<T> {
-    let attempt = 0;
-    while (true) {
+    for (let attempt = 0; attempt <= this.MAX_RETRIES; attempt++) {
       try {
         return await fn();
       } catch (err) {
-        attempt++;
         const isTransient = this.isTransientError(err);
-        if (!isTransient || attempt > this.MAX_RETRIES) {
+        if (!isTransient || attempt >= this.MAX_RETRIES) {
           throw err;
         }
 
-        const backoffMs = Math.min(1000 * Math.pow(2, attempt) + Math.random() * 200, 5000);
+        const backoffMs = Math.min(1000 * Math.pow(2, attempt + 1) + Math.random() * 200, 5000);
         this.logger.warn(
-          `[Trade Me] [${correlationId}] Retrying transient error (${(err as Error).message}) in ${Math.round(backoffMs)}ms (attempt ${attempt}/${this.MAX_RETRIES})...`,
+          `[Trade Me] [${correlationId}] Retrying transient error (${(err as Error).message}) in ${Math.round(backoffMs)}ms (attempt ${attempt + 1}/${this.MAX_RETRIES})...`,
         );
         await new Promise((resolve) => setTimeout(resolve, backoffMs));
       }
     }
+    throw new Error(`[Trade Me] [${correlationId}] Exhausted all retry attempts.`);
   }
 
   private isTransientError(err: unknown): boolean {

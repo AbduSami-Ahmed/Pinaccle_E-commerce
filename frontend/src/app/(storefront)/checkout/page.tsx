@@ -567,7 +567,7 @@ export default function CheckoutPage() {
                         <option value="Canterbury">Canterbury</option>
                         <option value="Wellington">Wellington</option>
                         <option value="Northland">Northland</option>
-                        <option value="Hawke's Bay">Hawke's Bay</option>
+                        <option value="Hawke's Bay">Hawke&apos;s Bay</option>
                         <option value="Taranaki">Taranaki</option>
                         <option value="Manawatū-Whanganui">Manawatū-Whanganui</option>
                         <option value="Otago">Otago</option>

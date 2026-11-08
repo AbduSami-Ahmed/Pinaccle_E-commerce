@@ -9,6 +9,8 @@ import { MockVehicleAdapter } from './adapters/mock-vehicle.adapter';
 import { CarJamAdapter } from './adapters/carjam.adapter';
 import { EbayAdapter } from './adapters/ebay.adapter';
 import { TradeMeAdapter } from './adapters/trademe.adapter';
+import { PartsTraderAdapter } from './adapters/partstrader.adapter';
+import { CapEziAdapter } from './adapters/capezi.adapter';
 import { VehicleLookupService } from './vehicle-lookup.service';
 
 @Module({
@@ -23,6 +25,8 @@ import { VehicleLookupService } from './vehicle-lookup.service';
     CarJamAdapter,
     EbayAdapter,
     TradeMeAdapter,
+    PartsTraderAdapter,
+    CapEziAdapter,
     VehicleLookupService,
   ],
   exports: [
@@ -34,6 +38,8 @@ import { VehicleLookupService } from './vehicle-lookup.service';
     CarJamAdapter,
     EbayAdapter,
     TradeMeAdapter,
+    PartsTraderAdapter,
+    CapEziAdapter,
     VehicleLookupService,
   ],
 })

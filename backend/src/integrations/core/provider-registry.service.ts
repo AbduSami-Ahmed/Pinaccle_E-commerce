@@ -5,6 +5,8 @@ import { MockVehicleAdapter } from '../adapters/mock-vehicle.adapter';
 import { CarJamAdapter } from '../adapters/carjam.adapter';
 import { EbayAdapter } from '../adapters/ebay.adapter';
 import { TradeMeAdapter } from '../adapters/trademe.adapter';
+import { PartsTraderAdapter } from '../adapters/partstrader.adapter';
+import { CapEziAdapter } from '../adapters/capezi.adapter';
 import { IntegrationCapability } from '@pinnacle/contracts';
 
 export interface ProviderDefinition {
@@ -97,6 +99,7 @@ export const KNOWN_PROVIDERS: ProviderDefinition[] = [
     capabilities: [
       'ORDERS_IMPORT',
       'ORDERS_STATUS_UPDATE',
+      'WEBHOOK_INGESTION',
     ],
   },
   {
@@ -122,12 +125,16 @@ export class ProviderRegistryService {
     private readonly carjamAdapter?: CarJamAdapter,
     private readonly ebayAdapter?: EbayAdapter,
     private readonly tradeMeAdapter?: TradeMeAdapter,
+    private readonly partsTraderAdapter?: PartsTraderAdapter,
+    private readonly capEziAdapter?: CapEziAdapter,
   ) {
     if (this.mockAdapter) this.registerAdapter(this.mockAdapter);
     if (this.mockVehicleAdapter) this.registerAdapter(this.mockVehicleAdapter);
     if (this.carjamAdapter) this.registerAdapter(this.carjamAdapter);
     if (this.ebayAdapter) this.registerAdapter(this.ebayAdapter);
     if (this.tradeMeAdapter) this.registerAdapter(this.tradeMeAdapter);
+    if (this.partsTraderAdapter) this.registerAdapter(this.partsTraderAdapter);
+    if (this.capEziAdapter) this.registerAdapter(this.capEziAdapter);
   }
 
   registerAdapter(adapter: IntegrationProviderAdapter) {
