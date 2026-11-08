@@ -68,7 +68,7 @@ describe('CartService', () => {
         id: 'cart-1',
         sessionToken: 'sess-abc',
         customerId: 'cust-1',
-        currency: 'AUD',
+        currency: 'NZD',
         expiresAt: new Date(Date.now() + 100000),
         updatedAt: now,
         items: [
@@ -118,7 +118,7 @@ describe('CartService', () => {
       expect(item.isAvailable).toBe(true);
       expect(item.maxAvailableQuantity).toBe(8); // floor(16 sellable / 2)
       expect(cartDto.totals.subtotal).toBe(580.0);
-      expect(cartDto.totals.taxIncluded).toBe(52.73); // 580 * 10 / 110
+      expect(cartDto.totals.taxIncluded).toBe(75.65); // 580 * 15 / 115
     });
   });
 

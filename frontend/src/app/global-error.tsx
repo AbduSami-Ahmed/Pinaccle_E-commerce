@@ -63,10 +63,10 @@ export default function GlobalError({
 
           <div className="mt-8 pt-6 border-t border-slate-700/80 flex flex-wrap items-center justify-center gap-6 text-xs text-slate-400">
             <span className="inline-flex items-center gap-1.5">
-              <Phone className="h-3.5 w-3.5 text-amber-400" /> 1300 PINNACLE
+              <Phone className="h-3.5 w-3.5 text-amber-400" /> 0800 PINNACLE
             </span>
             <span className="inline-flex items-center gap-1.5">
-              <Mail className="h-3.5 w-3.5 text-amber-400" /> trade@pinnacleparts.com.au
+              <Mail className="h-3.5 w-3.5 text-amber-400" /> trade@pinnacleparts.co.nz
             </span>
           </div>
         </div>

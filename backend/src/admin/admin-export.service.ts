@@ -33,7 +33,7 @@ export class AdminExportService {
 
     const headers = [
       'Order Number',
-      'Date (AEST/UTC)',
+      'Date (NZST/UTC)',
       'Customer Name',
       'Customer Email',
       'Phone Number',
@@ -51,7 +51,7 @@ export class AdminExportService {
       const rawName = `${addr.firstName || ''} ${addr.lastName || ''}`.trim() || 'Customer';
       const isClickAndCollect =
         addr.company?.includes('Click & Collect') ||
-        (addr.city === 'Prestons' && addr.postalCode === '2170');
+        ((addr.city === 'Auckland' || addr.city === 'Penrose') && addr.postalCode === '1061');
       const shippingMethod = isClickAndCollect ? 'CLICK_AND_COLLECT' : 'STANDARD_COURIER';
 
       const customerName = hasPii ? rawName : this.maskName(rawName);
@@ -234,6 +234,6 @@ export class AdminExportService {
     if (!phone) return 'N/A';
     const digits = phone.replace(/\D/g, '');
     if (digits.length <= 4) return '••••';
-    return `+61 •••• •••• ${digits.slice(-4)}`;
+    return `+64 •••• •••• ${digits.slice(-4)}`;
   }
 }

@@ -524,8 +524,8 @@ export class StorefrontService {
       activeSerialized?.locationBin || primaryInventory?.locationBin || 'Bay B-04 / Rack T-12';
 
     const warehouseLocation = {
-      name: primaryWarehouse ? primaryWarehouse.name : 'Sydney Central Depot (Prestons NSW)',
-      depotCode: primaryWarehouse?.code || 'SYD-CENTRAL',
+      name: primaryWarehouse ? primaryWarehouse.name : 'Auckland Central Fulfillment Centre (Penrose)',
+      depotCode: primaryWarehouse?.code || 'AKL-CENTRAL',
       bay: primaryBay,
       pickupAvailable: true,
       pickupLeadTime: 'Ready in 30 minutes for trade collection',
@@ -571,16 +571,16 @@ export class StorefrontService {
     return {
       ...baseSummary,
       description: product.description,
-      currency: 'AUD',
+      currency: 'NZD',
       allMedia,
       fitments,
       serializedItem,
       warehouseLocation,
       shippingInfo: {
         standardDispatch:
-          'Orders confirmed before 2:00 PM AEST dispatch same day via StarTrack or TNT Express.',
+          'Orders confirmed before 2:00 PM NZST dispatch same day via CourierPost or Mainfreight Express.',
         expressCourier:
-          'Courier delivery typically 1–2 business days across NSW, ACT, VIC, and QLD metro.',
+          'Courier delivery typically 1–2 business days across North and South Island metro hubs.',
         cutoffTimeAEST: '14:00',
       },
       warrantyAndReturns: {

@@ -65,7 +65,7 @@ export default function AdminMovementLedgerPage() {
             Warehouse Movement Ledger
           </h1>
           <p className="text-xs text-slate-500 mt-1">
-            Complete physical inventory transaction audit trail across Prestons hub and Gate 2 dispatch.
+            Complete physical inventory transaction audit trail across Auckland Penrose hub and trade counter dispatch.
           </p>
         </div>
 
@@ -121,7 +121,7 @@ export default function AdminMovementLedgerPage() {
             <table className="w-full text-left text-xs">
               <thead className="bg-slate-50 border-b border-slate-200 text-slate-500 uppercase tracking-wider font-semibold">
                 <tr>
-                  <th className="py-3 px-4">Timestamp (AEST)</th>
+                  <th className="py-3 px-4">Timestamp (NZST)</th>
                   <th className="py-3 px-4">Part / Product</th>
                   <th className="py-3 px-4">Movement Type</th>
                   <th className="py-3 px-4 text-center">Qty Change</th>
@@ -181,7 +181,7 @@ export default function AdminMovementLedgerPage() {
                       </td>
 
                       <td className="py-3 px-4 font-mono text-[11px] text-slate-600">
-                        {mov.warehouseCode || 'PRESTONS-HUB'}
+                        {mov.warehouseCode || 'AKL-CENTRAL'}
                       </td>
 
                       <td className="py-3 px-4 text-slate-700">

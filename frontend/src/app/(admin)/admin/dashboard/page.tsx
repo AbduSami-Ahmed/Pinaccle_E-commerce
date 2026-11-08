@@ -71,11 +71,11 @@ export default function AdminDashboardPage() {
               Operations & Performance
             </h1>
             <Badge variant="outline" className="font-mono text-xs font-medium text-slate-600">
-              NSW MVRL-58291
+              NZ MVD-89211
             </Badge>
           </div>
           <p className="text-sm text-slate-500 mt-1">
-            Real-time trade telemetry for Prestons depot, commercial inventory, and order fulfilment.
+            Real-time trade telemetry for Auckland Penrose depot, commercial inventory, and order fulfilment.
           </p>
         </div>
 
@@ -161,11 +161,11 @@ export default function AdminDashboardPage() {
             <Calendar className="h-3.5 w-3.5 text-slate-400" />
             <span>
               Reporting Period: <strong>{summary.period.label}</strong> (
-              {new Date(summary.period.startDate).toLocaleDateString('en-AU')} &ndash;{' '}
-              {new Date(summary.period.endDate).toLocaleDateString('en-AU')})
+              {new Date(summary.period.startDate).toLocaleDateString('en-NZ')} &ndash;{' '}
+              {new Date(summary.period.endDate).toLocaleDateString('en-NZ')})
             </span>
           </div>
-          <span className="font-mono text-slate-400">Currency: {summary.sales.currency} ($AUD)</span>
+          <span className="font-mono text-slate-400">Currency: {summary.sales.currency} ($NZD)</span>
         </div>
       )}
 
@@ -183,7 +183,7 @@ export default function AdminDashboardPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold font-mono tracking-tight text-slate-900">
-              ${summary?.sales.grossRevenue.toLocaleString('en-AU', { minimumFractionDigits: 2 }) ?? '—'}
+              ${summary?.sales.grossRevenue.toLocaleString('en-NZ', { minimumFractionDigits: 2 }) ?? '—'}
             </div>
             <p className="text-[11px] text-slate-500 mt-1">
               From <strong>{summary?.sales.paidOrdersCount ?? 0}</strong> confirmed paid orders
@@ -203,7 +203,7 @@ export default function AdminDashboardPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold font-mono tracking-tight text-emerald-700">
-              ${summary?.sales.netRevenue.toLocaleString('en-AU', { minimumFractionDigits: 2 }) ?? '—'}
+              ${summary?.sales.netRevenue.toLocaleString('en-NZ', { minimumFractionDigits: 2 }) ?? '—'}
             </div>
             <p className="text-[11px] text-slate-500 mt-1">
               After <strong>${summary?.sales.refundedAmount.toFixed(2) ?? '0.00'}</strong> refunds deducted
@@ -309,7 +309,7 @@ export default function AdminDashboardPage() {
             className="group flex flex-col justify-between p-4 rounded-lg border border-slate-200 bg-white hover:border-emerald-400 hover:shadow-xs transition-all"
           >
             <div className="flex items-center justify-between">
-              <span className="text-xs font-medium text-slate-600">In Transit (StarTrack / AusPost)</span>
+              <span className="text-xs font-medium text-slate-600">In Transit (CourierPost / Mainfreight)</span>
               <Truck className="h-4 w-4 text-emerald-600" />
             </div>
             <div className="mt-3 flex items-baseline justify-between">
@@ -597,12 +597,12 @@ export default function AdminDashboardPage() {
                     </Link>
                     <span className="text-slate-500 ml-2">{ord.customerName}</span>
                     <span className="block font-mono text-[10px] text-slate-400">
-                      {new Date(ord.createdAt).toLocaleTimeString('en-AU', {
+                      {new Date(ord.createdAt).toLocaleTimeString('en-NZ', {
                         hour: '2-digit',
                         minute: '2-digit',
                       })}
                       {' &bull; '}
-                      {ord.shippingMethod === 'CLICK_AND_COLLECT' ? 'Gate 2 Pickup' : 'StarTrack Delivery'}
+                      {ord.shippingMethod === 'CLICK_AND_COLLECT' ? 'Trade Hub Pickup' : 'Courier Delivery'}
                     </span>
                   </div>
 

@@ -251,7 +251,7 @@ export default function AdminReceiveStockPage() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
-                  Unit Cost Price ($ AUD) *
+                  Unit Cost Price ($ NZD) *
                 </label>
                 <div className="relative">
                   <span className="absolute left-3 top-2 text-sm text-slate-400 font-medium">

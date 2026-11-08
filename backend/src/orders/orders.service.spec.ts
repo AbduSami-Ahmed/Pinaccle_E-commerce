@@ -14,7 +14,7 @@ describe('OrdersService', () => {
 
   const mockAdminUser: AuthenticatedUser = {
     sub: 'staff-admin-uuid-1',
-    email: 'ops@pinnacle.com.au',
+    email: 'ops@pinnacleparts.co.nz',
     isStaff: true,
     permissions: [
       'orders:view:all',
@@ -32,7 +32,7 @@ describe('OrdersService', () => {
 
   const mockRestrictedStaff: AuthenticatedUser = {
     sub: 'staff-restricted-uuid-2',
-    email: 'support@pinnacle.com.au',
+    email: 'support@pinnacleparts.co.nz',
     isStaff: true,
     permissions: ['orders:view:all', 'returns:view:all'],
     // Note: lacks 'customers:view:pii_contact'
@@ -42,23 +42,23 @@ describe('OrdersService', () => {
     id: 'order-uuid-1',
     orderNumber: 'PIN-2026-10042',
     customerId: 'cust-uuid-1',
-    customerEmail: 'jordan.miller@example.com',
-    customerPhone: '0412345678',
+    customerEmail: 'jordan.miller@example.co.nz',
+    customerPhone: '021890123',
     shippingAddress: {
       name: 'Jordan Miller',
-      line1: '42 Macquarie Street',
-      city: 'Parramatta',
-      state: 'NSW',
-      postalCode: '2150',
-      country: 'AU',
+      line1: '18 Industry Road',
+      city: 'Penrose',
+      state: 'Auckland',
+      postalCode: '1061',
+      country: 'NZ',
     },
     billingAddress: {
       name: 'Jordan Miller',
-      line1: '42 Macquarie Street',
-      city: 'Parramatta',
-      state: 'NSW',
-      postalCode: '2150',
-      country: 'AU',
+      line1: '18 Industry Road',
+      city: 'Penrose',
+      state: 'Auckland',
+      postalCode: '1061',
+      country: 'NZ',
     },
     orderStatus: 'PENDING_PAYMENT',
     paymentStatus: 'UNPAID',
@@ -68,7 +68,7 @@ describe('OrdersService', () => {
     shippingFee: 25.0,
     taxAmount: 34.09,
     totalAmount: 375.0,
-    currency: 'AUD',
+    currency: 'NZD',
     notes: 'Please leave at front door if unattended',
     createdAt: new Date('2026-11-01T10:00:00Z'),
     updatedAt: new Date('2026-11-01T10:00:00Z'),
@@ -170,9 +170,9 @@ describe('OrdersService', () => {
       const result = await service.getOrders({ page: 1, pageSize: 20 }, mockAdminUser);
 
       expect(result.data).toHaveLength(1);
-      expect(result.data[0]!.customerEmail).toBe('jordan.miller@example.com');
-      expect(result.data[0]!.customerPhone).toBe('0412345678');
-      expect(result.data[0]!.shippingAddress.line1).toBe('42 Macquarie Street');
+      expect(result.data[0]!.customerEmail).toBe('jordan.miller@example.co.nz');
+      expect(result.data[0]!.customerPhone).toBe('021890123');
+      expect(result.data[0]!.shippingAddress.line1).toBe('18 Industry Road');
       expect(result.data[0]!.isPiiMasked).toBe(false);
     });
 
@@ -183,8 +183,8 @@ describe('OrdersService', () => {
       const result = await service.getOrders({ page: 1, pageSize: 20 }, mockRestrictedStaff);
 
       expect(result.data).toHaveLength(1);
-      expect(result.data[0]!.customerEmail).toBe('jo***@***.com');
-      expect(result.data[0]!.customerPhone).toBe('0412***78');
+      expect(result.data[0]!.customerEmail).toBe('jo***@***.nz');
+      expect(result.data[0]!.customerPhone).toBe('0218***23');
       expect(result.data[0]!.shippingAddress.line1).toBe('*** (Protected Contact Info)');
       expect(result.data[0]!.isPiiMasked).toBe(true);
     });
@@ -247,13 +247,13 @@ describe('OrdersService', () => {
       expect(res.orderStatus).toBe('PROCESSING');
     });
 
-    it('dispatches courier shipment with StarTrack tracking and transitions order to SHIPPED', async () => {
+    it('dispatches courier shipment with CourierPost tracking and transitions order to SHIPPED', async () => {
       const processingOrder = { ...sampleOrder, orderStatus: 'PROCESSING' };
       prisma.order.findUnique.mockResolvedValue(processingOrder);
       prisma.shipment.create.mockResolvedValue({
         id: 'shipment-uuid-1',
-        carrierName: 'StarTrack Express',
-        trackingNumber: 'STAR-100234',
+        carrierName: 'CourierPost / NZ Post',
+        trackingNumber: 'NZP-100234',
         status: 'IN_TRANSIT',
       });
       prisma.order.findFirst.mockResolvedValue({
@@ -263,9 +263,9 @@ describe('OrdersService', () => {
         shipments: [
           {
             id: 'shipment-uuid-1',
-            carrierName: 'StarTrack Express',
-            trackingNumber: 'STAR-100234',
-            trackingUrl: 'https://startrack.com.au/track/search?id=STAR-100234',
+            carrierName: 'CourierPost / NZ Post',
+            trackingNumber: 'NZP-100234',
+            trackingUrl: 'https://www.nzpost.co.nz/tools/tracking?track=NZP-100234',
             status: 'IN_TRANSIT',
             createdAt: new Date(),
             items: [],
@@ -275,16 +275,16 @@ describe('OrdersService', () => {
 
       await service.dispatchCourierShipment(
         'order-uuid-1',
-        { carrierName: 'StarTrack Express', trackingNumber: 'STAR-100234' },
+        { carrierName: 'CourierPost / NZ Post', trackingNumber: 'NZP-100234' },
         mockAdminUser.sub,
       );
 
       expect(prisma.shipment.create).toHaveBeenCalledWith(
         expect.objectContaining({
           data: expect.objectContaining({
-            carrierName: 'StarTrack Express',
-            trackingNumber: 'STAR-100234',
-            trackingUrl: 'https://startrack.com.au/track/search?id=STAR-100234',
+            carrierName: 'CourierPost / NZ Post',
+            trackingNumber: 'NZP-100234',
+            trackingUrl: 'https://www.nzpost.co.nz/tools/tracking?track=NZP-100234',
             status: 'IN_TRANSIT',
           }),
         }),
@@ -299,12 +299,12 @@ describe('OrdersService', () => {
       );
     });
 
-    it('verifies click & collect depot collection at Prestons counter and marks DELIVERED', async () => {
+    it('verifies click & collect depot collection at Auckland Penrose counter and marks DELIVERED', async () => {
       const processingOrder = { ...sampleOrder, orderStatus: 'PROCESSING' };
       prisma.order.findUnique.mockResolvedValue(processingOrder);
       prisma.shipment.create.mockResolvedValue({
         id: 'depot-shipment-1',
-        carrierName: 'Customer Depot Collection (Gate 2 Trade Counter, Prestons NSW)',
+        carrierName: 'Customer Depot Collection (Trade Counter, Penrose Auckland)',
         trackingNumber: 'DEPOT-COLLECT-10042',
         status: 'DELIVERED',
       });
@@ -315,7 +315,7 @@ describe('OrdersService', () => {
         shipments: [
           {
             id: 'depot-shipment-1',
-            carrierName: 'Customer Depot Collection (Gate 2 Trade Counter, Prestons NSW)',
+            carrierName: 'Customer Depot Collection (Trade Counter, Penrose Auckland)',
             trackingNumber: 'DEPOT-COLLECT-10042',
             status: 'DELIVERED',
             createdAt: new Date(),
@@ -328,7 +328,7 @@ describe('OrdersService', () => {
         'order-uuid-1',
         {
           collectedBy: 'Jordan Miller',
-          idDocumentType: 'NSW Driver Licence',
+          idDocumentType: 'NZ Driver Licence',
           idReferenceLast4: '8842',
         },
         mockAdminUser.sub,
@@ -483,7 +483,7 @@ describe('OrdersService', () => {
 
       const res = await service.reviewReturnRequest(
         'rma-uuid-1',
-        { action: 'APPROVE', staffNotes: 'Approved for return to Prestons depot' },
+        { action: 'APPROVE', staffNotes: 'Approved for return to Auckland depot' },
         mockAdminUser.sub,
       );
 

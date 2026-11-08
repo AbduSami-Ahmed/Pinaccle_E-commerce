@@ -62,7 +62,7 @@ describe('MockIntegrationAdapter', () => {
       externalId: 'EXT-ORD-4488',
       data: {
         total: 890.0,
-        currency: 'AUD',
+        currency: 'NZD',
       },
     };
 

@@ -138,8 +138,8 @@ export default async function UniversalSearchPage({ searchParams }: SearchPagePr
             or vehicle like &ldquo;Toyota RAV4&rdquo;.
           </p>
           <p className="mt-2 text-xs text-slate-600">
-            Can&apos;t find your part? Call our Prestons yard on{' '}
-            <strong className="text-slate-900">(02) 9822 4100</strong> — fresh donor vehicles arrive
+            Can&apos;t find your part? Call our Auckland Penrose yard on{' '}
+            <strong className="text-slate-900">0800 PINNACLE</strong> — fresh donor vehicles arrive
             weekly.
           </p>
           <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
@@ -149,10 +149,10 @@ export default async function UniversalSearchPage({ searchParams }: SearchPagePr
               </Link>
             </Button>
             <a
-              href="tel:0298224100"
+              href="tel:0800746622"
               className="inline-flex items-center gap-1.5 rounded-md bg-blue-700 px-3 py-1.5 text-xs font-semibold text-white hover:bg-blue-800 transition-colors"
             >
-              Call Parts Desk: (02) 9822 4100
+              Call Parts Desk: 0800 PINNACLE
             </a>
           </div>
         </div>

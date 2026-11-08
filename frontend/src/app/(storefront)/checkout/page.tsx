@@ -48,7 +48,7 @@ export default function CheckoutPage() {
   const [addressLine1, setAddressLine1] = useState('');
   const [addressLine2, setAddressLine2] = useState('');
   const [city, setCity] = useState('');
-  const [state, setState] = useState('NSW');
+  const [state, setState] = useState('Auckland');
   const [postalCode, setPostalCode] = useState('');
   const [deliveryNotes, setDeliveryNotes] = useState('');
 
@@ -109,7 +109,7 @@ export default function CheckoutPage() {
         ? 45.0
         : 25.0;
   const grossTotal = Number((subtotal + shippingFee).toFixed(2));
-  const taxIncluded = Number((subtotal * (10 / 110)).toFixed(2));
+  const taxIncluded = Number((subtotal * (15 / 115)).toFixed(2));
 
   // Handle Form Submit & Payment
   async function handleSubmitCheckout(e: React.FormEvent) {
@@ -139,7 +139,7 @@ export default function CheckoutPage() {
           city,
           state,
           postalCode,
-          country: 'AU',
+          country: 'NZ',
         },
       });
 
@@ -163,12 +163,12 @@ export default function CheckoutPage() {
             ? {
                 firstName,
                 lastName,
-                company: 'Click & Collect (Sydney Depot)',
+                company: 'Click & Collect (Auckland Trade Hub)',
                 line1: DEPOT_ADDRESS.line1,
                 city: DEPOT_ADDRESS.city,
                 state: DEPOT_ADDRESS.state,
                 postalCode: DEPOT_ADDRESS.postalCode,
-                country: 'AU',
+                country: 'NZ',
                 phone,
                 deliveryNotes: DEPOT_ADDRESS.instructions,
               }
@@ -180,7 +180,7 @@ export default function CheckoutPage() {
                 city,
                 state,
                 postalCode,
-                country: 'AU',
+                country: 'NZ',
                 phone,
                 deliveryNotes: deliveryNotes || undefined,
               },
@@ -273,7 +273,7 @@ export default function CheckoutPage() {
             <div>
               <p className="text-sm font-semibold text-amber-200">Temporary Stock Hold Active</p>
               <p className="text-xs text-amber-300/80">
-                Your items are reserved in our Prestons depot inventory for{' '}
+                Your items are reserved in our Auckland Penrose depot inventory for{' '}
                 <span className="font-mono font-bold text-amber-100">
                   {formatTime(secondsRemaining)}
                 </span>{' '}
@@ -351,7 +351,7 @@ export default function CheckoutPage() {
                       required
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      placeholder="e.g. brett@workshop.com.au"
+                      placeholder="e.g. brett@workshop.co.nz"
                       className="w-full bg-slate-950 border border-slate-800 rounded-lg pl-9.5 pr-3.5 py-2 text-sm text-white focus:outline-none focus:border-amber-500"
                     />
                   </div>
@@ -367,7 +367,7 @@ export default function CheckoutPage() {
                       required
                       value={phone}
                       onChange={(e) => setPhone(e.target.value)}
-                      placeholder="e.g. 0412 889 900"
+                      placeholder="e.g. 021 889 900 or 0800 PINNACLE"
                       className="w-full bg-slate-950 border border-slate-800 rounded-lg pl-9.5 pr-3.5 py-2 text-sm text-white focus:outline-none focus:border-amber-500"
                     />
                   </div>
@@ -384,7 +384,7 @@ export default function CheckoutPage() {
                   </span>
                   Fulfilment & Delivery Method
                 </h2>
-                <span className="text-xs text-slate-400">Prestons NSW Depot Dispatch</span>
+                <span className="text-xs text-slate-400">Auckland Penrose Hub Dispatch</span>
               </div>
 
               <div className="space-y-3 mb-6">
@@ -409,14 +409,14 @@ export default function CheckoutPage() {
                       <div className="flex items-center gap-2">
                         <MapPin className="w-4 h-4 text-amber-400" />
                         <span className="font-semibold text-sm">
-                          Click & Collect (Sydney Trade Depot)
+                          Click & Collect (Auckland Trade Hub)
                         </span>
                         <span className="text-[10px] bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded font-mono font-bold">
                           FREE
                         </span>
                       </div>
                       <p className="text-xs text-slate-400 mt-1">
-                        42 Jedda Road, Prestons NSW 2170 — Ready in 2 business hours.
+                        18 Industry Road, Penrose, Auckland 1061 — Ready in 2 business hours.
                       </p>
                     </div>
                   </div>
@@ -449,7 +449,7 @@ export default function CheckoutPage() {
                         </span>
                       </div>
                       <p className="text-xs text-slate-400 mt-1">
-                        StarTrack / TNT road freight direct to your workshop or commercial bay.
+                        CourierPost / Mainfreight road delivery direct to your workshop across North & South Islands.
                       </p>
                     </div>
                   </div>
@@ -548,27 +548,35 @@ export default function CheckoutPage() {
                         required
                         value={city}
                         onChange={(e) => setCity(e.target.value)}
-                        placeholder="e.g. Liverpool"
+                        placeholder="e.g. Penrose, Auckland"
                         className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3.5 py-2 text-sm text-white focus:outline-none focus:border-amber-500"
                       />
                     </div>
                     <div>
                       <label className="block text-xs font-medium text-slate-300 mb-1.5">
-                        State <span className="text-amber-400">*</span>
+                        Region <span className="text-amber-400">*</span>
                       </label>
                       <select
                         value={state}
                         onChange={(e) => setState(e.target.value)}
                         className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3.5 py-2 text-sm text-white focus:outline-none focus:border-amber-500"
                       >
-                        <option value="NSW">NSW</option>
-                        <option value="VIC">VIC</option>
-                        <option value="QLD">QLD</option>
-                        <option value="WA">WA</option>
-                        <option value="SA">SA</option>
-                        <option value="TAS">TAS</option>
-                        <option value="ACT">ACT</option>
-                        <option value="NT">NT</option>
+                        <option value="Auckland">Auckland</option>
+                        <option value="Waikato">Waikato</option>
+                        <option value="Bay of Plenty">Bay of Plenty</option>
+                        <option value="Canterbury">Canterbury</option>
+                        <option value="Wellington">Wellington</option>
+                        <option value="Northland">Northland</option>
+                        <option value="Hawke's Bay">Hawke's Bay</option>
+                        <option value="Taranaki">Taranaki</option>
+                        <option value="Manawatū-Whanganui">Manawatū-Whanganui</option>
+                        <option value="Otago">Otago</option>
+                        <option value="Southland">Southland</option>
+                        <option value="Tasman">Tasman</option>
+                        <option value="Nelson">Nelson</option>
+                        <option value="Marlborough">Marlborough</option>
+                        <option value="West Coast">West Coast</option>
+                        <option value="Gisborne">Gisborne</option>
                       </select>
                     </div>
                     <div>
@@ -580,7 +588,7 @@ export default function CheckoutPage() {
                         required
                         value={postalCode}
                         onChange={(e) => setPostalCode(e.target.value)}
-                        placeholder="e.g. 2170"
+                        placeholder="e.g. 1061"
                         className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3.5 py-2 text-sm text-white focus:outline-none focus:border-amber-500"
                       />
                     </div>
@@ -712,7 +720,7 @@ export default function CheckoutPage() {
 
               <div className="mt-4 pt-4 border-t border-slate-800/80 flex items-center justify-between text-xs text-slate-500">
                 <span>Raw card numbers are never stored on Pinnacle servers.</span>
-                <span>Licensed Recycler MVRL-58291</span>
+                <span>Registered Motor Vehicle Trader MVD-89211</span>
               </div>
             </div>
           </div>
@@ -764,7 +772,7 @@ export default function CheckoutPage() {
                       </div>
                       <p className="text-[11px] text-slate-400 mt-1">
                         Qty: <strong className="text-slate-200">{item.quantity}</strong> &times; $
-                        {item.unitPrice.toFixed(2)} AUD
+                        {item.unitPrice.toFixed(2)} NZD
                       </p>
                     </div>
 
@@ -781,7 +789,7 @@ export default function CheckoutPage() {
               <div className="space-y-2.5 pt-4 border-t border-slate-800 text-sm">
                 <div className="flex justify-between text-slate-400">
                   <span>Items Subtotal</span>
-                  <span className="font-mono text-slate-200">${subtotal.toFixed(2)} AUD</span>
+                  <span className="font-mono text-slate-200">${subtotal.toFixed(2)} NZD</span>
                 </div>
                 <div className="flex justify-between text-slate-400">
                   <span className="flex items-center gap-1.5">
@@ -794,25 +802,25 @@ export default function CheckoutPage() {
                     {shippingFee === 0 ? (
                       <span className="text-emerald-400 font-bold">FREE</span>
                     ) : (
-                      `$${shippingFee.toFixed(2)} AUD`
+                      `$${shippingFee.toFixed(2)} NZD`
                     )}
                   </span>
                 </div>
                 <div className="flex justify-between text-xs text-slate-400">
-                  <span>Statutory GST Included (10%)</span>
-                  <span className="font-mono text-slate-300">${taxIncluded.toFixed(2)} AUD</span>
+                  <span>Statutory GST Included (15% NZ IRD)</span>
+                  <span className="font-mono text-slate-300">${taxIncluded.toFixed(2)} NZD</span>
                 </div>
 
                 <div className="pt-3 border-t border-slate-800 flex justify-between items-baseline">
                   <div>
                     <span className="text-base font-bold text-white">Total Amount</span>
-                    <p className="text-[11px] text-slate-400">Tax-Inclusive (AUD)</p>
+                    <p className="text-[11px] text-slate-400">Tax-Inclusive (NZD)</p>
                   </div>
                   <div className="text-right">
                     <span className="text-2xl font-black font-mono text-amber-400">
                       ${grossTotal.toFixed(2)}
                     </span>
-                    <span className="text-xs text-slate-400 ml-1">AUD</span>
+                    <span className="text-xs text-slate-400 ml-1">NZD</span>
                   </div>
                 </div>
               </div>
@@ -831,7 +839,7 @@ export default function CheckoutPage() {
                 ) : (
                   <>
                     <Lock className="w-4 h-4" />
-                    <span>Pay ${grossTotal.toFixed(2)} AUD & Confirm Order</span>
+                    <span>Pay ${grossTotal.toFixed(2)} NZD & Confirm Order</span>
                   </>
                 )}
               </button>
@@ -840,11 +848,11 @@ export default function CheckoutPage() {
               <div className="pt-2 border-t border-slate-800/80 space-y-1.5 text-[11px] text-slate-400">
                 <div className="flex items-center gap-2">
                   <Check className="w-3.5 h-3.5 text-emerald-400" />
-                  <span>Licensed NSW Motor Vehicle Recycler (MVRL-58291)</span>
+                  <span>Registered New Zealand Motor Vehicle Trader (MVD-89211)</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Check className="w-3.5 h-3.5 text-emerald-400" />
-                  <span>Tax Invoice generated with ATO ABN verification</span>
+                  <span>Tax Invoice generated with NZ IRD GST &amp; NZBN compliance</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Check className="w-3.5 h-3.5 text-emerald-400" />

@@ -111,7 +111,7 @@ describe('AdminDashboardService', () => {
       expect(summary.sales.totalOrdersCount).toBe(4);
       // AOV: 500 / 3 = 166.67
       expect(summary.sales.averageOrderValue).toBe(166.67);
-      expect(summary.sales.currency).toBe('AUD');
+      expect(summary.sales.currency).toBe('NZD');
 
       // Stock health
       expect(summary.stockHealth.totalPublishedProducts).toBe(2);

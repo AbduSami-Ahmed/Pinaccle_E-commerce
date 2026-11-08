@@ -157,7 +157,7 @@ export default function CustomerOrdersHistoryPage() {
                   </div>
                   <div className="text-xs text-slate-500">
                     Ordered on{' '}
-                    {new Date(order.createdAt).toLocaleDateString('en-AU', {
+                    {new Date(order.createdAt).toLocaleDateString('en-NZ', {
                       day: '2-digit',
                       month: 'short',
                       year: 'numeric',
@@ -190,7 +190,7 @@ export default function CustomerOrdersHistoryPage() {
                   <div className="flex items-center gap-2 text-slate-600">
                     {isClickAndCollect ? (
                       <span className="inline-flex items-center gap-1 font-medium text-amber-800 bg-amber-50 px-2 py-0.5 rounded border border-amber-200">
-                        <Boxes className="h-3 w-3" /> Trade Counter Pickup (Prestons NSW Gate 2)
+                        <Boxes className="h-3 w-3" /> Trade Counter Pickup (Auckland Penrose Hub)
                       </span>
                     ) : (
                       <span className="inline-flex items-center gap-1 text-slate-600">
@@ -210,7 +210,7 @@ export default function CustomerOrdersHistoryPage() {
                     <div className="text-right">
                       <span className="text-slate-500 text-[11px] block">Order Total</span>
                       <span className="font-mono font-bold text-slate-900 text-sm">
-                        ${order.totalAmount.toFixed(2)} AUD
+                        ${order.totalAmount.toFixed(2)} NZD
                       </span>
                     </div>
 

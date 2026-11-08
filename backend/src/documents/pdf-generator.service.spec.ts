@@ -14,20 +14,20 @@ describe('PdfGeneratorService', () => {
       date: new Date('2026-10-14T08:00:00Z'),
       status: 'PAID',
       customerName: 'Marcus Vance',
-      customerEmail: 'marcus.vance@example.com.au',
+      customerEmail: 'marcus.vance@example.co.nz',
       billingAddress: {
-        line1: '12 Pioneer Way',
-        city: 'Liverpool',
-        state: 'NSW',
-        postalCode: '2170',
-        country: 'Australia',
+        line1: '18 Industry Road',
+        city: 'Penrose',
+        state: 'Auckland',
+        postalCode: '1061',
+        country: 'New Zealand',
       },
       shippingAddress: {
-        line1: '12 Pioneer Way',
-        city: 'Liverpool',
-        state: 'NSW',
-        postalCode: '2170',
-        country: 'Australia',
+        line1: '18 Industry Road',
+        city: 'Penrose',
+        state: 'Auckland',
+        postalCode: '1061',
+        country: 'New Zealand',
       },
       shippingMethod: 'Express Freight',
       items: [
@@ -45,7 +45,7 @@ describe('PdfGeneratorService', () => {
       taxAmount: 35.0,
       shippingFee: 25.0,
       totalAmount: 410.0,
-      currency: 'AUD',
+      currency: 'NZD',
     });
 
     expect(pdfBuffer).toBeInstanceOf(Buffer);
@@ -63,8 +63,8 @@ describe('PdfGeneratorService', () => {
     expect(pdfString).toContain('TAX INVOICE');
     expect(pdfString).toContain('INV-PIN-2026-10042');
     expect(pdfString).toContain('PINNACLE AUTO SPARES');
-    expect(pdfString).toContain('ABN: 48 123 456 789');
-    expect(pdfString).toContain('MVRL-58291');
+    expect(pdfString).toContain('NZBN: 9429041234567');
+    expect(pdfString).toContain('MVD-89211');
     expect(pdfString).toContain('Marcus Vance');
     expect(pdfString).toContain('SB-TOY-RAV4-FR');
     expect(pdfString).toContain('$410.00');

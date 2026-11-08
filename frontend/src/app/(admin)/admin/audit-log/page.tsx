@@ -136,7 +136,7 @@ export default function AdminAuditLogPage() {
             <table className="w-full text-left text-xs">
               <thead className="bg-slate-50 border-b border-slate-200 text-slate-500 uppercase tracking-wider font-semibold">
                 <tr>
-                  <th className="py-3 px-4">Timestamp (AEST)</th>
+                  <th className="py-3 px-4">Timestamp (NZST)</th>
                   <th className="py-3 px-4">Domain</th>
                   <th className="py-3 px-4">Action Code</th>
                   <th className="py-3 px-4">Entity Ref</th>

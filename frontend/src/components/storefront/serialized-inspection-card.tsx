@@ -60,7 +60,7 @@ export function SerializedInspectionCard({
             <MapPin className="h-3 w-3 text-rose-500" /> Depot Physical Location
           </span>
           <span className="text-xs font-semibold text-slate-900 block truncate">
-            {serializedItem.warehouseLocation || 'Prestons Yard Bay B-04'}
+            {serializedItem.warehouseLocation || 'Penrose Yard Bay B-04'}
           </span>
         </div>
 
@@ -77,7 +77,7 @@ export function SerializedInspectionCard({
       {/* Donor Vehicle Traceability */}
       <div className="rounded-lg border border-slate-200 bg-slate-50/90 p-4 space-y-2 text-xs">
         <h4 className="font-bold uppercase tracking-wider text-slate-800 text-[11px]">
-          Donor Vehicle Traceability Record (NSW MVRL-58291)
+          Donor Vehicle Traceability Record (NZ MVD-89211)
         </h4>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>

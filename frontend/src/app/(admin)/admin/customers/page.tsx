@@ -253,7 +253,7 @@ export default function AdminCustomersPage() {
                   <div className="p-3 bg-slate-50 rounded-lg border border-slate-200">
                     <span className="text-slate-500 block mb-1">Total Paid Spend</span>
                     <span className="text-xl font-bold font-mono text-emerald-700">
-                      ${detail.totalSpend.toFixed(2)} AUD
+                      ${detail.totalSpend.toFixed(2)} NZD
                     </span>
                   </div>
                 </div>

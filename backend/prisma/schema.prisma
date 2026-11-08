@@ -592,7 +592,7 @@ model Cart {
   id           String    @id @default(uuid())
   customerId   String?   @map("customer_id") // Nullable for anonymous guest cart
   sessionToken String    @unique @map("session_token")
-  currency     String    @default("AUD")
+  currency     String    @default("NZD")
   expiresAt    DateTime  @map("expires_at")
   createdAt    DateTime  @default(now()) @map("created_at")
   updatedAt    DateTime  @updatedAt @map("updated_at")
@@ -698,7 +698,7 @@ model Order {
   shippingFee       Decimal           @map("shipping_fee") @db.Decimal(10, 2)
   taxAmount         Decimal           @map("tax_amount") @db.Decimal(10, 2)
   totalAmount       Decimal           @map("total_amount") @db.Decimal(10, 2)
-  currency          String            @default("AUD")
+  currency          String            @default("NZD")
   notes             String?
   createdAt         DateTime          @default(now()) @map("created_at")
   updatedAt         DateTime          @updatedAt @map("updated_at")
@@ -773,7 +773,7 @@ model PaymentTransaction {
   transactionReference String                   @unique @map("transaction_reference") // Gateway Payment Intent ID
   idempotencyKey       String                   @unique @map("idempotency_key")
   amount               Decimal                  @db.Decimal(10, 2)
-  currency             String                   @default("AUD")
+  currency             String                   @default("NZD")
   status               PaymentTransactionStatus @default(PENDING)
   rawResponse          Json?                    @map("raw_response")
   createdAt            DateTime                 @default(now()) @map("created_at")

@@ -75,16 +75,16 @@ describe('DocumentsService', () => {
         id: 'ord-100',
         orderNumber: 'PIN-2026-10042',
         customerId: 'cust-1',
-        customerEmail: 'trade@sydneytyres.com.au',
-        customerPhone: '0298765432',
+        customerEmail: 'trade@aucklandtyres.co.nz',
+        customerPhone: '095258890',
         shippingAddress: {
           firstName: 'Marcus',
           lastName: 'Vance',
-          line1: '42 Jedda Rd',
-          city: 'Prestons',
-          state: 'NSW',
-          postalCode: '2170',
-          country: 'Australia',
+          line1: '18 Industry Road',
+          city: 'Penrose',
+          state: 'Auckland',
+          postalCode: '1061',
+          country: 'New Zealand',
           deliveryOption: 'Courier Freight',
         },
         billingAddress: null,
@@ -94,7 +94,7 @@ describe('DocumentsService', () => {
         taxAmount: 100.0,
         shippingFee: 50.0,
         totalAmount: 1150.0,
-        currency: 'AUD',
+        currency: 'NZD',
         createdAt: new Date('2026-10-14'),
         items: [
           {
@@ -222,7 +222,7 @@ describe('DocumentsService', () => {
 
       const file = await service.getDocumentFile('doc-1', {
         sub: 'staff-1',
-        email: 'admin@pinnacle.com.au',
+        email: 'admin@pinnacleparts.co.nz',
         isStaff: true,
         permissions: ['orders:view:all'],
       });

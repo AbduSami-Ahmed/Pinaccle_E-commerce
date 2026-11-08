@@ -220,7 +220,7 @@ export class CarJamAdapter implements IntegrationProviderAdapter, VehicleLookupA
           method: 'GET',
           headers: {
             Accept: 'application/json',
-            'User-Agent': 'Pinnacle-Automotive/1.0 (Prestons NSW; contact@pinnacle.com.au)',
+            'User-Agent': 'Pinnacle-Automotive/1.0 (Penrose Auckland; trade@pinnacleparts.co.nz)',
           },
           signal: controller.signal,
         });

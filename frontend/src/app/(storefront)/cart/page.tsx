@@ -134,7 +134,7 @@ export default function CartPage() {
             Parts Cart & Staged Items
           </h1>
           <p className="mt-1 text-xs text-slate-500">
-            Real-time physical stock validation from our Prestons NSW central depot.
+            Real-time physical stock validation from our Auckland Penrose central depot.
           </p>
         </div>
 
@@ -368,8 +368,8 @@ export default function CartPage() {
                 <span>Trade Dispatch Cutoff:</span>
               </div>
               <p className="text-[11px] leading-relaxed">
-                Orders confirmed before <strong>2:00 PM AEST</strong> dispatch same business day
-                from our Prestons NSW depot via StarTrack or TNT Express.
+                Orders confirmed before <strong>2:00 PM NZST</strong> dispatch same business day
+                from our Auckland Penrose depot via CourierPost or Mainfreight Express.
               </p>
             </div>
           </div>
@@ -401,7 +401,7 @@ export default function CartPage() {
                     <div>
                       <div className="text-xs font-bold">Trade Counter Pickup (FREE)</div>
                       <div className="text-[11px] text-slate-500">
-                        Prestons NSW depot · Ready in 30 mins
+                        Auckland Penrose depot · Ready in 30 mins
                       </div>
                     </div>
                   </button>
@@ -417,9 +417,9 @@ export default function CartPage() {
                   >
                     <Truck className="h-4 w-4 text-emerald-700 shrink-0 mt-0.5" />
                     <div>
-                      <div className="text-xs font-bold">Express Road Freight ($25.00)</div>
+                      <div className="text-xs font-bold">Courier Freight ($25.00 NZD)</div>
                       <div className="text-[11px] text-slate-500">
-                        StarTrack courier across NSW / ACT / VIC metro
+                        CourierPost / Mainfreight across North & South Islands
                       </div>
                     </div>
                   </button>
@@ -441,12 +441,12 @@ export default function CartPage() {
                 </div>
 
                 <div className="flex justify-between text-slate-500 text-[11px] pt-1 border-t border-slate-100">
-                  <span>Includes approx. 10% GST:</span>
-                  <span>${taxIncluded.toFixed(2)} AUD</span>
+                  <span>Includes approx. 15% GST:</span>
+                  <span>${taxIncluded.toFixed(2)} NZD</span>
                 </div>
 
                 <div className="flex justify-between text-base font-extrabold text-slate-900 pt-2 border-t border-slate-200">
-                  <span>Total (AUD):</span>
+                  <span>Total (NZD):</span>
                   <span>${grandTotal.toFixed(2)}</span>
                 </div>
               </div>
@@ -480,7 +480,7 @@ export default function CartPage() {
                 </div>
                 <div className="flex items-center gap-1.5">
                   <RotateCcw className="h-3.5 w-3.5 text-blue-600 shrink-0" />
-                  <span>Australian Motor Vehicle Recycler MVRL-58291</span>
+                  <span>Registered Motor Vehicle Trader MVD-89211</span>
                 </div>
               </div>
             </div>

@@ -48,7 +48,7 @@ export function ProductGallery({
         </div>
         <h3 className="text-sm font-semibold text-slate-800">No Workshop Photos Logged</h3>
         <p className="mt-1 max-w-sm text-xs text-slate-500">
-          Individual high-resolution photos are being catalogued during intake. Contact our Prestons
+          Individual high-resolution photos are being catalogued during intake. Contact our Auckland Penrose
           trade counter for physical inspection.
         </p>
         {stockBarcode && (

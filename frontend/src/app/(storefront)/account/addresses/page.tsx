@@ -14,7 +14,24 @@ import {
 } from '@/lib/customer';
 import { CustomerAddressDto, CreateCustomerAddressDto } from '@pinnacle/contracts';
 
-const AUS_STATES = ['NSW', 'VIC', 'QLD', 'WA', 'SA', 'TAS', 'ACT', 'NT'] as const;
+const NZ_REGIONS = [
+  'Auckland',
+  'Waikato',
+  'Bay of Plenty',
+  'Canterbury',
+  'Wellington',
+  'Northland',
+  'Hawke\'s Bay',
+  'Taranaki',
+  'Manawatū-Whanganui',
+  'Otago',
+  'Southland',
+  'Tasman',
+  'Nelson',
+  'Marlborough',
+  'West Coast',
+  'Gisborne',
+] as const;
 
 export default function CustomerAddressesPage() {
   const [addresses, setAddresses] = React.useState<CustomerAddressDto[]>([]);
@@ -27,7 +44,7 @@ export default function CustomerAddressesPage() {
   const [line1, setLine1] = React.useState('');
   const [line2, setLine2] = React.useState('');
   const [city, setCity] = React.useState('');
-  const [state, setState] = React.useState<string>('NSW');
+  const [state, setState] = React.useState<string>('Auckland');
   const [postalCode, setPostalCode] = React.useState('');
   const [isDefault, setIsDefault] = React.useState(false);
   const [submitting, setSubmitting] = React.useState(false);
@@ -50,7 +67,7 @@ export default function CustomerAddressesPage() {
     setLine1('');
     setLine2('');
     setCity('');
-    setState('NSW');
+    setState('Auckland');
     setPostalCode('');
     setIsDefault(addresses.length === 0);
     setDialogOpen(true);
@@ -78,9 +95,9 @@ export default function CustomerAddressesPage() {
       line1: line1.trim(),
       line2: line2.trim() || undefined,
       city: city.trim(),
-      state: state.trim().toUpperCase(),
+      state: state.trim(),
       postalCode: postalCode.trim(),
-      country: 'AU',
+      country: 'NZ',
       isDefault,
     };
 
@@ -194,7 +211,7 @@ export default function CustomerAddressesPage() {
                   <p className="text-slate-700">
                     {addr.city}, {addr.state} {addr.postalCode}
                   </p>
-                  <p className="text-slate-400 text-[11px]">Australia</p>
+                  <p className="text-slate-400 text-[11px]">{addr.country === 'AU' ? 'Australia' : 'New Zealand'}</p>
                 </div>
               </div>
 
@@ -259,7 +276,7 @@ export default function CustomerAddressesPage() {
               </label>
               <Input
                 id="label"
-                placeholder="e.g. Prestons Workshop Bay 2, Main Warehouse"
+                placeholder="e.g. Penrose Workshop Bay 2, Main Warehouse"
                 value={label}
                 onChange={(e) => setLabel(e.target.value)}
                 className="text-xs bg-slate-50 focus:bg-white"
@@ -276,7 +293,7 @@ export default function CustomerAddressesPage() {
               <Input
                 id="line1"
                 required
-                placeholder="e.g. 42 Jedda Road"
+                placeholder="e.g. 18 Industry Road"
                 value={line1}
                 onChange={(e) => setLine1(e.target.value)}
                 className="text-xs bg-slate-50 focus:bg-white"
@@ -310,7 +327,7 @@ export default function CustomerAddressesPage() {
                 <Input
                   id="city"
                   required
-                  placeholder="e.g. Prestons"
+                  placeholder="e.g. Penrose, Auckland"
                   value={city}
                   onChange={(e) => setCity(e.target.value)}
                   className="text-xs bg-slate-50 focus:bg-white"
@@ -322,7 +339,7 @@ export default function CustomerAddressesPage() {
                   htmlFor="state"
                   className="font-bold text-slate-700 uppercase tracking-wide text-[10px]"
                 >
-                  State *
+                  Region *
                 </label>
                 <select
                   id="state"
@@ -330,7 +347,7 @@ export default function CustomerAddressesPage() {
                   onChange={(e) => setState(e.target.value)}
                   className="h-9 w-full rounded-md border border-slate-200 bg-slate-50 px-3 text-xs text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-600"
                 >
-                  {AUS_STATES.map((st) => (
+                  {NZ_REGIONS.map((st) => (
                     <option key={st} value={st}>
                       {st}
                     </option>
@@ -349,7 +366,7 @@ export default function CustomerAddressesPage() {
               <Input
                 id="postalCode"
                 required
-                placeholder="e.g. 2170"
+                placeholder="e.g. 1061"
                 maxLength={4}
                 value={postalCode}
                 onChange={(e) => setPostalCode(e.target.value)}

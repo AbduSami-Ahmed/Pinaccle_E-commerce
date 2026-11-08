@@ -294,7 +294,7 @@ export function VehicleFinderWidget({
                 Select Your Vehicle for Guaranteed Fitment
               </h3>
               <p className="text-xs text-slate-500">
-                Options cascade dynamically based on verified Australian & OEM manufacturing data.
+                Options cascade dynamically based on verified New Zealand fleet & OEM manufacturing data.
               </p>
             </div>
             {(selectedMake || selectedModel || selectedYear) && (

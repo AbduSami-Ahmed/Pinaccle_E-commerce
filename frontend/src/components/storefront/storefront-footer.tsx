@@ -82,23 +82,23 @@ export function StorefrontFooter() {
           {/* Column 4: Trade Counter & Yard Info */}
           <div>
             <h4 className="text-xs font-semibold uppercase tracking-wider text-slate-900">
-              Trade Counter & Yard
+              Trade Counter & Hub
             </h4>
             <ul className="mt-4 space-y-2 text-xs text-slate-500">
-              <li className="font-medium text-slate-800">Pinnacle Auto Spares & Tyres</li>
-              <li>42 Jedda Road, Prestons NSW 2170</li>
+              <li className="font-medium text-slate-800">Pinnacle Auto Spares &amp; Tyres Ltd</li>
+              <li>18 Industry Road, Penrose, Auckland 1061</li>
               <li>
-                <strong className="text-slate-700">Counter Hours:</strong> Mon–Fri 7:30am – 5:00pm
+                <strong className="text-slate-700">Counter Hours:</strong> Mon–Fri 7:30am – 5:00pm NZST
               </li>
               <li>
-                <strong className="text-slate-700">Saturday:</strong> 8:00am – 1:00pm (Pickups only)
+                <strong className="text-slate-700">Saturday:</strong> 8:00am – 1:00pm NZST (Pickups only)
               </li>
               <li>
-                <strong className="text-slate-700">Parts Line:</strong> (02) 9822 4100
+                <strong className="text-slate-700">Parts Line:</strong> (09) 525 8890 | 0800 PINNACLE
               </li>
               <li>
                 <strong className="text-slate-700">Trade Orders:</strong>{' '}
-                trade@pinnacleautospares.com.au
+                trade@pinnacleparts.co.nz
               </li>
             </ul>
           </div>
@@ -107,17 +107,19 @@ export function StorefrontFooter() {
         {/* Trade Badges & Compliance Strip */}
         <div className="mt-12 border-t border-slate-200 pt-6 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-slate-500">
           <div className="flex flex-wrap items-center gap-4">
-            <span className="font-semibold text-slate-700">Compliance & Trade Credentials:</span>
-            <span>NSW Motor Vehicle Recycler Licence: MVRL-58291</span>
+            <span className="font-semibold text-slate-700">Compliance &amp; Trade Credentials:</span>
+            <span>Registered Motor Vehicle Trader: MVD-89211</span>
             <span>•</span>
-            <span>ABN: 48 192 847 219</span>
+            <span>NZBN: 9429041234567</span>
+            <span>•</span>
+            <span>GST No: 123-456-789</span>
             <span>•</span>
             <span>AS/NZS 2596 Restraint Testing Protocol</span>
           </div>
 
           <p className="text-slate-400">
-            &copy; {new Date().getFullYear()} Pinnacle Auto Spares Pty Ltd. All mechanical &
-            electrical parts backed by 30-day workshop replacement warranty.
+            &copy; {new Date().getFullYear()} Pinnacle Auto Spares &amp; Commercial Tyres Ltd. All mechanical &amp;
+            electrical parts backed by 90-day workshop replacement warranty under NZ CGA 1993.
           </p>
         </div>
       </div>

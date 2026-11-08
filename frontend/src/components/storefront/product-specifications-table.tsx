@@ -159,12 +159,12 @@ export function ProductSpecificationsTable({ product }: ProductSpecificationsTab
               </span>
             </div>
             <div className="flex justify-between border-b border-slate-100 py-1.5">
-              <span className="text-slate-500">Australian Safety Standard</span>
-              <span className="font-semibold text-slate-900">AS/NZS 2596 & ADR 4/05</span>
+              <span className="text-slate-500">Vehicle Safety Standard</span>
+              <span className="font-semibold text-slate-900">AS/NZS 2596 & NZTA VIRM</span>
             </div>
             <div className="flex justify-between border-b border-slate-100 py-1.5">
-              <span className="text-slate-500">Dismantler Licence</span>
-              <span className="font-semibold text-slate-900">NSW MVRL-58291 Verified</span>
+              <span className="text-slate-500">Motor Vehicle Trader</span>
+              <span className="font-semibold text-slate-900">NZ MVD-89211 Verified</span>
             </div>
           </div>
         </div>
@@ -203,7 +203,7 @@ export function ProductSpecificationsTable({ product }: ProductSpecificationsTab
           <div>
             <span className="text-slate-500 block text-[11px]">Primary Warehouse</span>
             <span className="font-semibold text-slate-900">
-              {product.warehouseLocation?.name || 'Sydney Central Depot (Prestons NSW)'}
+              {product.warehouseLocation?.name || 'Auckland Central Fulfillment Centre (Penrose)'}
             </span>
           </div>
           <div>

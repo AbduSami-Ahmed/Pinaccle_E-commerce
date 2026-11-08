@@ -288,8 +288,8 @@ export default async function FitmentResultsPage({ searchParams }: FitmentPagePr
           </h3>
           <p className="text-xs text-slate-500 max-w-md mx-auto leading-relaxed">
             We dismantle new vehicles weekly and may have uncatalogued donor stock. Call our
-            Prestons yard team on <strong className="text-slate-800">(02) 9822 4100</strong> with
-            your VIN or rego, and our technicians will check our physical storage racks.
+            Auckland Penrose team on <strong className="text-slate-800">0800 PINNACLE</strong> with
+            your VIN or NZ registration, and our technicians will check our physical storage racks.
           </p>
           <div className="pt-2 flex flex-wrap items-center justify-center gap-3">
             <Button asChild variant="outline" size="sm" className="gap-1.5 text-xs">
@@ -298,10 +298,10 @@ export default async function FitmentResultsPage({ searchParams }: FitmentPagePr
               </Link>
             </Button>
             <a
-              href="tel:0298224100"
+              href="tel:0800746622"
               className="inline-flex items-center gap-1.5 rounded-md bg-blue-700 px-3 py-1.5 text-xs font-semibold text-white hover:bg-blue-800 transition-colors"
             >
-              Call Yard Desk: (02) 9822 4100
+              Call Trade Desk: 0800 PINNACLE
             </a>
           </div>
         </div>

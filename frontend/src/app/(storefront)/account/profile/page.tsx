@@ -119,13 +119,13 @@ export default function CustomerProfilePage() {
             </label>
             <Input
               id="phone"
-              placeholder="e.g. 0412 345 678"
+              placeholder="e.g. 021 890 123"
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
               className="text-xs bg-slate-50 focus:bg-white"
             />
             <p className="text-[10px] text-slate-400">
-              Used by courier freight drivers (StarTrack / TNT) for depot delivery notifications.
+              Used by courier freight drivers (CourierPost / Mainfreight) for depot delivery notifications.
             </p>
           </div>
 

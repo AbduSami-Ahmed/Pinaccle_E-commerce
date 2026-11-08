@@ -61,7 +61,7 @@ export default function RootError({
 
         <div className="mt-6 pt-4 border-t border-slate-100 text-xs text-slate-400 flex items-center justify-center gap-1.5">
           <LifeBuoy className="h-3.5 w-3.5" />
-          <span>Need assistance? Contact Pinnacle Support at 1300 PINNACLE</span>
+          <span>Need assistance? Contact Pinnacle Support at 0800 PINNACLE (0800 746 622)</span>
         </div>
       </div>
     </div>

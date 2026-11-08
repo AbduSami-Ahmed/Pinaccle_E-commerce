@@ -161,11 +161,11 @@ export default function AdminOrdersListPage() {
               Order Operations & Fulfilment
             </h1>
             <Badge variant="outline" className="text-xs font-mono bg-slate-50 text-slate-600">
-              NSW MVRL-58291
+              NZ MVD-89211
             </Badge>
           </div>
           <p className="mt-1 text-sm text-slate-600">
-            Prestons NSW Trade Depot & National Courier Dispatch Pipeline
+            Auckland Penrose Trade Depot & NZ Nationwide Courier Freight Pipeline
           </p>
         </div>
         <div className="flex items-center gap-2">
@@ -308,7 +308,7 @@ export default function AdminOrdersListPage() {
         {loading ? (
           <div className="p-12 text-center text-slate-500">
             <RefreshCw className="h-6 w-6 animate-spin mx-auto mb-2 text-slate-400" />
-            <p className="text-sm">Retrieving orders from Prestons database...</p>
+            <p className="text-sm">Retrieving orders from Auckland database...</p>
           </div>
         ) : orders.length === 0 ? (
           <div className="p-12 text-center text-slate-500">
@@ -325,11 +325,11 @@ export default function AdminOrdersListPage() {
               <thead>
                 <tr className="bg-slate-50/80 border-b border-slate-200 text-xs font-semibold text-slate-600 uppercase tracking-wider">
                   <th className="py-3 px-4">Order #</th>
-                  <th className="py-3 px-4">Date (AEST)</th>
+                  <th className="py-3 px-4">Date (NZST)</th>
                   <th className="py-3 px-4">Customer Details</th>
                   <th className="py-3 px-4">Method / Destination</th>
                   <th className="py-3 px-4">Items</th>
-                  <th className="py-3 px-4 text-right">Total (AUD)</th>
+                  <th className="py-3 px-4 text-right">Total (NZD)</th>
                   <th className="py-3 px-4">Payment</th>
                   <th className="py-3 px-4">Lifecycle State</th>
                   <th className="py-3 px-4 text-center">Action</th>
@@ -337,7 +337,7 @@ export default function AdminOrdersListPage() {
               </thead>
               <tbody className="divide-y divide-slate-100">
                 {orders.map((order) => {
-                  const dateStr = new Date(order.createdAt).toLocaleDateString('en-AU', {
+                  const dateStr = new Date(order.createdAt).toLocaleDateString('en-NZ', {
                     day: '2-digit',
                     month: 'short',
                     year: 'numeric',
@@ -389,7 +389,7 @@ export default function AdminOrdersListPage() {
                       <td className="py-3 px-4 whitespace-nowrap">
                         {order.shippingMethod === 'CLICK_AND_COLLECT' ? (
                           <span className="inline-flex items-center gap-1 text-xs font-medium text-amber-700 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded">
-                            <Boxes className="h-3 w-3" /> Gate 2 Depot Pickup
+                            <Boxes className="h-3 w-3" /> Trade Counter Pickup
                           </span>
                         ) : (
                           <span className="inline-flex items-center gap-1 text-xs font-medium text-slate-700">

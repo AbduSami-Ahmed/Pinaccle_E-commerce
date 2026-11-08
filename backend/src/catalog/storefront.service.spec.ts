@@ -326,7 +326,7 @@ describe('StorefrontService', () => {
 
       expect(result.id).toBe('prod-tyre-1');
       expect(result.description).toBe('Detailed description');
-      expect(result.currency).toBe('AUD');
+      expect(result.currency).toBe('NZD');
       expect(result.allMedia).toBeDefined();
       expect(result.warehouseLocation).toBeDefined();
       expect(result.shippingInfo).toBeDefined();

@@ -30,7 +30,7 @@ export async function generateMetadata({ params }: PageProps) {
     const product = await fetchStorefrontProductBySlug(slug);
     return {
       title: `${product.title} (${product.brand}) — Pinnacle Auto Spares`,
-      description: `Commercial & passenger tyre: ${product.title}. In stock: ${product.availability.sellableBaseUnits} units at Prestons NSW depot. Workshop fitting available.`,
+      description: `Commercial & passenger tyre: ${product.title}. In stock: ${product.availability.sellableBaseUnits} units at Auckland Penrose depot. Workshop fitting available.`,
       alternates: {
         canonical: `/tyres/${slug}`,
       },
@@ -140,15 +140,15 @@ export default async function TyreDetailPage({ params }: PageProps) {
               <div className="rounded-xl border border-blue-200 bg-blue-50/70 p-5 shadow-xs space-y-3">
                 <div className="flex items-center gap-2 text-blue-950 font-bold text-sm">
                   <Wrench className="h-4 w-4 text-blue-700" />
-                  <span>Sydney Yard Fitting & Balancing Service</span>
+                  <span>Auckland Yard Fitting &amp; Balancing Service</span>
                 </div>
                 <p className="text-xs text-blue-900 leading-relaxed">
                   Need these tyres mounted to your rims? Drive-in fitting bays are operational
-                  Monday to Saturday at our Prestons facility.
+                  Monday to Saturday at our Penrose facility.
                 </p>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-[11px] font-semibold text-blue-950 pt-1">
                   <div className="rounded bg-white/80 p-2 border border-blue-200">
-                    Mount & Digital Balance: $25/corner
+                    Mount &amp; Digital Balance: $25/corner
                   </div>
                   <div className="rounded bg-white/80 p-2 border border-blue-200">
                     Old Tyre Environmental Disposal: $8/casing
@@ -232,14 +232,14 @@ export default async function TyreDetailPage({ params }: PageProps) {
             <div className="rounded-lg border border-slate-200 bg-slate-50 p-4 space-y-2 text-xs text-slate-600">
               <div className="flex items-center gap-2 text-slate-900 font-semibold">
                 <Clock className="h-4 w-4 text-blue-700 shrink-0" />
-                <span>Trade Counter Hours (Prestons NSW):</span>
+                <span>Trade Counter Hours (Penrose Auckland):</span>
               </div>
               <p className="text-[11px] text-slate-500">
-                Mon – Fri: 7:30 AM – 5:00 PM | Sat: 8:00 AM – 1:00 PM
+                Mon – Fri: 7:30 AM – 5:00 PM NZST | Sat: 8:00 AM – 1:00 PM NZST
               </p>
               <p className="text-[11px] text-slate-500 border-t border-slate-200 pt-2">
-                Orders placed before <strong>2:00 PM AEST</strong> dispatch same business day via
-                StarTrack Express.
+                Orders placed before <strong>2:00 PM NZST</strong> dispatch same business day via
+                CourierPost or Mainfreight Express.
               </p>
             </div>
           </div>

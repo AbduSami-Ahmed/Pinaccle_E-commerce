@@ -17,19 +17,19 @@ export class UpdateProfileBodyDto implements UpdateCustomerProfileDto {
   @IsString()
   lastName?: string;
 
-  @ApiPropertyOptional({ example: '+61 412 345 678' })
+  @ApiPropertyOptional({ example: '+64 21 890 123' })
   @IsOptional()
   @IsString()
   phone?: string;
 }
 
 export class CreateAddressBodyDto implements CreateCustomerAddressDto {
-  @ApiPropertyOptional({ example: 'Prestons Workshop Bay 2' })
+  @ApiPropertyOptional({ example: 'Penrose Workshop Bay 2' })
   @IsOptional()
   @IsString()
   label?: string;
 
-  @ApiProperty({ example: '42 Jedda Road' })
+  @ApiProperty({ example: '18 Industry Road' })
   @IsNotEmpty()
   @IsString()
   line1!: string;
@@ -39,22 +39,22 @@ export class CreateAddressBodyDto implements CreateCustomerAddressDto {
   @IsString()
   line2?: string;
 
-  @ApiProperty({ example: 'Prestons' })
+  @ApiProperty({ example: 'Penrose' })
   @IsNotEmpty()
   @IsString()
   city!: string;
 
-  @ApiProperty({ example: 'NSW' })
+  @ApiProperty({ example: 'Auckland' })
   @IsNotEmpty()
   @IsString()
   state!: string;
 
-  @ApiProperty({ example: '2170' })
+  @ApiProperty({ example: '1061' })
   @IsNotEmpty()
   @IsString()
   postalCode!: string;
 
-  @ApiPropertyOptional({ example: 'AU', default: 'AU' })
+  @ApiPropertyOptional({ example: 'NZ', default: 'NZ' })
   @IsOptional()
   @IsString()
   country?: string;
@@ -66,12 +66,12 @@ export class CreateAddressBodyDto implements CreateCustomerAddressDto {
 }
 
 export class UpdateAddressBodyDto implements UpdateCustomerAddressDto {
-  @ApiPropertyOptional({ example: 'Prestons Workshop Bay 2' })
+  @ApiPropertyOptional({ example: 'Penrose Workshop Bay 2' })
   @IsOptional()
   @IsString()
   label?: string;
 
-  @ApiPropertyOptional({ example: '42 Jedda Road' })
+  @ApiPropertyOptional({ example: '18 Industry Road' })
   @IsOptional()
   @IsString()
   line1?: string;
@@ -81,22 +81,22 @@ export class UpdateAddressBodyDto implements UpdateCustomerAddressDto {
   @IsString()
   line2?: string;
 
-  @ApiPropertyOptional({ example: 'Prestons' })
+  @ApiPropertyOptional({ example: 'Penrose' })
   @IsOptional()
   @IsString()
   city?: string;
 
-  @ApiPropertyOptional({ example: 'NSW' })
+  @ApiPropertyOptional({ example: 'Auckland' })
   @IsOptional()
   @IsString()
   state?: string;
 
-  @ApiPropertyOptional({ example: '2170' })
+  @ApiPropertyOptional({ example: '1061' })
   @IsOptional()
   @IsString()
   postalCode?: string;
 
-  @ApiPropertyOptional({ example: 'AU' })
+  @ApiPropertyOptional({ example: 'NZ' })
   @IsOptional()
   @IsString()
   country?: string;

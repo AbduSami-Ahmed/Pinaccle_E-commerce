@@ -393,7 +393,7 @@ export class OrdersService {
 
     return this.getOrderDetails(orderId, {
       sub: operatorId,
-      email: 'staff@pinnacle.com.au',
+      email: 'staff@pinnacleparts.co.nz',
       isStaff: true,
       permissions: ['customers:view:pii_contact', 'orders:view:all'],
     });
@@ -430,7 +430,7 @@ export class OrdersService {
       const shipment = await tx.shipment.create({
         data: {
           orderId: order.id,
-          carrierName: 'Customer Depot Collection (Gate 2 Trade Counter, Prestons NSW)',
+          carrierName: 'Customer Depot Collection (Trade Counter, Penrose Auckland)',
           trackingNumber: depotReference,
           status: 'DELIVERED',
           shippedAt: new Date(),
@@ -468,7 +468,7 @@ export class OrdersService {
 
     return this.getOrderDetails(orderId, {
       sub: operatorId,
-      email: 'staff@pinnacle.com.au',
+      email: 'staff@pinnacleparts.co.nz',
       isStaff: true,
       permissions: ['customers:view:pii_contact', 'orders:view:all'],
     });
@@ -607,7 +607,7 @@ export class OrdersService {
 
     return this.getOrderDetails(orderId, {
       sub: operatorId,
-      email: 'staff@pinnacle.com.au',
+      email: 'staff@pinnacleparts.co.nz',
       isStaff: true,
       permissions: ['customers:view:pii_contact', 'orders:view:all', 'payments:refund:process'],
     });
@@ -963,6 +963,15 @@ export class OrdersService {
 
   private resolveTrackingUrl(carrierName: string, trackingNumber: string): string {
     const carrier = carrierName.toLowerCase();
+    if (carrier.includes('courierpost') || carrier.includes('nzpost') || carrier.includes('nz post')) {
+      return `https://www.nzpost.co.nz/tools/tracking?track=${encodeURIComponent(trackingNumber)}`;
+    }
+    if (carrier.includes('mainfreight')) {
+      return `https://www.mainfreight.com/tracking?trackingNumber=${encodeURIComponent(trackingNumber)}`;
+    }
+    if (carrier.includes('aramex')) {
+      return `https://www.aramex.co.nz/tools/track?trackingNumber=${encodeURIComponent(trackingNumber)}`;
+    }
     if (carrier.includes('startrack')) {
       return `https://startrack.com.au/track/search?id=${encodeURIComponent(trackingNumber)}`;
     }
@@ -972,7 +981,7 @@ export class OrdersService {
     if (carrier.includes('toll')) {
       return `https://www.mytoll.com/#/tracking?trackingNumbers=${encodeURIComponent(trackingNumber)}`;
     }
-    return `https://auspost.com.au/mypost/track/#/details/${encodeURIComponent(trackingNumber)}`;
+    return `https://www.nzpost.co.nz/tools/tracking?track=${encodeURIComponent(trackingNumber)}`;
   }
 
   private mapOrderToAdminDto(order: any, canViewPii: boolean): OrderAdminDetailsDto {
@@ -1054,7 +1063,7 @@ export class OrdersService {
 
     const isClickAndCollect =
       shippingAddress.company?.includes('Click & Collect') ||
-      (shippingAddress.city === 'Prestons' && shippingAddress.postalCode === '2170');
+      ((shippingAddress.city === 'Auckland' || shippingAddress.city === 'Penrose') && shippingAddress.postalCode === '1061');
 
     const timeline = this.buildOrderTimeline(order, shipments, returnRequests, paymentTransactions);
 
@@ -1141,7 +1150,7 @@ export class OrdersService {
       id: `evt_created_${order.id}`,
       type: 'ORDER_PLACED',
       title: 'Order Placed',
-      description: `Order ${order.orderNumber} initiated for $${Number(order.totalAmount).toFixed(2)} AUD`,
+      description: `Order ${order.orderNumber} initiated for $${Number(order.totalAmount).toFixed(2)} ${order.currency || 'NZD'}`,
       timestamp: order.createdAt.toISOString(),
       actor: 'Customer',
     });
@@ -1152,7 +1161,7 @@ export class OrdersService {
           id: `evt_pay_${pt.id}`,
           type: 'PAYMENT_CONFIRMED',
           title: 'Payment Succeeded',
-          description: `Received $${Number(pt.amount).toFixed(2)} AUD via ${pt.provider} (${pt.transactionReference})`,
+          description: `Received $${Number(pt.amount).toFixed(2)} ${pt.currency || 'NZD'} via ${pt.provider} (${pt.transactionReference})`,
           timestamp: pt.createdAt,
           actor: 'Payment Gateway',
         });
@@ -1161,7 +1170,7 @@ export class OrdersService {
           id: `evt_ref_${pt.id}`,
           type: 'REFUND_PROCESSED',
           title: 'Refund Processed',
-          description: `Refund of $${Number(pt.amount).toFixed(2)} AUD recorded (${pt.transactionReference})`,
+          description: `Refund of $${Number(pt.amount).toFixed(2)} ${pt.currency || 'NZD'} recorded (${pt.transactionReference})`,
           timestamp: pt.createdAt,
           actor: 'Accounts & Refunds',
         });
@@ -1173,7 +1182,7 @@ export class OrdersService {
         id: `evt_proc_${order.id}`,
         type: 'PROCESSING_STARTED',
         title: 'Fulfillment In Progress',
-        description: 'Order sent to Prestons NSW warehouse pick & pack station',
+        description: 'Order sent to Auckland Penrose warehouse pick & pack station',
         timestamp: order.updatedAt.toISOString(),
         actor: 'Warehouse Dispatcher',
       });
@@ -1242,7 +1251,7 @@ export class OrdersService {
           id: `evt_rma_appr_${rma.id}`,
           type: 'RETURN_APPROVED',
           title: `RMA Approved (${rma.rmaNumber})`,
-          description: 'Return authorized for physical return to Prestons depot',
+          description: 'Return authorized for physical return to Auckland depot',
           timestamp: rma.updatedAt,
           actor: 'Support Team',
         });

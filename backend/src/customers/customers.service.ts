@@ -487,6 +487,6 @@ export class CustomersService {
     if (!phone) return '—';
     const digits = phone.replace(/\D/g, '');
     if (digits.length <= 4) return '••••';
-    return `+61 •••• •••• ${digits.slice(-4)}`;
+    return `+64 •••• •••• ${digits.slice(-4)}`;
   }
 }

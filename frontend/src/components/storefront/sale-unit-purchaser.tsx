@@ -40,7 +40,7 @@ export function SaleUnitPurchaser({
   productId: _productId,
   productTitle: _productTitle,
   basePrice,
-  currency = 'AUD',
+  currency = 'NZD',
   sellableBaseUnits,
   availableSaleUnits,
   isIndividuallyTracked = false,
@@ -346,10 +346,10 @@ export function SaleUnitPurchaser({
           <div className="pt-1 flex items-center justify-between text-[11px] text-amber-900 border-t border-amber-200/60">
             <span className="font-medium">Trade Restock Inquiry:</span>
             <a
-              href="tel:0298224100"
+              href="tel:0800746622"
               className="font-bold underline flex items-center gap-1 hover:text-amber-950"
             >
-              <PhoneCall className="h-3 w-3" /> (02) 9822 4100
+              <PhoneCall className="h-3 w-3" /> 0800 PINNACLE
             </a>
           </div>
         </div>

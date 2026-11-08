@@ -72,11 +72,11 @@ export default function AdminSettingsPage() {
               Business & Store Settings
             </h1>
             <Badge variant="outline" className="font-mono text-xs">
-              NSW MVRL-58291
+              NZ MVD-89211
             </Badge>
           </div>
           <p className="text-xs text-slate-500 mt-1">
-            Statutory trade registration, Australian GST tax settings, Prestons depot fulfillment, and returns policy.
+            Statutory trade registration, New Zealand GST tax settings, Auckland Penrose depot fulfillment, and returns policy.
           </p>
         </div>
 
@@ -153,7 +153,7 @@ export default function AdminSettingsPage() {
               </div>
 
               <div>
-                <label className="font-medium text-slate-700 block mb-1">Australian Business Number (ABN)</label>
+                <label className="font-medium text-slate-700 block mb-1">New Zealand Business Number (NZBN)</label>
                 <Input
                   value={formData.company.abn}
                   onChange={(e) =>
@@ -168,7 +168,7 @@ export default function AdminSettingsPage() {
 
               <div>
                 <label className="font-medium text-slate-700 block mb-1">
-                  NSW Motor Vehicle Repairer / Dismantler Licence
+                  Registered Motor Vehicle Trader (MVD) Licence
                 </label>
                 <Input
                   value={formData.company.licenseNumber}
@@ -232,7 +232,7 @@ export default function AdminSettingsPage() {
               <div className="flex items-center gap-2">
                 <DollarSign className="h-4 w-4 text-emerald-600" />
                 <CardTitle className="text-sm font-semibold text-slate-900">
-                  Financial & Tax Configuration (ATO Statutory)
+                  Financial & Tax Configuration (NZ IRD Statutory)
                 </CardTitle>
               </div>
               <CardDescription className="text-xs">
@@ -247,7 +247,7 @@ export default function AdminSettingsPage() {
                   disabled
                   className="h-9 text-xs font-mono bg-slate-50"
                 />
-                <span className="text-[10px] text-slate-400 mt-1 block">Locked to Australian Dollars (AUD)</span>
+                <span className="text-[10px] text-slate-400 mt-1 block">Locked to New Zealand Dollars (NZD)</span>
               </div>
 
               <div>
@@ -281,7 +281,7 @@ export default function AdminSettingsPage() {
                   }
                   className="h-9 text-xs font-mono"
                 />
-                <span className="text-[10px] text-slate-400 mt-1 block">ATO standard rate is 10.0%</span>
+                <span className="text-[10px] text-slate-400 mt-1 block">NZ IRD standard rate is 15.0%</span>
               </div>
             </CardContent>
           </Card>
@@ -344,7 +344,7 @@ export default function AdminSettingsPage() {
 
               <div>
                 <label className="font-medium text-slate-700 block mb-1">
-                  StarTrack Road Express Default Fee ($AUD)
+                  CourierPost Road Express Default Fee ($NZD)
                 </label>
                 <Input
                   type="number"
@@ -365,7 +365,7 @@ export default function AdminSettingsPage() {
 
               <div>
                 <label className="font-medium text-slate-700 block mb-1">
-                  StarTrack Premium Express Default Fee ($AUD)
+                  CourierPost Premium Express Default Fee ($NZD)
                 </label>
                 <Input
                   type="number"
@@ -386,13 +386,13 @@ export default function AdminSettingsPage() {
             </CardContent>
           </Card>
 
-          {/* 4. Policy & Australian Consumer Law */}
+          {/* 4. Policy & Consumer Guarantees Act (CGA) */}
           <Card className="border-slate-200 shadow-xs">
             <CardHeader className="pb-3">
               <div className="flex items-center gap-2">
                 <FileText className="h-4 w-4 text-purple-600" />
                 <CardTitle className="text-sm font-semibold text-slate-900">
-                  Return Policies & Consumer Law Disclaimers
+                  Return Policies & Consumer Guarantees Act (CGA) Disclaimers
                 </CardTitle>
               </div>
               <CardDescription className="text-xs">

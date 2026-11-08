@@ -166,7 +166,7 @@ export default async function TyresListingPage({ searchParams }: TyresPageProps)
             <p className="mt-1 text-xs text-slate-500 max-w-2xl">
               Direct importer stock from leading manufacturers. Available as singles, axle pairs
               (2), or full vehicle sets (4) with trade savings. Drive-in fitting & balancing
-              available at our Prestons yard for $25/corner.
+              available at our Penrose Auckland facility for $25/corner.
             </p>
           </div>
 

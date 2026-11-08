@@ -81,7 +81,7 @@ export function TyrePurchaseCard({ basePrice }: TyrePurchaseCardProps) {
           <span>Add {unitConfigs[selectedUnit].label} to Cart</span>
         </Button>
         <p className="text-center text-[11px] text-slate-500">
-          Free collection from Prestons NSW trade counter or calculated freight at checkout
+          Free collection from Auckland Penrose trade counter or calculated freight at checkout
         </p>
       </div>
 

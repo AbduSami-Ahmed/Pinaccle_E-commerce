@@ -11,8 +11,8 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000/a
 const INITIAL_DEV_CART: CartDto = {
   id: 'cart-dev-session-01',
   sessionToken: 'sess_pinnacle_trade_demo',
-  customerId: 'cust-prestons-01',
-  currency: 'AUD',
+  customerId: 'cust-auckland-01',
+  currency: 'NZD',
   items: [
     {
       id: 'cart-item-01',
@@ -63,11 +63,11 @@ const INITIAL_DEV_CART: CartDto = {
   ],
   totals: {
     subtotal: 375.0,
-    taxIncluded: 34.09,
+    taxIncluded: 48.91,
     shippingEstimate: 0.0,
     shippingMethod: 'CLICK_AND_COLLECT',
     total: 375.0,
-    currency: 'AUD',
+    currency: 'NZD',
   },
   totalPacksCount: 2,
   totalPhysicalUnitsCount: 3,
@@ -79,7 +79,7 @@ let inMemoryCart: CartDto = { ...INITIAL_DEV_CART };
 
 function recalculateCartTotals(items: CartItemDto[]): CartTotalsDto {
   const subtotal = Number(items.reduce((acc, i) => acc + i.lineTotal, 0).toFixed(2));
-  const taxIncluded = Number(((subtotal * 10) / 110).toFixed(2));
+  const taxIncluded = Number(((subtotal * 15) / 115).toFixed(2));
   const shippingEstimate = 0.0;
   return {
     subtotal,
@@ -87,7 +87,7 @@ function recalculateCartTotals(items: CartItemDto[]): CartTotalsDto {
     shippingEstimate,
     shippingMethod: 'CLICK_AND_COLLECT',
     total: subtotal + shippingEstimate,
-    currency: 'AUD',
+    currency: 'NZD',
   };
 }
 
@@ -246,7 +246,7 @@ export async function clearCart(): Promise<CartDto> {
       shippingEstimate: 0,
       shippingMethod: 'CLICK_AND_COLLECT',
       total: 0,
-      currency: 'AUD',
+      currency: 'NZD',
     },
     totalPacksCount: 0,
     totalPhysicalUnitsCount: 0,

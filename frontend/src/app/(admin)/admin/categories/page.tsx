@@ -36,7 +36,7 @@ export default function AdminCategoriesPage() {
       name: 'Seat Belts & Safety Harnesses',
       slug: 'seat-belts',
       description:
-        'Individually inspected and serialized second-hand safety components, retractors, buckles, and stalks compliant with NSW roadworthy vehicle standards.',
+        'Individually inspected and serialized second-hand safety components, retractors, buckles, and stalks compliant with New Zealand WOF / Land Transport vehicle safety standards.',
       activeProducts: 6,
       productType: 'INDIVIDUALLY_SERIALIZED',
       saleUnits: ['Individual Serialized Unit (1x)'],

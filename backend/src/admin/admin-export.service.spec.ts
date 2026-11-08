@@ -39,13 +39,13 @@ describe('AdminExportService', () => {
       orderNumber: 'ORD-2026-1001',
       createdAt: new Date('2026-11-06T10:00:00Z'),
       customerEmail: 'johnathan.doe@example.com',
-      customerPhone: '+61 412 345 678',
+      customerPhone: '+64 21 345 678',
       shippingAddress: {
         firstName: 'Johnathan',
         lastName: 'Doe',
-        city: 'Sydney',
-        state: 'NSW',
-        postalCode: '2000',
+        city: 'Auckland',
+        state: 'Auckland',
+        postalCode: '1010',
       },
       orderStatus: 'PAID',
       paymentStatus: 'PAID',
@@ -73,7 +73,7 @@ describe('AdminExportService', () => {
       // Should mask email -> "j***@example.com"
       expect(csv).toContain('"j***@example.com"');
       // Should mask phone
-      expect(csv).toContain('+61 •••• •••• 5678');
+      expect(csv).toContain('+64 •••• •••• 5678');
       expect(csv).not.toContain('johnathan.doe@example.com');
 
       expect(auditService.recordLog).toHaveBeenCalledWith(
@@ -98,7 +98,7 @@ describe('AdminExportService', () => {
 
       expect(csv).toContain('"Johnathan Doe"');
       expect(csv).toContain('"johnathan.doe@example.com"');
-      expect(csv).toContain('"+61 412 345 678"');
+      expect(csv).toContain('"+64 21 345 678"');
     });
   });
 
@@ -114,7 +114,7 @@ describe('AdminExportService', () => {
           quantityOnHand: 12,
           quantityReserved: 2,
           costPrice: '85.00',
-          warehouse: { code: 'PRESTONS-HUB' },
+          warehouse: { code: 'AKL-CENTRAL' },
         },
       ],
       serializedItems: [],

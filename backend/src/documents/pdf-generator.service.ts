@@ -47,7 +47,7 @@ export interface InvoiceData {
 export class PdfGeneratorService {
   /**
    * Generates a fully standard-compliant, self-contained PDF 1.4 Tax Invoice buffer.
-   * Conforms to Australian Taxation Office (ATO) Tax Invoice requirements.
+   * Conforms to New Zealand Inland Revenue Department (IRD) Tax Invoice requirements (Goods and Services Tax Act 1985).
    */
   generateTaxInvoicePdf(data: InvoiceData): Buffer {
     const streamOperations: string[] = [];
@@ -125,7 +125,7 @@ export class PdfGeneratorService {
       9,
       margin,
       pageHeight - 90,
-      'Pinnacle Auto Spares & Commercial Tyres Pty Ltd',
+      'Pinnacle Auto Spares & Commercial Tyres Ltd',
       '0.3 0.35 0.4',
     );
     addText(
@@ -133,7 +133,7 @@ export class PdfGeneratorService {
       9,
       margin,
       pageHeight - 102,
-      '42 Jedda Road, Prestons NSW 2170, Australia',
+      '18 Industry Road, Penrose, Auckland 1061, New Zealand',
       '0.3 0.35 0.4',
     );
     addText(
@@ -141,7 +141,7 @@ export class PdfGeneratorService {
       9,
       margin,
       pageHeight - 114,
-      'ABN: 48 123 456 789 | NSW Licence: MVRL-58291',
+      'NZBN: 9429041234567 | GST No: 123-456-789 | Trader: MVD-89211',
       '0.3 0.35 0.4',
     );
     addText(
@@ -149,7 +149,7 @@ export class PdfGeneratorService {
       9,
       margin,
       pageHeight - 126,
-      'Phone: (02) 9876 5432 | Email: accounts@pinnacleautospares.com.au',
+      'Phone: (09) 525 8890 | Toll-Free: 0800 PINNACLE | Email: accounts@pinnacleparts.co.nz',
       '0.3 0.35 0.4',
     );
 
@@ -393,7 +393,7 @@ export class PdfGeneratorService {
       12,
       summaryX + 10,
       summaryBoxY - 55,
-      'Total Amount (AUD):',
+      'Total Amount (NZD):',
       '0.06 0.09 0.16',
     );
     addText(
@@ -412,7 +412,7 @@ export class PdfGeneratorService {
       8,
       margin,
       48,
-      'TAX INVOICE COMPLIANCE NOTE (ATO GST LEGISLATION)',
+      'TAX INVOICE COMPLIANCE NOTE (NZ IRD GST ACT 1985)',
       '0.3 0.35 0.4',
     );
     addText(
@@ -420,7 +420,7 @@ export class PdfGeneratorService {
       7.5,
       margin,
       38,
-      'This document is an official Australian Tax Invoice issued by Pinnacle Auto Spares & Commercial Tyres Pty Ltd.',
+      'This document is an official New Zealand Tax Invoice issued by Pinnacle Auto Spares & Commercial Tyres Ltd (NZBN 9429041234567).',
       '0.5 0.55 0.6',
     );
     addText(
@@ -428,7 +428,7 @@ export class PdfGeneratorService {
       7.5,
       margin,
       28,
-      'All goods remain the property of Pinnacle Auto Spares until paid in full. Returns subject to inspection policy. MVRL-58291.',
+      'All goods remain the property of Pinnacle Auto Spares until paid in full. Consumer Guarantees Act 1993 (CGA) and Fair Trading Act 1986 apply. MVD-89211.',
       '0.5 0.55 0.6',
     );
 

@@ -54,8 +54,8 @@ export class CheckoutService {
           shippingFee: 0,
           discountAmount: 0,
           totalAmount: 0,
-          currency: 'AUD',
-          taxRatePercent: 10,
+          currency: 'NZD',
+          taxRatePercent: 15,
           isTaxInclusive: true,
         },
         items: [],
@@ -107,7 +107,7 @@ export class CheckoutService {
       shippingFee,
       discountAmount: 0,
       totalAmount,
-      currency: 'AUD',
+      currency: 'NZD',
       taxRatePercent: taxResult.taxRatePercent,
       isTaxInclusive: true,
     };
@@ -198,7 +198,7 @@ export class CheckoutService {
           shippingFee,
           taxAmount: taxCalc.taxAmount,
           totalAmount,
-          currency: 'AUD',
+          currency: 'NZD',
           notes: dto.notes?.trim() || null,
         },
       });
@@ -249,7 +249,7 @@ export class CheckoutService {
     });
 
     this.logger.log(
-      `[Checkout] Created order ${createdOrder.orderNumber} ($${totalAmount} AUD) with ${RESERVATION_EXPIRY_MINUTES}-min stock reservation`,
+      `[Checkout] Created order ${createdOrder.orderNumber} ($${totalAmount} NZD) with ${RESERVATION_EXPIRY_MINUTES}-min stock reservation`,
     );
 
     return this.getOrderByNumber(createdOrder.orderNumber, customerId);
@@ -355,7 +355,7 @@ export class CheckoutService {
     const shippingSnap = order.shippingAddress as OrderAddressSnapshot;
     const isClickAndCollect =
       shippingSnap.company?.includes('Click & Collect') ||
-      (shippingSnap.city === 'Prestons' && shippingSnap.postalCode === '2170');
+      ((shippingSnap.city === 'Auckland' || shippingSnap.city === 'Penrose') && shippingSnap.postalCode === '1061');
 
     return {
       id: order.id,

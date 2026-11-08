@@ -121,7 +121,7 @@ export default function AdminStaffPage() {
             </Badge>
           </div>
           <p className="text-xs text-slate-500 mt-1">
-            Manage Prestons trade hub staff members, platform roles, and domain-level operational permissions.
+            Manage Auckland trade hub staff members, platform roles, and domain-level operational permissions.
           </p>
         </div>
 
@@ -260,7 +260,7 @@ export default function AdminStaffPage() {
                     </td>
 
                     <td className="py-3 px-4 text-slate-600">
-                      {s.department || 'Prestons General Operations'}
+                      {s.department || 'Auckland General Operations'}
                     </td>
 
                     <td className="py-3 px-4">

@@ -121,7 +121,7 @@ export default function AccountLayout({ children }: { children: React.ReactNode 
               </div>
 
               <p className="text-xs text-slate-500">
-                {profile?.email || 'trade@prestonsmechanical.com.au'} · Sydney Depot Customer
+                {profile?.email || 'trade@aucklandmechanical.co.nz'} · Auckland Depot Customer
               </p>
             </div>
           </div>

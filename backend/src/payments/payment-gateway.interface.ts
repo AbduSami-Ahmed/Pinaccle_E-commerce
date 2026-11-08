@@ -3,7 +3,7 @@ import { PaymentGatewayProvider } from '@pinnacle/contracts';
 export interface CreatePaymentIntentParams {
   orderId: string;
   orderNumber: string;
-  amount: number; // in AUD dollars
+  amount: number; // in NZD dollars
   currency: string;
   customerEmail: string;
   idempotencyKey: string;

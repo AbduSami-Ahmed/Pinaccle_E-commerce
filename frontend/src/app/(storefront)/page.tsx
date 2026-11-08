@@ -9,9 +9,9 @@ import { VehicleFinderWidget } from '@/components/storefront/vehicle-finder-widg
 import { fetchStorefrontProducts } from '@/lib/storefront';
 
 export const metadata = {
-  title: 'Pinnacle Auto Spares & Tyres — Trade Tyres & Tested Seat Belts (Prestons NSW)',
+  title: 'Pinnacle Auto Spares & Tyres — Trade Tyres & Tested Seat Belts (Penrose, Auckland)',
   description:
-    'Licensed Sydney auto dismantler and direct tyre importer. Supplying mechanics, panel shops, and trade fleets with verified tyres and AS/NZS tested replacement seat belts. Orders before 2pm dispatch same day.',
+    'Registered New Zealand motor vehicle trader and direct tyre importer. Supplying mechanics, panel shops, and trade fleets with verified tyres and AS/NZS tested replacement seat belts. Orders before 2pm NZST dispatch same day.',
   alternates: {
     canonical: '/',
   },
@@ -31,7 +31,7 @@ export default async function StorefrontHomePage() {
           <div className="max-w-3xl">
             <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-blue-200 bg-blue-50/90 px-3 py-1 text-xs font-semibold text-blue-900 shadow-xs">
               <span className="flex h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
-              <span>Licensed Auto Recycler & Importer · Yard Pickup (Prestons NSW)</span>
+              <span>Registered Motor Vehicle Trader · Penrose Hub Pickup (Auckland 1061)</span>
             </div>
             <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-5xl leading-tight">
               Direct Trade Tyres & Bench-Tested Seat Belts
@@ -118,7 +118,7 @@ export default async function StorefrontHomePage() {
                 <p className="text-sm text-slate-600">
                   Direct stock from Michelin, Continental, Goodyear, and Pirelli. Fresh DOT date
                   codes, full factory tread, and E-mark approval. On-site fitting & balancing
-                  available for $25/corner at our Prestons bays.
+                  available for $25/corner at our Penrose bays.
                 </p>
                 <div className="flex items-center gap-2 pt-2 border-t border-slate-100 text-xs font-semibold text-blue-700 group-hover:translate-x-1 transition-transform">
                   Search Tyre Inventory <ArrowRight className="h-3.5 w-3.5" />
@@ -248,8 +248,8 @@ export default async function StorefrontHomePage() {
                   2 PM Same-Day Dispatch & Pickup
                 </h3>
                 <p className="mt-1 text-xs text-slate-600 leading-relaxed">
-                  Orders placed by 2:00 PM AEST dispatch same day via StarTrack or TNT express.
-                  30-minute click & collect available from our Prestons trade counter.
+                  Orders placed by 2:00 PM NZST dispatch same day via CourierPost or Mainfreight express.
+                  30-minute click & collect available from our Penrose Auckland trade counter.
                 </p>
               </div>
             </div>

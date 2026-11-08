@@ -31,7 +31,7 @@ export async function generateMetadata({ params }: PageProps) {
     const product = await fetchStorefrontProductBySlug(slug);
     return {
       title: `${product.title} (${product.brand}) — Pinnacle Auto Spares`,
-      description: `${product.title}. In stock: ${product.availability.sellableBaseUnits} units at Prestons NSW depot.`,
+      description: `${product.title}. In stock: ${product.availability.sellableBaseUnits} units at Auckland Penrose depot.`,
       alternates: {
         canonical: `/products/${slug}`,
       },
@@ -227,8 +227,8 @@ export default async function ProductUniversalDetailPage({ params }: PageProps) 
                 <span>Trade Dispatch Cutoff:</span>
               </div>
               <p className="text-[11px] text-slate-500">
-                Orders placed before <strong>2:00 PM AEST</strong> dispatch same business day via
-                StarTrack Express.
+                Orders placed before <strong>2:00 PM NZST</strong> dispatch same business day via
+                CourierPost or Mainfreight Express.
               </p>
             </div>
           </div>

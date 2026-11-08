@@ -31,7 +31,7 @@ export async function generateMetadata({ params }: PageProps) {
     const product = await fetchStorefrontProductBySlug(slug);
     return {
       title: `${product.title} — Pinnacle Auto Spares`,
-      description: `Tested serialized seat belt assembly for ${product.brand}. Condition: ${product.condition}. Resistance tested 2.2Ω. AS/NZS 2596 compliant. NSW Recycler MVRL-58291.`,
+      description: `Tested serialized seat belt assembly for ${product.brand}. Condition: ${product.condition}. Resistance tested 2.2Ω. AS/NZS 2596 compliant. Registered Trader MVD-89211.`,
       alternates: {
         canonical: `/seat-belts/${slug}`,
       },
@@ -170,7 +170,7 @@ export default async function SeatBeltDetailPage({ params }: PageProps) {
                   <span>SRS Airbag & Seat Belt Installation Precaution</span>
                 </div>
                 <p className="text-[11px] text-amber-900 leading-relaxed">
-                  Australian automotive safety regulations recommend that passive occupant restraint
+                  New Zealand Land Transport safety regulations recommend that passive occupant restraint
                   systems be fitted by a qualified automotive technician. Always verify connector
                   keying and color codes before final installation.
                 </p>
@@ -248,15 +248,15 @@ export default async function SeatBeltDetailPage({ params }: PageProps) {
             <div className="rounded-lg border border-slate-200 bg-slate-50 p-4 space-y-2 text-xs text-slate-600">
               <div className="flex items-center gap-2 text-slate-900 font-semibold">
                 <Clock className="h-4 w-4 text-blue-700 shrink-0" />
-                <span>Trade Collection & Dispatch (Prestons NSW):</span>
+                <span>Trade Collection &amp; Dispatch (Penrose Auckland):</span>
               </div>
               <p className="text-[11px] text-slate-500">
                 Staged in secure climate-controlled shelving. Trade counter pickup available 30 min
                 after confirmation.
               </p>
               <p className="text-[11px] text-slate-500 border-t border-slate-200 pt-2">
-                Orders placed before <strong>2:00 PM AEST</strong> dispatch same business day via
-                StarTrack Express.
+                Orders placed before <strong>2:00 PM NZST</strong> dispatch same business day via
+                CourierPost or Mainfreight Express.
               </p>
             </div>
           </div>

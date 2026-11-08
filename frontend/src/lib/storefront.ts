@@ -582,7 +582,7 @@ export async function fetchStorefrontProductBySlug(
               ? '2020 Toyota RAV4 GX Hybrid AWD (41,800 km, Silver)'
               : '2017 BMW 320d F30 LCI Sedan (52,100 km, Grey)',
         resistanceOhms: 2.2,
-        warehouseLocation: 'Prestons Depot Bay B-04 / Shelf S-02',
+        warehouseLocation: 'Penrose Auckland Depot Bay B-04 / Shelf S-02',
       }
     : undefined;
 
@@ -660,24 +660,24 @@ export async function fetchStorefrontProductBySlug(
   return {
     ...seed,
     description: isTyre
-      ? `Original commercial grade tyre imported directly from authorized distributors. Engineered for longevity, wet braking grip, and lower rolling resistance. Full factory 8.0mm tread depth with fresh DOT manufacture date codes. Drive-in fitting & balancing available at our Prestons workshop bays for $25/corner.`
+      ? `Original commercial grade tyre imported directly from authorized distributors. Engineered for longevity, wet braking grip, and lower rolling resistance. Full factory 8.0mm tread depth with fresh DOT manufacture date codes. Drive-in fitting & balancing available at our Penrose workshop bays for $25/corner.`
       : `Individually serialized automotive restraint component salvaged from low-kilometre donor vehicle. The pyrotechnic pretensioner circuit has been continuity tested with a digital multimeter, reading within OEM standard 2.1–2.4Ω. Webbing inspected under 500-lumen inspection lighting for cuts, edge fraying, or chemical contamination. Barcode-tagged and stored in climate-controlled shelving.`,
-    currency: 'AUD',
+    currency: 'NZD',
     allMedia,
     fitments,
     serializedItem,
     warehouseLocation: {
-      name: 'Sydney Central Depot (Prestons NSW)',
-      depotCode: 'SYD-PRESTONS',
+      name: 'Auckland Central Fulfillment Centre (Penrose)',
+      depotCode: 'AKL-CENTRAL',
       bay: isTyre ? 'Rack T-12 / Bay 4' : 'Depot Bay B-04 / Shelf S-02',
       pickupAvailable: true,
       pickupLeadTime: 'Ready in 30 minutes for trade collection',
     },
     shippingInfo: {
       standardDispatch:
-        'Orders confirmed before 2:00 PM AEST dispatch same day via StarTrack or TNT Express.',
+        'Orders confirmed before 2:00 PM NZST dispatch same day via CourierPost or Mainfreight Express.',
       expressCourier:
-        'Overnight / 1–2 business days courier freight across NSW, ACT, VIC, and QLD metro.',
+        'Overnight / 1–2 business days courier freight across North and South Island metro hubs.',
       cutoffTimeAEST: '14:00',
     },
     warrantyAndReturns: {

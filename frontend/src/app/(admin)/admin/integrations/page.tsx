@@ -128,7 +128,7 @@ export default function IntegrationsAdminPage() {
           itemsCount: 4,
           channel: 'MOCK_MARKETPLACE',
           totalAmount: 1120.0,
-          currency: 'AUD',
+          currency: 'NZD',
         },
       });
       setSuccessMsg(`Mock webhook verified and ingested. Status: ${res.status} [Corr: ${res.correlationId}]`);

@@ -84,7 +84,7 @@ export class OrdersController {
 
   @Post(':id/collect')
   @RequirePermissions('orders:fulfill:dispatch')
-  @ApiOperation({ summary: 'Confirm Click & Collect trade counter pickup at Prestons depot' })
+  @ApiOperation({ summary: 'Confirm Click & Collect trade counter pickup at Auckland Penrose depot' })
   async confirmDepotCollection(
     @Param('id') id: string,
     @Body() dto: ConfirmDepotCollectionBodyDto,

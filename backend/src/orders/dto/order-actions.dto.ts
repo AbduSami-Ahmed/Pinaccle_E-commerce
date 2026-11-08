@@ -70,7 +70,7 @@ export class ConfirmDepotCollectionBodyDto implements ConfirmDepotCollectionDto 
 
   @IsOptional()
   @IsString()
-  idDocumentType?: string; // e.g. "NSW Driver Licence"
+  idDocumentType?: string; // e.g. "NZ Driver Licence", "Passport"
 
   @IsOptional()
   @IsString()

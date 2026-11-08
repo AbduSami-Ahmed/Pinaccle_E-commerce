@@ -31,7 +31,7 @@ export class RegisterCustomerDto {
   @MaxLength(100)
   lastName!: string;
 
-  @ApiPropertyOptional({ example: '+61400000000' })
+  @ApiPropertyOptional({ example: '+64210000000' })
   @IsOptional()
   @IsPhoneNumber()
   phone?: string;

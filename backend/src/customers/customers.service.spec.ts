@@ -123,12 +123,12 @@ describe('CustomersService', () => {
         id: 'addr-1',
         customerId: 'cust-1',
         label: 'Workshop',
-        line1: '42 Jedda Rd',
+        line1: '18 Industry Road',
         line2: null,
-        city: 'Prestons',
-        state: 'NSW',
-        postalCode: '2170',
-        country: 'AU',
+        city: 'Penrose',
+        state: 'Auckland',
+        postalCode: '1061',
+        country: 'NZ',
         isDefault: true,
         createdAt: new Date(),
         updatedAt: new Date(),
@@ -136,10 +136,10 @@ describe('CustomersService', () => {
 
       const result = await service.createAddress('cust-1', {
         label: 'Workshop',
-        line1: '42 Jedda Rd',
-        city: 'Prestons',
-        state: 'NSW',
-        postalCode: '2170',
+        line1: '18 Industry Road',
+        city: 'Penrose',
+        state: 'Auckland',
+        postalCode: '1061',
       });
 
       expect(result.isDefault).toBe(true);

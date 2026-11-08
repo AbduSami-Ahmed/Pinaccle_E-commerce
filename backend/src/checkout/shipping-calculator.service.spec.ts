@@ -29,18 +29,18 @@ describe('ShippingCalculatorService', () => {
     expect(service.calculateShippingFee('CLICK_AND_COLLECT')).toBe(0.0);
   });
 
-  it('calculates standard freight courier fee ($25.00 AUD)', () => {
+  it('calculates standard freight courier fee ($25.00 NZD)', () => {
     expect(service.calculateShippingFee('STANDARD_COURIER')).toBe(25.0);
   });
 
-  it('calculates express priority courier fee ($45.00 AUD)', () => {
+  it('calculates express priority courier fee ($45.00 NZD)', () => {
     expect(service.calculateShippingFee('EXPRESS_COURIER')).toBe(45.0);
   });
 
-  it('provides verified Prestons NSW depot address for collection', () => {
-    expect(service.depotAddress.city).toBe('Prestons');
-    expect(service.depotAddress.postalCode).toBe('2170');
-    expect(service.depotAddress.state).toBe('NSW');
+  it('provides verified Auckland NZ depot address for collection', () => {
+    expect(service.depotAddress.city).toBe('Auckland');
+    expect(service.depotAddress.postalCode).toBe('1061');
+    expect(service.depotAddress.country).toBe('NZ');
   });
 
   it('lists all available shipping options with estimated transit', () => {

@@ -265,14 +265,14 @@ describe('NotificationsService', () => {
         id: 'ord-100',
         orderNumber: 'PIN-2026-10042',
         customerId: 'cust-1',
-        customerEmail: 'trade@example.com.au',
+        customerEmail: 'trade@example.co.nz',
         shippingAddress: {
           firstName: 'Dave',
           lastName: 'Miller',
-          line1: '42 Jedda Rd',
-          city: 'Prestons',
-          state: 'NSW',
-          postalCode: '2170',
+          line1: '18 Industry Road',
+          city: 'Penrose',
+          state: 'Auckland',
+          postalCode: '1061',
         },
         items: [
           {
@@ -288,14 +288,14 @@ describe('NotificationsService', () => {
         taxAmount: 50.91,
         shippingFee: 0.0,
         totalAmount: 560.0,
-        currency: 'AUD',
+        currency: 'NZD',
       });
 
       prisma.notificationRecord.upsert.mockResolvedValue({
         id: 'notif-confirm',
         channel: 'EMAIL',
         type: 'ORDER_CONFIRMATION',
-        recipient: 'trade@example.com.au',
+        recipient: 'trade@example.co.nz',
         subject: 'Order Confirmed: PIN-2026-10042 - Pinnacle Auto Spares',
         templateName: 'order_confirmation',
         status: 'PENDING',
@@ -308,7 +308,7 @@ describe('NotificationsService', () => {
         id: 'notif-confirm',
         channel: 'EMAIL',
         type: 'ORDER_CONFIRMATION',
-        recipient: 'trade@example.com.au',
+        recipient: 'trade@example.co.nz',
         subject: 'Order Confirmed: PIN-2026-10042 - Pinnacle Auto Spares',
         templateName: 'order_confirmation',
         status: 'SENT',

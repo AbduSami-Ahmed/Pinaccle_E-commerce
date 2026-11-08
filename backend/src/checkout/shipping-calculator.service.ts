@@ -26,13 +26,13 @@ export class ShippingCalculatorService {
   private readonly expressCourierFee: number;
 
   public readonly depotAddress = {
-    name: 'Pinnacle Auto Spares — Prestons Depot',
-    line1: '42 Jedda Road',
-    city: 'Prestons',
-    state: 'NSW',
-    postalCode: '2170',
-    country: 'AU',
-    instructions: 'Drive to Gate 2 dispatch bay. Quote order number and show photo ID.',
+    name: 'Pinnacle Auto Spares & Commercial Tyres — Auckland Central Hub',
+    line1: '18 Industry Road',
+    city: 'Auckland',
+    state: 'Auckland',
+    postalCode: '1061',
+    country: 'NZ',
+    instructions: 'Drive to Trade Counter & Dispatch Bay 2, Penrose. Quote order number and show photo ID.',
   };
 
   constructor(private readonly config: ConfigService) {
@@ -63,27 +63,27 @@ export class ShippingCalculatorService {
     return [
       {
         code: 'CLICK_AND_COLLECT',
-        name: 'Click & Collect (Sydney Depot)',
-        description: 'Free collection from our Prestons NSW trade facility during business hours.',
+        name: 'Click & Collect (Auckland Trade Hub)',
+        description: 'Free collection from our Penrose, Auckland trade facility during business hours.',
         fee: 0.0,
-        currency: 'AUD',
+        currency: 'NZD',
         estimatedTransit: 'Ready in 2 business hours',
         pickupLocation: this.depotAddress,
       },
       {
         code: 'STANDARD_COURIER',
-        name: 'Standard Freight Courier',
-        description: 'StarTrack / TNT road courier dispatch directly to your workshop or home.',
+        name: 'Standard Freight (NZ Post / Mainfreight)',
+        description: 'CourierPost / Mainfreight road delivery across North & South Islands.',
         fee: this.standardCourierFee,
-        currency: 'AUD',
-        estimatedTransit: '2-5 business days',
+        currency: 'NZD',
+        estimatedTransit: '2-4 business days (Inter-island may require 3-5 days)',
       },
       {
         code: 'EXPRESS_COURIER',
-        name: 'Express Priority Courier',
+        name: 'Express Priority Courier (NZ Post Express)',
         description: 'Expedited transport priority dispatch for urgent automotive repairs.',
         fee: this.expressCourierFee,
-        currency: 'AUD',
+        currency: 'NZD',
         estimatedTransit: '1-2 business days',
       },
     ];

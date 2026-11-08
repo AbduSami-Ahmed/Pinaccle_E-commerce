@@ -16,7 +16,7 @@ export class SmtpEmailAdapter implements TransactionalEmailAdapter {
   constructor(private readonly config: ConfigService) {
     this.fromAddress =
       this.config.get<string>('SMTP_FROM_EMAIL') ??
-      'orders@pinnacleautospares.com.au';
+      'orders@pinnacleparts.co.nz';
   }
 
   async sendEmail(options: SendEmailOptions): Promise<SendEmailResult> {

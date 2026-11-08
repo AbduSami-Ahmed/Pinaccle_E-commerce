@@ -108,7 +108,7 @@ export class AdminDashboardService {
       totalOrdersCount,
       paidOrdersCount,
       averageOrderValue,
-      currency: 'AUD',
+      currency: 'NZD',
     };
   }
 
@@ -299,7 +299,7 @@ export class AdminDashboardService {
         const name = `${addr.firstName || ''} ${addr.lastName || ''}`.trim() || 'Customer';
         const isClickAndCollect =
           addr.company?.includes('Click & Collect') ||
-          (addr.city === 'Prestons' && addr.postalCode === '2170');
+          ((addr.city === 'Auckland' || addr.city === 'Penrose') && addr.postalCode === '1061');
         const shippingMethod: ShippingMethod = isClickAndCollect
           ? 'CLICK_AND_COLLECT'
           : 'STANDARD_COURIER';

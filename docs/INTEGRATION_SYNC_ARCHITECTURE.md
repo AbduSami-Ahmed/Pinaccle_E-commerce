@@ -55,7 +55,7 @@ When an external platform sends an inventory or order update webhook:
 3. If an existing mapping exists with the exact same `syncHash`, the system recognizes that this event originated from our own prior outbound push or represents unchanged state. The event is safely marked `PROCESSED` without re-triggering outbound inventory broadcasts.
 
 #### B. Outbound Loop Suppression
-When an inventory change occurs locally in Pinnacle's warehouse (e.g. stock received at Prestons NSW counter):
+When an inventory change occurs locally in Pinnacle's warehouse (e.g. stock received at Auckland Penrose counter):
 1. The outbound sync job computes the payload's `syncHash`.
 2. If `mapping.syncHash === currentHash`, the outbound dispatch is skipped.
 3. Upon successful outbound dispatch, the `ExternalIdMapping` is updated with the new `syncHash`. Any subsequent webhook bounce-back will be suppressed.

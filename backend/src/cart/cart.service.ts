@@ -47,7 +47,7 @@ export class CartService {
             data: {
               customerId,
               sessionToken: `cust_${randomUUID()}`,
-              currency: 'AUD',
+              currency: 'NZD',
               expiresAt: customerExpiry,
             },
           });
@@ -65,7 +65,7 @@ export class CartService {
       guestCart = await this.prisma.cart.create({
         data: {
           sessionToken,
-          currency: 'AUD',
+          currency: 'NZD',
           expiresAt: guestExpiry,
         },
       });
@@ -155,7 +155,7 @@ export class CartService {
           hasUnavailableItems = true;
         } else if (maxAvailablePacks === 0) {
           isAvailable = false;
-          stockAvailabilityMessage = 'Item is currently out of stock in Prestons depot.';
+          stockAvailabilityMessage = 'Item is currently out of stock in Auckland depot.';
           hasUnavailableItems = true;
         } else if (item.quantity > maxAvailablePacks) {
           isAvailable = false;
@@ -195,8 +195,8 @@ export class CartService {
       });
     }
 
-    // Tax is included (10% Australian GST standard)
-    const taxIncluded = Number((subtotal * (10 / 110)).toFixed(2));
+    // Tax is included (15% New Zealand GST standard: 15/115 fraction)
+    const taxIncluded = Number((subtotal * (15 / 115)).toFixed(2));
     const shippingEstimate = 0.0; // Click & collect default
     const total = Number((subtotal + shippingEstimate).toFixed(2));
 

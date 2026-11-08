@@ -51,13 +51,13 @@ export default function AdminOrderDetailPage() {
 
   // Modal / Form States
   const [showDispatchModal, setShowDispatchModal] = React.useState(false);
-  const [carrierName, setCarrierName] = React.useState('StarTrack Express');
+  const [carrierName, setCarrierName] = React.useState('CourierPost / NZ Post');
   const [trackingNumber, setTrackingNumber] = React.useState('');
   const [dispatchNotes, setDispatchNotes] = React.useState('');
 
   const [showCollectModal, setShowCollectModal] = React.useState(false);
   const [collectedByName, setCollectedByName] = React.useState('');
-  const [idDocType, setIdDocType] = React.useState('NSW Driver Licence');
+  const [idDocType, setIdDocType] = React.useState('NZ Driver Licence');
   const [idDocLast4, setIdDocLast4] = React.useState('');
 
   const [showCancelModal, setShowCancelModal] = React.useState(false);
@@ -104,7 +104,7 @@ export default function AdminOrderDetailPage() {
     setActionLoading(true);
     try {
       const updated = await pickPackOrder(order.id, {
-        notes: 'Order picked and staged in Prestons Bay 4',
+        notes: 'Order picked and staged in Auckland Bay 4',
       });
       setOrder(updated);
       flashSuccess('Order marked as PROCESSING (Pick & Pack initiated)');
@@ -190,7 +190,7 @@ export default function AdminOrderDetailPage() {
       });
       setOrder(updated);
       setShowRefundModal(false);
-      flashSuccess(`Refund processed successfully for $${amt ?? order.totalAmount} AUD.`);
+      flashSuccess(`Refund processed successfully for $${amt ?? order.totalAmount} NZD.`);
     } catch (e: any) {
       setErrorMsg(e.message || 'Refund processing failed');
     } finally {
@@ -205,7 +205,7 @@ export default function AdminOrderDetailPage() {
         action,
         staffNotes:
           action === 'APPROVE'
-            ? 'Approved for physical return to Prestons depot'
+            ? 'Approved for physical return to Auckland depot'
             : 'Declined per store policy',
       });
       await loadOrder();
@@ -277,7 +277,7 @@ export default function AdminOrderDetailPage() {
         >
           <ArrowLeft className="h-3.5 w-3.5" /> Back to Orders Management
         </Link>
-        <span className="text-xs font-mono text-slate-500">Depot Code: SYD-PRESTONS-01</span>
+        <span className="text-xs font-mono text-slate-500">Depot Code: AKL-CENTRAL</span>
       </div>
 
       {/* Alert Banners */}
@@ -339,14 +339,14 @@ export default function AdminOrderDetailPage() {
             <p className="mt-1 text-xs text-slate-500 flex items-center gap-2">
               <span>
                 Placed on{' '}
-                {new Date(order.createdAt).toLocaleDateString('en-AU', {
+                {new Date(order.createdAt).toLocaleDateString('en-NZ', {
                   day: '2-digit',
                   month: 'long',
                   year: 'numeric',
                   hour: '2-digit',
                   minute: '2-digit',
                 })}{' '}
-                AEST
+                NZST
               </span>
               <span>•</span>
               <span>Currency: {order.currency}</span>
@@ -373,7 +373,7 @@ export default function AdminOrderDetailPage() {
                     disabled={actionLoading}
                     className="bg-emerald-600 hover:bg-emerald-700 text-white text-xs h-9"
                   >
-                    <CheckCircle2 className="mr-1.5 h-4 w-4" /> Verify Gate 2 Pickup
+                    <CheckCircle2 className="mr-1.5 h-4 w-4" /> Verify Trade Counter Pickup
                   </Button>
                 ) : (
                   <Button
@@ -513,7 +513,7 @@ export default function AdminOrderDetailPage() {
                       <div className="text-[11px] text-slate-500">
                         Dispatched:{' '}
                         {s.shippedAt
-                          ? new Date(s.shippedAt).toLocaleDateString('en-AU', {
+                          ? new Date(s.shippedAt).toLocaleDateString('en-NZ', {
                               day: '2-digit',
                               month: 'short',
                               hour: '2-digit',
@@ -521,7 +521,7 @@ export default function AdminOrderDetailPage() {
                             })
                           : 'Pending'}
                         {s.deliveredAt &&
-                          ` • Delivered: ${new Date(s.deliveredAt).toLocaleDateString('en-AU', {
+                          ` • Delivered: ${new Date(s.deliveredAt).toLocaleDateString('en-NZ', {
                             day: '2-digit',
                             month: 'short',
                             hour: '2-digit',
@@ -670,7 +670,7 @@ export default function AdminOrderDetailPage() {
                   <div className="flex items-center justify-between">
                     <span className="font-bold text-slate-900">{evt.title}</span>
                     <span className="text-slate-400 font-mono text-[11px]">
-                      {new Date(evt.timestamp).toLocaleDateString('en-AU', {
+                      {new Date(evt.timestamp).toLocaleDateString('en-NZ', {
                         day: '2-digit',
                         month: 'short',
                         hour: '2-digit',
@@ -704,7 +704,7 @@ export default function AdminOrderDetailPage() {
                 <span className="font-mono">${order.subtotal.toFixed(2)}</span>
               </div>
               <div className="flex justify-between text-slate-500">
-                <span>Included Statutory 10% GST:</span>
+                <span>Included Statutory 15% GST:</span>
                 <span className="font-mono">${order.taxAmount.toFixed(2)}</span>
               </div>
               <div className="flex justify-between text-slate-600">
@@ -723,7 +723,7 @@ export default function AdminOrderDetailPage() {
               )}
               <div className="flex justify-between border-t border-slate-200 pt-2 text-sm font-bold text-slate-900">
                 <span>Total Amount:</span>
-                <span className="font-mono text-base">${order.totalAmount.toFixed(2)} AUD</span>
+                <span className="font-mono text-base">${order.totalAmount.toFixed(2)} NZD</span>
               </div>
             </div>
 
@@ -784,11 +784,11 @@ export default function AdminOrderDetailPage() {
                 <div className="mt-1">
                   {isClickAndCollect ? (
                     <span className="font-semibold text-amber-800 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded text-xs inline-flex items-center gap-1">
-                      <Boxes className="h-3 w-3" /> Sydney Depot Trade Counter Collection
+                      <Boxes className="h-3 w-3" /> Auckland Depot Trade Counter Collection
                     </span>
                   ) : (
                     <span className="font-semibold text-indigo-800 bg-indigo-50 border border-indigo-200 px-2 py-0.5 rounded text-xs inline-flex items-center gap-1">
-                      <Truck className="h-3 w-3" /> Standard Australian Courier Freight
+                      <Truck className="h-3 w-3" /> Standard New Zealand Courier Freight
                     </span>
                   )}
                 </div>
@@ -857,10 +857,10 @@ export default function AdminOrderDetailPage() {
                   onChange={(e) => setCarrierName(e.target.value)}
                   className="w-full h-9 rounded-md border border-slate-300 bg-white px-3 text-xs"
                 >
-                  <option value="StarTrack Express">StarTrack Express (Preferred Linehaul)</option>
-                  <option value="Australia Post eParcel">Australia Post eParcel</option>
-                  <option value="Toll Priority">Toll Priority Automotive Freight</option>
-                  <option value="TNT / FedEx Australia">TNT / FedEx Australia</option>
+                  <option value="CourierPost / NZ Post">CourierPost / NZ Post (Preferred Linehaul)</option>
+                  <option value="Mainfreight Logistics">Mainfreight Logistics (Bulk / Heavy)</option>
+                  <option value="Aramex NZ">Aramex NZ Priority Courier</option>
+                  <option value="TNT / FedEx New Zealand">TNT / FedEx New Zealand</option>
                 </select>
               </div>
 
@@ -945,9 +945,9 @@ export default function AdminOrderDetailPage() {
                   onChange={(e) => setIdDocType(e.target.value)}
                   className="w-full h-9 rounded-md border border-slate-300 bg-white px-3 text-xs"
                 >
-                  <option value="NSW Driver Licence">NSW Driver Licence</option>
-                  <option value="Interstate Driver Licence">Interstate Driver Licence</option>
-                  <option value="Australian Passport">Australian Passport</option>
+                  <option value="NZ Driver Licence">NZ Driver Licence</option>
+                  <option value="NZ Passport">NZ Passport</option>
+                  <option value="International Passport">International Passport</option>
                   <option value="Trade Account Authorisation Letter">
                     Trade Account Authorisation Letter
                   </option>
@@ -1069,7 +1069,7 @@ export default function AdminOrderDetailPage() {
             <form onSubmit={handleProcessRefund} className="space-y-3 text-xs">
               <div>
                 <label className="font-semibold text-slate-700 block mb-1">
-                  Refund Amount ($ AUD) *
+                  Refund Amount ($ NZD) *
                 </label>
                 <Input
                   required

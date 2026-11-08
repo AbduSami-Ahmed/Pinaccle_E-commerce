@@ -320,7 +320,7 @@ export class PaymentsService {
             result.orderId,
             'FAILED',
             result.totalAmount || 0,
-            result.currency || 'AUD',
+            result.currency || 'NZD',
             undefined,
             verified.eventId,
           )

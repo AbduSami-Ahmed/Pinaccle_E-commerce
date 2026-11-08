@@ -79,7 +79,7 @@ export default function OrderConfirmationPage() {
   const isClickAndCollect =
     order.shippingMethod === 'CLICK_AND_COLLECT' ||
     order.shippingAddress.company?.includes('Click & Collect') ||
-    (order.shippingAddress.city === 'Prestons' && order.shippingAddress.postalCode === '2170');
+    (order.shippingAddress.city === 'Penrose' && order.shippingAddress.postalCode === '1061');
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 py-12 px-4 sm:px-6 lg:px-8 print:bg-white print:text-black">
@@ -159,7 +159,7 @@ export default function OrderConfirmationPage() {
               </h2>
               <p className="text-xs text-slate-400 mt-1">
                 Placed on{' '}
-                {new Date(order.createdAt).toLocaleDateString('en-AU', {
+                {new Date(order.createdAt).toLocaleDateString('en-NZ', {
                   day: 'numeric',
                   month: 'long',
                   year: 'numeric',
@@ -196,12 +196,12 @@ export default function OrderConfirmationPage() {
                 {isClickAndCollect ? (
                   <>
                     <Building2 className="w-4 h-4" />
-                    <span>Click & Collect (Sydney Trade Depot)</span>
+                    <span>Click & Collect (Auckland Trade Depot)</span>
                   </>
                 ) : (
                   <>
                     <Truck className="w-4 h-4" />
-                    <span>Courier Delivery (StarTrack / TNT)</span>
+                    <span>Courier Delivery (CourierPost / Mainfreight)</span>
                   </>
                 )}
               </div>
@@ -244,17 +244,16 @@ export default function OrderConfirmationPage() {
               </div>
               <div className="text-xs text-slate-400 space-y-1">
                 <p>
-                  <strong className="text-slate-200">Entity:</strong> Pinnacle Auto Spares Pty Ltd
+                  <strong className="text-slate-200">Entity:</strong> Pinnacle Auto Spares &amp; Commercial Tyres Ltd
                 </p>
                 <p>
-                  <strong className="text-slate-200">NSW Motor Recycler:</strong> Lic # MVRL-58291
+                  <strong className="text-slate-200">Registered Trader:</strong> MVD-89211
                 </p>
                 <p>
-                  <strong className="text-slate-200">ABN:</strong> 42 618 902 441 (GST Registered)
+                  <strong className="text-slate-200">NZBN / GST:</strong> NZBN 9429041234567 | GST 123-456-789
                 </p>
                 <p>
-                  <strong className="text-slate-200">Contact:</strong> 02 9600 4800 |
-                  dispatch@pinnacle.com.au
+                  <strong className="text-slate-200">Contact:</strong> (09) 525 8890 | 0800 PINNACLE | accounts@pinnacleparts.co.nz
                 </p>
                 <p>
                   <strong className="text-slate-200">Payment Status:</strong>{' '}
@@ -317,7 +316,7 @@ export default function OrderConfirmationPage() {
             <div className="w-full sm:w-80 space-y-2 text-xs">
               <div className="flex justify-between text-slate-400">
                 <span>Subtotal</span>
-                <span className="font-mono text-slate-200">${order.subtotal.toFixed(2)} AUD</span>
+                <span className="font-mono text-slate-200">${order.subtotal.toFixed(2)} NZD</span>
               </div>
               <div className="flex justify-between text-slate-400">
                 <span>Freight / Delivery Fee</span>
@@ -325,20 +324,20 @@ export default function OrderConfirmationPage() {
                   {order.shippingFee === 0 ? (
                     <span className="text-emerald-400 font-bold">FREE (Depot)</span>
                   ) : (
-                    `$${order.shippingFee.toFixed(2)} AUD`
+                    `$${order.shippingFee.toFixed(2)} NZD`
                   )}
                 </span>
               </div>
               <div className="flex justify-between text-slate-400">
-                <span>Statutory 10% Australian GST</span>
+                <span>Statutory 15% New Zealand GST</span>
                 <span className="font-mono text-slate-300">
-                  Includes ${order.taxAmount.toFixed(2)} AUD
+                  Includes ${order.taxAmount.toFixed(2)} NZD
                 </span>
               </div>
               <div className="pt-2 border-t border-slate-800 flex justify-between items-baseline font-bold text-sm">
                 <span className="text-white">Total Amount Paid</span>
                 <span className="font-mono text-lg text-amber-400">
-                  ${order.totalAmount.toFixed(2)} AUD
+                  ${order.totalAmount.toFixed(2)} NZD
                 </span>
               </div>
             </div>
@@ -350,7 +349,7 @@ export default function OrderConfirmationPage() {
           <Link href="/" className="hover:text-white transition">
             &larr; Return to Storefront Home
           </Link>
-          <span>Pinnacle Auto Spares &bull; Prestons NSW 2170</span>
+          <span>Pinnacle Auto Spares &bull; 18 Industry Rd, Penrose, Auckland 1061</span>
         </div>
       </div>
     </div>

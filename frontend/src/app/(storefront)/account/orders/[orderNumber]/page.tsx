@@ -246,14 +246,14 @@ export default function CustomerOrderDetailPage() {
             </div>
             <p className="text-xs text-slate-500 mt-1">
               Ordered on{' '}
-              {new Date(order.createdAt).toLocaleDateString('en-AU', {
+              {new Date(order.createdAt).toLocaleDateString('en-NZ', {
                 day: '2-digit',
                 month: 'long',
                 year: 'numeric',
                 hour: '2-digit',
                 minute: '2-digit',
               })}{' '}
-              AEST
+              NZST
             </p>
           </div>
 
@@ -330,7 +330,7 @@ export default function CustomerOrderDetailPage() {
             <div className="text-xs text-emerald-800 bg-emerald-50 p-3 rounded-lg border border-emerald-200">
               <strong>Return Instructions:</strong> Your RMA is approved! Please safely repack parts
               in original packaging and return to{' '}
-              <strong>Pinnacle Auto Spares, 42 Jedda Road, Prestons NSW 2170</strong> quoting your
+              <strong>Pinnacle Auto Spares, 18 Industry Road, Penrose, Auckland 1061</strong> quoting your
               RMA number on the carton.
             </div>
           )}
@@ -342,19 +342,18 @@ export default function CustomerOrderDetailPage() {
         <div className="rounded-xl border border-amber-200 bg-amber-50/60 p-5 space-y-2">
           <div className="flex items-center gap-2 text-amber-900 font-bold text-sm">
             <Boxes className="h-4 w-4 text-amber-700" />
-            Sydney Depot Trade Counter Pickup (Gate 2)
+            Auckland Trade Counter Pickup
           </div>
           <div className="text-xs text-amber-950 space-y-1">
             <p>
-              <strong>Depot Address:</strong> 42 Jedda Road, Prestons NSW 2170 (Trade Counter Gate
-              2)
+              <strong>Depot Address:</strong> 18 Industry Road, Penrose, Auckland 1061 (Trade Counter Hub 1)
             </p>
             <p>
-              <strong>Trade Counter Hours:</strong> Mon–Fri 7:30am – 4:30pm | Sat 8:00am – 12:30pm
+              <strong>Trade Counter Hours:</strong> Mon–Fri 7:30am – 4:30pm NZST | Sat 8:00am – 12:30pm NZST
             </p>
             <p>
               <strong>Collection Requirement:</strong> Quote Order #
-              <strong>{order.orderNumber}</strong> and present photo ID (NSW Driver Licence or trade
+              <strong>{order.orderNumber}</strong> and present photo ID (NZ Driver Licence or trade
               authorization).
             </p>
           </div>
@@ -464,7 +463,7 @@ export default function CustomerOrderDetailPage() {
                 <span className="font-mono">${order.subtotal.toFixed(2)}</span>
               </div>
               <div className="flex justify-between text-slate-500">
-                <span>Statutory 10% GST included:</span>
+                <span>Statutory 15% GST included:</span>
                 <span className="font-mono">${order.taxAmount.toFixed(2)}</span>
               </div>
               <div className="flex justify-between text-slate-600">
@@ -475,7 +474,7 @@ export default function CustomerOrderDetailPage() {
               </div>
               <div className="flex justify-between border-t border-slate-200 pt-2 text-sm font-bold text-slate-900">
                 <span>Total Paid:</span>
-                <span className="font-mono text-base">${order.totalAmount.toFixed(2)} AUD</span>
+                <span className="font-mono text-base">${order.totalAmount.toFixed(2)} NZD</span>
               </div>
             </div>
           </div>
@@ -566,7 +565,7 @@ export default function CustomerOrderDetailPage() {
             </h3>
             <p className="text-xs text-slate-500">
               Submit an official return request for Order <strong>{order.orderNumber}</strong>. Our
-              NSW recycler inspection team will assess your claim and issue return shipping
+              Auckland Penrose parts inspection team will assess your claim and issue return shipping
               instructions.
             </p>
 

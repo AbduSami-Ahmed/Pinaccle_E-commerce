@@ -60,7 +60,7 @@ export default function StorefrontNotFound() {
           <Link href="/fitment" className="font-semibold text-blue-700 hover:underline">
             Fitment Guide
           </Link>
-          <span> or call our trade team at 1300 PINNACLE.</span>
+          <span> or call our trade team at 0800 PINNACLE (0800 746 622).</span>
         </div>
       </div>
     </div>

@@ -19,15 +19,15 @@ export class PricingTaxService {
   }
 
   constructor(private readonly config: ConfigService) {
-    // Australia statutory default is 10% GST, tax-inclusive display
-    this.defaultTaxRate = Number(this.config.get<string>('TAX_RATE_PERCENT') || '10');
+    // New Zealand statutory default is 15% GST (Goods and Services Tax Act 1985 / Inland Revenue Department), tax-inclusive display
+    this.defaultTaxRate = Number(this.config.get<string>('TAX_RATE_PERCENT') || '15');
     this.defaultTaxInclusive = this.config.get<string>('TAX_INCLUSIVE_PRICING') !== 'false';
   }
 
   /**
    * Calculate statutory tax for an order or item.
-   * Under Australian consumer law and ATO GST rulings (GSTR 2002/2),
-   * retail prices are quoted GST-inclusive. The tax fraction is 1/11th (10 / 110).
+   * Under New Zealand consumer law (Fair Trading Act / CGA) and IRD GST rules (GST Act 1985),
+   * consumer retail prices are quoted GST-inclusive (15%). The tax fraction is 15/115 (3/23rds).
    *
    * @param grossAmount Total retail price charged to customer
    * @param overrideRate Optional custom rate percent (e.g. 0 for export or exempt items)

@@ -10,16 +10,16 @@ const BUSINESS_HEADER = `
       PINNACLE AUTO SPARES &amp; COMMERCIAL TYRES
     </h1>
     <p style="color: #94a3b8; font-size: 12px; margin: 6px 0 0 0; letter-spacing: 0.3px;">
-      Prestons NSW Trade Hub &bull; MVRL-58291 &bull; ABN 48 123 456 789
+      Auckland Central Trade Hub &bull; Registered Trader MVD-89211 &bull; NZBN 9429041234567
     </p>
   </div>
 `;
 
 const BUSINESS_FOOTER = `
   <div style="background-color: #f8fafc; border-top: 1px solid #e2e8f0; padding: 20px; text-align: center; font-size: 11px; color: #64748b; border-radius: 0 0 8px 8px; font-family: sans-serif;">
-    <p style="margin: 0 0 4px 0;"><strong>Pinnacle Auto Spares &amp; Commercial Tyres Pty Ltd</strong></p>
-    <p style="margin: 0 0 4px 0;">42 Jedda Road, Prestons NSW 2170, Australia | Phone: (02) 9876 5432</p>
-    <p style="margin: 0 0 8px 0;">NSW Motor Vehicle Repairer Licence: MVRL-58291 &bull; Trade Enquiries: trade@pinnacleautospares.com.au</p>
+    <p style="margin: 0 0 4px 0;"><strong>Pinnacle Auto Spares &amp; Commercial Tyres Ltd</strong></p>
+    <p style="margin: 0 0 4px 0;">18 Industry Road, Penrose, Auckland 1061, New Zealand | Toll-Free: 0800 PINNACLE | Phone: (09) 525 8890</p>
+    <p style="margin: 0 0 8px 0;">NZ Registered Motor Vehicle Trader: MVD-89211 &bull; GST No: 123-456-789 &bull; Trade Enquiries: trade@pinnacleparts.co.nz</p>
     <p style="margin: 0; color: #94a3b8; font-size: 10px;">
       This is an automated operational notification. For your security, Pinnacle will never ask for your card PIN or full password via email.
     </p>
@@ -101,7 +101,7 @@ export function renderOrderConfirmation(data: OrderConfirmationData): RenderedEm
     `
     <h2 style="margin-top: 0; color: #0f172a; font-size: 18px;">Thank You, ${data.customerName}</h2>
     <p style="margin-bottom: 20px; color: #475569;">
-      Your order <strong>${data.orderNumber}</strong> has been received and confirmed. Our Prestons warehouse team is preparing your parts.
+      Your order <strong>${data.orderNumber}</strong> has been received and confirmed. Our Auckland warehouse team is preparing your parts.
     </p>
 
     <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 14px 16px; margin-bottom: 20px;">
@@ -129,7 +129,7 @@ export function renderOrderConfirmation(data: OrderConfirmationData): RenderedEm
         <span>$${(data.subtotal - data.taxAmount).toFixed(2)}</span>
       </div>
       <div style="display: flex; justify-content: space-between; margin-bottom: 6px; color: #475569;">
-        <span>GST (10%):</span>
+        <span>GST (15%):</span>
         <span>$${data.taxAmount.toFixed(2)}</span>
       </div>
       <div style="display: flex; justify-content: space-between; margin-bottom: 6px; color: #475569;">
@@ -157,11 +157,11 @@ Items Ordered:
 ${itemsText}
 
 Subtotal (ex GST): $${(data.subtotal - data.taxAmount).toFixed(2)}
-GST (10%): $${data.taxAmount.toFixed(2)}
+GST (15%): $${data.taxAmount.toFixed(2)}
 Freight: ${data.shippingFee === 0 ? 'FREE' : `$${data.shippingFee.toFixed(2)}`}
 Total Paid: $${data.totalAmount.toFixed(2)} ${data.currency}
 
-Pinnacle Auto Spares Pty Ltd, 42 Jedda Rd, Prestons NSW 2170 (MVRL-58291)
+Pinnacle Auto Spares Ltd, 18 Industry Rd, Penrose, Auckland 1061 (MVD-89211)
 `;
 
   return { subject, html, text };
@@ -201,7 +201,7 @@ export function renderPaymentStatusUpdate(data: PaymentStatusData): RenderedEmai
 
     ${
       isPaid
-        ? `<p style="color: #334155;">We have received your payment of <strong>$${data.amount.toFixed(2)} ${data.currency}</strong> for order ${data.orderNumber}. Your order is now being processed for dispatch from our Prestons trade warehouse.</p>`
+        ? `<p style="color: #334155;">We have received your payment of <strong>$${data.amount.toFixed(2)} ${data.currency}</strong> for order ${data.orderNumber}. Your order is now being processed for dispatch from our Auckland trade warehouse.</p>`
         : isRefund
           ? `<p style="color: #334155;">A refund of <strong>$${data.amount.toFixed(2)} ${data.currency}</strong> has been successfully processed to your original payment method for order ${data.orderNumber}. Please allow 2-5 business days for financial institution clearance.</p>`
           : `<p style="color: #b91c1c;">Your recent payment attempt of <strong>$${data.amount.toFixed(2)} ${data.currency}</strong> could not be processed. ${data.reason ? `Reason: ${data.reason}.` : ''} Please log into your Pinnacle account to update payment information.</p>`
@@ -252,7 +252,7 @@ export function renderDispatchUpdate(data: DispatchUpdateData): RenderedEmail {
     subject,
     `
     <h2 style="margin-top: 0; color: #0f172a; font-size: 18px;">
-      ${isCourier ? 'Goods Dispatched from Prestons Warehouse' : 'Ready for Trade Depot Collection'}
+      ${isCourier ? 'Goods Dispatched from Auckland Warehouse' : 'Ready for Trade Depot Collection'}
     </h2>
 
     <p style="color: #334155;">Hello ${data.customerName},</p>
@@ -271,10 +271,10 @@ export function renderDispatchUpdate(data: DispatchUpdateData): RenderedEmail {
         }
       </div>`
         : `
-      <p style="color: #334155;">Your order <strong>${data.orderNumber}</strong> is ready for pickup at our Prestons trade counter.</p>
+      <p style="color: #334155;">Your order <strong>${data.orderNumber}</strong> is ready for pickup at our Penrose trade counter.</p>
       <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 16px; margin: 20px 0;">
-        <p style="margin: 0 0 6px 0; font-size: 13px;"><strong>Collection Point:</strong> 42 Jedda Road, Prestons NSW 2170</p>
-        <p style="margin: 0 0 6px 0; font-size: 13px;"><strong>Trade Hours:</strong> Monday - Friday 7:30 AM &ndash; 5:00 PM AEST</p>
+        <p style="margin: 0 0 6px 0; font-size: 13px;"><strong>Collection Point:</strong> 18 Industry Road, Penrose, Auckland 1061</p>
+        <p style="margin: 0 0 6px 0; font-size: 13px;"><strong>Trade Hours:</strong> Monday - Friday 7:30 AM &ndash; 5:00 PM NZST</p>
         <p style="margin: 0; font-size: 13px; color: #0f172a;"><strong>Order Number for Counter Staff:</strong> <code>${data.orderNumber}</code></p>
       </div>`
     }
@@ -285,7 +285,7 @@ export function renderDispatchUpdate(data: DispatchUpdateData): RenderedEmail {
 PINNACLE AUTO SPARES
 Order: ${data.orderNumber}
 Customer: ${data.customerName}
-${isCourier ? `Goods Dispatched via ${data.carrierName || 'Courier'}. Consignment: ${data.trackingNumber || 'N/A'}` : 'Your order is ready for collection at 42 Jedda Rd, Prestons NSW 2170.'}
+${isCourier ? `Goods Dispatched via ${data.carrierName || 'Courier'}. Consignment: ${data.trackingNumber || 'N/A'}` : 'Your order is ready for collection at 18 Industry Rd, Penrose, Auckland 1061.'}
 `;
 
   return { subject, html, text };
@@ -409,7 +409,7 @@ export function renderAccountMessage(data: AccountMessageData): RenderedEmail {
     ${
       isWelcome
         ? `
-      <p style="color: #334155;">Thank you for registering with Pinnacle Auto Spares. Your account provides direct access to our verified vehicle fitment catalogue, trade pricing tiers, and rapid order dispatch from our Prestons NSW hub.</p>
+      <p style="color: #334155;">Thank you for registering with Pinnacle Auto Spares. Your account provides direct access to our verified vehicle fitment catalogue, trade pricing tiers, and rapid order dispatch from our Auckland hub.</p>
       <div style="margin: 24px 0;">
         <a href="${data.actionUrl}" style="background-color: #0f172a; color: #ffffff; padding: 10px 18px; text-decoration: none; border-radius: 4px; font-weight: 600; font-size: 13px;">
           Access Your Trade Account &rarr;

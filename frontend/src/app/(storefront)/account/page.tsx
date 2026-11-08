@@ -74,7 +74,7 @@ export default function AccountOverviewPage() {
             <p className="text-xs text-slate-600 leading-relaxed">
               {profile?.accountType === 'TRADE'
                 ? 'Commercial garage terms enabled. Automatic GST breakdown & priority dispatch queue.'
-                : 'Standard consumer account. Upgrade to Trade Account by providing workshop MVRL license.'}
+                : 'Standard consumer account. Upgrade to Trade Account by providing workshop NZBN / Motor Vehicle Trader details.'}
             </p>
           </div>
 
@@ -199,7 +199,7 @@ export default function AccountOverviewPage() {
         </div>
 
         <p className="text-xs text-slate-600 leading-relaxed max-w-3xl">
-          Under Pinnacle Auto Spares RBAC controls and Australian Privacy Principles, customer
+          Under Pinnacle Auto Spares RBAC controls and New Zealand Privacy Act 2020 principles, customer
           accounts are strictly segregated. You can only inspect and manage your own profile,
           delivery addresses, carts, and order history. Wholesale price margins and other customer
           records are cryptographically restricted.

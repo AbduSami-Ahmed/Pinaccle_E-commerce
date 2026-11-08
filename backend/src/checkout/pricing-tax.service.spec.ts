@@ -13,7 +13,7 @@ describe('PricingTaxService', () => {
           provide: ConfigService,
           useValue: {
             get: jest.fn((key: string) => {
-              if (key === 'TAX_RATE_PERCENT') return '10';
+              if (key === 'TAX_RATE_PERCENT') return '15';
               if (key === 'TAX_INCLUSIVE_PRICING') return 'true';
               return null;
             }),
@@ -25,21 +25,21 @@ describe('PricingTaxService', () => {
     service = module.get<PricingTaxService>(PricingTaxService);
   });
 
-  describe('calculateTaxInclusive (ATO Australian GST model)', () => {
-    it('correctly extracts 1/11th GST from a tax-inclusive retail price of $110.00', () => {
-      const res = service.calculateTaxInclusive(110.0);
-      expect(res.taxAmount).toBe(10.0);
+  describe('calculateTaxInclusive (NZ IRD 15% GST model)', () => {
+    it('correctly extracts 15/115th GST from a tax-inclusive retail price of $115.00 NZD', () => {
+      const res = service.calculateTaxInclusive(115.0);
+      expect(res.taxAmount).toBe(15.0);
       expect(res.subtotal).toBe(100.0);
-      expect(res.grossTotal).toBe(110.0);
-      expect(res.taxRatePercent).toBe(10);
+      expect(res.grossTotal).toBe(115.0);
+      expect(res.taxRatePercent).toBe(15);
       expect(res.isTaxInclusive).toBe(true);
     });
 
     it('correctly extracts GST from odd amounts with 2-decimal rounding', () => {
-      // $290.00 gross -> tax = 290 * 10 / 110 = 26.3636... -> 26.36, subtotal = 263.64
+      // $290.00 gross -> tax = 290 * 15 / 115 = 37.826... -> 37.83, subtotal = 252.17
       const res = service.calculateTaxInclusive(290.0);
-      expect(res.taxAmount).toBe(26.36);
-      expect(res.subtotal).toBe(263.64);
+      expect(res.taxAmount).toBe(37.83);
+      expect(res.subtotal).toBe(252.17);
       expect(res.grossTotal).toBe(290.0);
     });
 
@@ -54,20 +54,20 @@ describe('PricingTaxService', () => {
     });
 
     it('supports custom tax rates without hardcoding', () => {
-      // 15% NZ GST model: 115 gross -> tax = 15, subtotal = 100
-      const res = service.calculateTaxInclusive(115.0, 15);
-      expect(res.taxAmount).toBe(15.0);
+      // 10% custom rate: 110 gross -> tax = 10, subtotal = 100
+      const res = service.calculateTaxInclusive(110.0, 10);
+      expect(res.taxAmount).toBe(10.0);
       expect(res.subtotal).toBe(100.0);
-      expect(res.taxRatePercent).toBe(15);
+      expect(res.taxRatePercent).toBe(10);
     });
   });
 
   describe('calculateTaxExclusive', () => {
-    it('adds 10% tax on top of net subtotal', () => {
+    it('adds 15% tax on top of net subtotal', () => {
       const res = service.calculateTaxExclusive(100.0);
-      expect(res.taxAmount).toBe(10.0);
+      expect(res.taxAmount).toBe(15.0);
       expect(res.subtotal).toBe(100.0);
-      expect(res.grossTotal).toBe(110.0);
+      expect(res.grossTotal).toBe(115.0);
     });
   });
 });

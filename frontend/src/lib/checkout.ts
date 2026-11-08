@@ -16,21 +16,21 @@ import {
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000/api/v1';
 
 export const DEPOT_ADDRESS = {
-  name: 'Pinnacle Auto Spares — Prestons Depot',
-  line1: '42 Jedda Road',
-  city: 'Prestons',
-  state: 'NSW',
-  postalCode: '2170',
-  country: 'AU',
-  hours: 'Mon–Fri 7:30am – 4:30pm | Sat 8:00am – 12:30pm',
-  instructions: 'Drive into Gate 2 trade dispatch. Quote order number and show matching photo ID.',
+  name: 'Pinnacle Auto Spares & Commercial Tyres — Auckland Central Hub',
+  line1: '18 Industry Road',
+  city: 'Auckland',
+  state: 'Auckland',
+  postalCode: '1061',
+  country: 'NZ',
+  hours: 'Mon–Fri 7:30am – 5:00pm | Sat 8:00am – 1:00pm NZST',
+  instructions: 'Drive into Trade Dispatch Bay 2, Penrose. Quote order number and show matching trade or photo ID.',
 };
 
 // In-memory demo orders map for offline/SSR fallback
 const inMemoryOrders = new Map<string, OrderDetailsDto>();
 
 /**
- * Validate active cart items and compute real-time shipping + statutory 10% GST
+ * Validate active cart items and compute real-time shipping + statutory 15% GST (NZ IRD)
  */
 export async function validateCheckout(
   req: CheckoutValidationRequestDto,
@@ -61,7 +61,7 @@ export async function validateCheckout(
         : 25.0;
 
   const subtotal = 375.0; // Standard demo cart value
-  const taxAmount = Number((subtotal * (10 / 110)).toFixed(2));
+  const taxAmount = Number((subtotal * (15 / 115)).toFixed(2));
   const totalAmount = Number((subtotal + shippingFee).toFixed(2));
 
   const totals: CheckoutTotalsDto = {
@@ -70,8 +70,8 @@ export async function validateCheckout(
     shippingFee,
     discountAmount: 0,
     totalAmount,
-    currency: 'AUD',
-    taxRatePercent: 10,
+    currency: 'NZD',
+    taxRatePercent: 15,
     isTaxInclusive: true,
   };
 
@@ -137,7 +137,7 @@ export async function createCheckoutOrder(req: InitiateCheckoutOrderDto): Promis
     shippingFee,
     taxAmount,
     totalAmount,
-    currency: 'AUD',
+    currency: 'NZD',
     shippingMethod: req.shippingMethod,
     shippingAddress: req.shippingAddress,
     billingAddress: req.billingAddress || req.shippingAddress,
@@ -221,7 +221,7 @@ export async function createPaymentSession(
     clientSecret: `mock_secret_${Date.now()}`,
     transactionReference: txRef,
     amount: 375.0,
-    currency: 'AUD',
+    currency: 'NZD',
     status: 'PENDING',
     reservationExpiresAt: new Date(Date.now() + 15 * 60 * 1000).toISOString(),
   };
@@ -299,39 +299,39 @@ export async function getOrderByNumber(orderNumber: string): Promise<OrderDetail
     id: `ord_${orderNumber}`,
     orderNumber,
     customerId: null,
-    customerEmail: 'tradesman@sydneyautocare.com.au',
-    customerPhone: '0412 889 900',
+    customerEmail: 'trade@aucklandmechanical.co.nz',
+    customerPhone: '021 889 900',
     orderStatus: 'PAID',
     paymentStatus: 'PAID',
     fulfillmentStatus: 'UNFULFILLED',
     subtotal: 375.0,
     discountAmount: 0,
     shippingFee: 0.0,
-    taxAmount: 34.09,
+    taxAmount: 48.91,
     totalAmount: 375.0,
-    currency: 'AUD',
+    currency: 'NZD',
     shippingMethod: 'CLICK_AND_COLLECT',
     shippingAddress: {
       firstName: 'Brett',
       lastName: 'Callaghan',
-      company: 'Sydney Auto Care — Click & Collect Depot',
-      line1: '42 Jedda Road',
-      city: 'Prestons',
-      state: 'NSW',
-      postalCode: '2170',
-      country: 'AU',
-      phone: '0412 889 900',
-      deliveryNotes: 'Collection from Gate 2 dispatch bay.',
+      company: 'Auckland Auto Care — Click & Collect Depot',
+      line1: '18 Industry Road',
+      city: 'Auckland',
+      state: 'Auckland',
+      postalCode: '1061',
+      country: 'NZ',
+      phone: '021 889 900',
+      deliveryNotes: 'Collection from Trade Dispatch Bay 2.',
     },
     billingAddress: {
       firstName: 'Brett',
       lastName: 'Callaghan',
-      line1: '14 Trade Street',
-      city: 'Liverpool',
-      state: 'NSW',
-      postalCode: '2170',
-      country: 'AU',
-      phone: '0412 889 900',
+      line1: '18 Industry Road',
+      city: 'Penrose',
+      state: 'Auckland',
+      postalCode: '1061',
+      country: 'NZ',
+      phone: '021 889 900',
     },
     notes: 'Please hold for Brett - will collect today at 3pm.',
     items: [

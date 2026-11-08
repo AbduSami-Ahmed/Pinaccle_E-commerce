@@ -78,7 +78,7 @@ export class MockPaymentGatewayAdapter implements PaymentGatewayAdapter {
       transactionReference,
       status: isSuccess ? 'SUCCESS' : 'FAILED',
       amount: intentData.amount ? intentData.amount / 100 : undefined,
-      currency: intentData.currency ? intentData.currency.toUpperCase() : 'AUD',
+      currency: intentData.currency ? intentData.currency.toUpperCase() : 'NZD',
       orderNumber: intentData.metadata?.orderNumber,
       metadata: intentData.metadata || {},
       rawPayload: parsed,
@@ -88,7 +88,7 @@ export class MockPaymentGatewayAdapter implements PaymentGatewayAdapter {
   async confirmPayment(transactionReference: string): Promise<PaymentIntentResult> {
     const intent = this.mockIntents.get(transactionReference);
     const amount = intent?.amount ?? 0;
-    const currency = intent?.currency ?? 'AUD';
+    const currency = intent?.currency ?? 'NZD';
 
     if (intent) {
       intent.status = 'SUCCESS';

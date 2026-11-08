@@ -233,7 +233,7 @@ export function TyreFilters({ meta }: TyreFiltersProps) {
       {/* 5. Max Price */}
       <div className="space-y-2">
         <label className="text-xs font-bold uppercase tracking-wider text-slate-900">
-          Maximum Price ($ AUD)
+          Maximum Price ($ NZD)
         </label>
         <div className="flex items-center gap-2">
           <Input

@@ -171,7 +171,7 @@ export class StripePaymentGatewayAdapter implements PaymentGatewayAdapter {
       transactionReference: obj.id || 'unknown_tx',
       status,
       amount: obj.amount ? obj.amount / 100 : undefined,
-      currency: obj.currency ? obj.currency.toUpperCase() : 'AUD',
+      currency: obj.currency ? obj.currency.toUpperCase() : 'NZD',
       orderNumber: obj.metadata?.orderNumber,
       metadata: obj.metadata || {},
       rawPayload: event,

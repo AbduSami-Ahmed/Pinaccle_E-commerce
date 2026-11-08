@@ -94,7 +94,7 @@ export function RelatedProductsSection({ relatedProducts }: RelatedProductsSecti
                     <span className="text-sm font-extrabold text-slate-900">
                       ${item.defaultPrice.toFixed(2)}
                     </span>
-                    <span className="text-[10px] text-slate-500 ml-1">AUD</span>
+                    <span className="text-[10px] text-slate-500 ml-1">NZD</span>
                   </div>
 
                   <span className="text-xs font-semibold text-blue-700 flex items-center gap-0.5 group-hover:translate-x-0.5 transition-transform">
