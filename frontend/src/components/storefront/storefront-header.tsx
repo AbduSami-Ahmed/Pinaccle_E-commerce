@@ -147,7 +147,7 @@ export function StorefrontHeader() {
         {/* Right side actions */}
         <div className="flex items-center space-x-2 sm:space-x-3">
           <Link
-            href="/admin/dashboard"
+            href="/admin/login"
             className="hidden sm:inline-flex text-xs font-semibold text-slate-600 hover:text-blue-700 px-2.5 py-1 rounded border border-slate-200 hover:bg-slate-50"
           >
             Staff Portal

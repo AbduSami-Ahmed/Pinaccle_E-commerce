@@ -88,7 +88,7 @@ export class StorageService implements IStorageService {
   }
 
   async saveUploadedFile(s3Key: string, buffer: Buffer): Promise<string> {
-    const filePath = path.join(this.uploadDir, s3Key);
+    const filePath = this.resolveSafePath(s3Key);
     const dir = path.dirname(filePath);
 
     if (!fs.existsSync(dir)) {
@@ -100,7 +100,7 @@ export class StorageService implements IStorageService {
   }
 
   async deleteFile(s3Key: string): Promise<void> {
-    const filePath = path.join(this.uploadDir, s3Key);
+    const filePath = this.resolveSafePath(s3Key);
     try {
       if (fs.existsSync(filePath)) {
         await fs.promises.unlink(filePath);
@@ -108,5 +108,29 @@ export class StorageService implements IStorageService {
     } catch (err) {
       this.logger.warn(`Failed to delete file ${s3Key}: ${(err as Error).message}`);
     }
+  }
+
+  /**
+   * Path Traversal Hardening: Ensures storage keys cannot escape the upload root directory.
+   */
+  private resolveSafePath(s3Key: string): string {
+    if (!s3Key || typeof s3Key !== 'string') {
+      throw new BadRequestException('Invalid storage key: must be a non-empty string');
+    }
+
+    if (s3Key.includes('\0') || s3Key.includes('..')) {
+      this.logger.error(`[StorageSecurity] Path traversal attempt blocked: "${s3Key}"`);
+      throw new BadRequestException('Invalid storage key: directory traversal sequences are strictly prohibited');
+    }
+
+    const resolved = path.resolve(this.uploadDir, s3Key);
+    const normalizedRoot = path.resolve(this.uploadDir);
+
+    if (!resolved.startsWith(normalizedRoot + path.sep) && resolved !== normalizedRoot) {
+      this.logger.error(`[StorageSecurity] Path traversal boundary violation: "${s3Key}" -> "${resolved}"`);
+      throw new BadRequestException('Invalid storage key: path outside storage root');
+    }
+
+    return resolved;
   }
 }

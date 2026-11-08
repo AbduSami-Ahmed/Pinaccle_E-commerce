@@ -3,6 +3,7 @@ import { ApiTags, ApiOperation, ApiOkResponse, ApiCreatedResponse } from '@nestj
 import { Request } from 'express';
 import { PaymentsService } from './payments.service';
 import { Public } from '../auth/decorators/public.decorator';
+import { RateLimit } from '../common/decorators/rate-limit.decorator';
 import { CreatePaymentIntentRequestDto, MockPaymentConfirmRequestDto } from './dto/payment.dto';
 import { PaymentSessionResponseDto, PaymentWebhookResultDto } from '@pinnacle/contracts';
 
@@ -16,6 +17,7 @@ export class PaymentsController {
   // ---------------------------------------------------------------------------
 
   @Public()
+  @RateLimit({ windowSeconds: 60, maxRequests: 10, message: 'Payment intent limit exceeded. Please wait 1 minute before retrying.' })
   @Post('session')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Create payment session/intent for an order' })

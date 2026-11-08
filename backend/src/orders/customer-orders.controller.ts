@@ -26,7 +26,7 @@ import {
 @ApiTags('orders-customer')
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard, PermissionsGuard)
-@Controller('api/orders/my-orders')
+@Controller('orders/my-orders')
 export class CustomerOrdersController {
   constructor(private readonly ordersService: OrdersService) {}
 

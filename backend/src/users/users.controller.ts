@@ -1,10 +1,11 @@
-import { Body, Controller, Get, Param, ParseUUIDPipe, Patch, Put, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, ParseUUIDPipe, Patch, Post, Put, Query, UseGuards } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiOkResponse, ApiBearerAuth } from '@nestjs/swagger';
 import { UsersService } from './users.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { PermissionsGuard } from '../auth/guards/permissions.guard';
 import { RequirePermissions } from '../auth/decorators/require-permissions.decorator';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
+import { CreateStaffDto } from './dto/create-staff.dto';
 import {
   AuthenticatedUser,
   RoleWithPermissionsDto,
@@ -27,6 +28,17 @@ export class UsersController {
   async listStaff(@Query('search') search?: string): Promise<{ staff: StaffUserDto[] }> {
     const staff = await this.usersService.listStaff(search);
     return { staff };
+  }
+
+  @Post('staff')
+  @RequirePermissions('staff:users:manage')
+  @ApiOperation({ summary: 'Create a new staff user and assign initial platform roles' })
+  async createStaff(
+    @Body() dto: CreateStaffDto,
+    @CurrentUser() user: AuthenticatedUser,
+  ): Promise<{ user: StaffUserDto }> {
+    const created = await this.usersService.createStaff(dto, user.sub);
+    return { user: created };
   }
 
   @Get('roles')

@@ -1,0 +1,146 @@
+name: Deployment Pipeline (Staging & Production)
+
+on:
+  push:
+    branches:
+      - staging
+    tags:
+      - 'v*.*.*'
+  workflow_dispatch:
+    inputs:
+      target_env:
+        description: 'Target Deployment Environment'
+        required: true
+        default: 'staging'
+        type: choice
+        options:
+          - staging
+          - production
+
+permissions:
+  id-token: write   # Required for AWS OIDC authentication
+  contents: read    # Required to checkout code
+
+jobs:
+  deploy:
+    name: Deploy to AWS ECS (${{ github.ref_name == 'staging' && 'staging' || 'production' }})
+    runs-on: ubuntu-latest
+    environment:
+      name: ${{ github.ref_name == 'staging' && 'staging' || 'production' }}
+      url: ${{ steps.set_env.outputs.app_url }}
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+
+      - name: Set Environment Variables
+        id: set_env
+        run: |
+          if [[ "${{ github.ref }}" == refs/heads/staging* || "${{ inputs.target_env }}" == "staging" ]]; then
+            echo "env_name=staging" >> $GITHUB_OUTPUT
+            echo "ecs_cluster=pinnacle-staging-cluster" >> $GITHUB_OUTPUT
+            echo "api_service=pinnacle-staging-api-service" >> $GITHUB_OUTPUT
+            echo "web_service=pinnacle-staging-web-service" >> $GITHUB_OUTPUT
+            echo "app_url=https://staging.pinnacleparts.co.nz" >> $GITHUB_OUTPUT
+            echo "aws_role_arn=${{ secrets.AWS_STAGING_OIDC_ROLE_ARN }}" >> $GITHUB_OUTPUT
+          else
+            echo "env_name=production" >> $GITHUB_OUTPUT
+            echo "ecs_cluster=pinnacle-production-cluster" >> $GITHUB_OUTPUT
+            echo "api_service=pinnacle-production-api-service" >> $GITHUB_OUTPUT
+            echo "web_service=pinnacle-production-web-service" >> $GITHUB_OUTPUT
+            echo "app_url=https://www.pinnacleparts.co.nz" >> $GITHUB_OUTPUT
+            echo "aws_role_arn=${{ secrets.AWS_PRODUCTION_OIDC_ROLE_ARN }}" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Configure AWS Credentials (OIDC Authentication)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ steps.set_env.outputs.aws_role_arn }}
+          role-session-name: pinnacle-deployment-${{ github.run_id }}
+          aws-region: ap-southeast-2 # Sydney, low latency for New Zealand operations
+
+      - name: Log in to Amazon ECR
+        id: login_ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build, Tag and Push Backend API Image
+        env:
+          ECR_REGISTRY: ${{ steps.login_ecr.outputs.registry }}
+          ECR_REPOSITORY: pinnacle-api-${{ steps.set_env.outputs.env_name }}
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -t $ECR_REGISTRY/$ECR_REPOSITORY:latest -f backend/Dockerfile .
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
+          echo "api_image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
+
+      - name: Build, Tag and Push Frontend Web Image
+        env:
+          ECR_REGISTRY: ${{ steps.login_ecr.outputs.registry }}
+          ECR_REPOSITORY: pinnacle-web-${{ steps.set_env.outputs.env_name }}
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -t $ECR_REGISTRY/$ECR_REPOSITORY:latest -f frontend/Dockerfile .
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
+          echo "web_image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
+
+      - name: Execute Pre-Deployment Database Migration (One-Off ECS Task)
+        run: |
+          echo "Triggering isolated Prisma database migration task..."
+          TASK_ARN=$(aws ecs run-task \
+            --cluster ${{ steps.set_env.outputs.ecs_cluster }} \
+            --task-definition pinnacle-migration-${{ steps.set_env.outputs.env_name }} \
+            --launch-type FARGATE \
+            --network-configuration "awsvpcConfiguration={subnets=[${{ secrets.PRIVATE_SUBNET_1 }},${{ secrets.PRIVATE_SUBNET_2 }}],securityGroups=[${{ secrets.ECS_SECURITY_GROUP }}],assignPublicIp=DISABLED}" \
+            --query "tasks[0].taskArn" --output text)
+          
+          echo "Waiting for migration task $TASK_ARN to finish..."
+          aws ecs wait tasks-stopped --cluster ${{ steps.set_env.outputs.ecs_cluster }} --tasks "$TASK_ARN"
+          
+          EXIT_CODE=$(aws ecs describe-tasks --cluster ${{ steps.set_env.outputs.ecs_cluster }} --tasks "$TASK_ARN" --query "tasks[0].containers[0].exitCode" --output text)
+          if [ "$EXIT_CODE" -ne 0 ]; then
+            echo "DATABASE MIGRATION FAILED! Exit code: $EXIT_CODE. Aborting deployment rollout to preserve cluster stability."
+            exit 1
+          fi
+          echo "Prisma schema migrations applied successfully."
+
+      - name: Update ECS Backend API Service
+        run: |
+          aws ecs update-service \
+            --cluster ${{ steps.set_env.outputs.ecs_cluster }} \
+            --service ${{ steps.set_env.outputs.api_service }} \
+            --force-new-deployment
+
+      - name: Update ECS Frontend Web Service
+        run: |
+          aws ecs update-service \
+            --cluster ${{ steps.set_env.outputs.ecs_cluster }} \
+            --service ${{ steps.set_env.outputs.web_service }} \
+            --force-new-deployment
+
+      - name: Await ECS Services Rolling Stability
+        run: |
+          echo "Waiting for API rolling update..."
+          aws ecs wait services-stable \
+            --cluster ${{ steps.set_env.outputs.ecs_cluster }} \
+            --services ${{ steps.set_env.outputs.api_service }}
+          
+          echo "Waiting for Web rolling update..."
+          aws ecs wait services-stable \
+            --cluster ${{ steps.set_env.outputs.ecs_cluster }} \
+            --services ${{ steps.set_env.outputs.web_service }}
+
+      - name: Execute Automated Post-Deployment Smoke Test
+        env:
+          TARGET_URL: ${{ steps.set_env.outputs.app_url }}
+        run: |
+          echo "Executing health & smoke validation on $TARGET_URL..."
+          STATUS_CODE=$(curl -s -o /dev/null -w "%{http_code}" "$TARGET_URL/api/v1/health")
+          if [ "$STATUS_CODE" -ne 200 ]; then
+            echo "SMOKE TEST FAILED: Health endpoint returned HTTP $STATUS_CODE instead of 200. Check CloudWatch alarms."
+            exit 1
+          fi
+          echo "Deployment verified healthy: HTTP 200 received from /api/v1/health"
+

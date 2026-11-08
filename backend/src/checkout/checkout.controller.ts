@@ -17,6 +17,7 @@ import { ShippingCalculatorService } from './shipping-calculator.service';
 import { InventoryService } from '../inventory/inventory.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { Public } from '../auth/decorators/public.decorator';
+import { RateLimit } from '../common/decorators/rate-limit.decorator';
 import { InitiateCheckoutOrderBodyDto, ValidateCheckoutBodyDto } from './dto/checkout.dto';
 import {
   AuthenticatedUser,
@@ -74,6 +75,7 @@ export class CheckoutController {
   // ---------------------------------------------------------------------------
 
   @Public()
+  @RateLimit({ windowSeconds: 60, maxRequests: 10, message: 'Checkout rate limit exceeded. Please wait 1 minute before retrying.' })
   @Post('orders')
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({ summary: 'Create order with immutable snapshots and 15-min stock reservations' })

@@ -11,6 +11,7 @@ import { EbayAdapter } from './adapters/ebay.adapter';
 import { TradeMeAdapter } from './adapters/trademe.adapter';
 import { PartsTraderAdapter } from './adapters/partstrader.adapter';
 import { CapEziAdapter } from './adapters/capezi.adapter';
+import { GmailMailboxAdapter } from './adapters/gmail-mailbox.adapter';
 import { VehicleLookupService } from './vehicle-lookup.service';
 
 @Module({
@@ -27,6 +28,7 @@ import { VehicleLookupService } from './vehicle-lookup.service';
     TradeMeAdapter,
     PartsTraderAdapter,
     CapEziAdapter,
+    GmailMailboxAdapter,
     VehicleLookupService,
   ],
   exports: [
@@ -40,6 +42,7 @@ import { VehicleLookupService } from './vehicle-lookup.service';
     TradeMeAdapter,
     PartsTraderAdapter,
     CapEziAdapter,
+    GmailMailboxAdapter,
     VehicleLookupService,
   ],
 })

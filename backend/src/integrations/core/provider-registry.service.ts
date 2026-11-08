@@ -7,13 +7,14 @@ import { EbayAdapter } from '../adapters/ebay.adapter';
 import { TradeMeAdapter } from '../adapters/trademe.adapter';
 import { PartsTraderAdapter } from '../adapters/partstrader.adapter';
 import { CapEziAdapter } from '../adapters/capezi.adapter';
+import { GmailMailboxAdapter } from '../adapters/gmail-mailbox.adapter';
 import { IntegrationCapability } from '@pinnacle/contracts';
 
 export interface ProviderDefinition {
   key: string;
   name: string;
   description: string;
-  category: 'MARKETPLACE' | 'VEHICLE_DATA' | 'PARTS_PROCUREMENT' | 'TEST';
+  category: 'MARKETPLACE' | 'VEHICLE_DATA' | 'PARTS_PROCUREMENT' | 'COMMUNICATIONS' | 'TEST';
   isMock: boolean;
   capabilities: IntegrationCapability[];
 }
@@ -113,6 +114,18 @@ export const KNOWN_PROVIDERS: ProviderDefinition[] = [
       'INVENTORY_SYNC_INBOUND',
     ],
   },
+  {
+    key: 'GMAIL',
+    name: 'Google Workspace / Gmail Business Mailbox',
+    description: 'Back-office trade mailbox integration for customer inquiries, quote RFQs, and outbound correspondence via least-privilege OAuth.',
+    category: 'COMMUNICATIONS',
+    isMock: false,
+    capabilities: [
+      'ORDERS_IMPORT',
+      'ORDERS_STATUS_UPDATE',
+      'WEBHOOK_INGESTION',
+    ],
+  },
 ];
 
 @Injectable()
@@ -127,6 +140,7 @@ export class ProviderRegistryService {
     private readonly tradeMeAdapter?: TradeMeAdapter,
     private readonly partsTraderAdapter?: PartsTraderAdapter,
     private readonly capEziAdapter?: CapEziAdapter,
+    private readonly gmailMailboxAdapter?: GmailMailboxAdapter,
   ) {
     if (this.mockAdapter) this.registerAdapter(this.mockAdapter);
     if (this.mockVehicleAdapter) this.registerAdapter(this.mockVehicleAdapter);
@@ -135,6 +149,7 @@ export class ProviderRegistryService {
     if (this.tradeMeAdapter) this.registerAdapter(this.tradeMeAdapter);
     if (this.partsTraderAdapter) this.registerAdapter(this.partsTraderAdapter);
     if (this.capEziAdapter) this.registerAdapter(this.capEziAdapter);
+    if (this.gmailMailboxAdapter) this.registerAdapter(this.gmailMailboxAdapter);
   }
 
   registerAdapter(adapter: IntegrationProviderAdapter) {

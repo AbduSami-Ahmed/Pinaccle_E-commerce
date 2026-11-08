@@ -12,6 +12,7 @@ import {
   Shield,
   ShieldAlert,
   UserCheck,
+  UserPlus,
   UserX,
   X,
 } from 'lucide-react';
@@ -21,6 +22,7 @@ import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { RoleWithPermissionsDto, StaffUserDto } from '@pinnacle/contracts';
 import {
+  createStaffMember,
   fetchPlatformRoles,
   fetchStaffMembers,
   toggleStaffActive,
@@ -42,6 +44,63 @@ export default function AdminStaffPage() {
 
   // Roles Reference Tab
   const [showRolesReference, setShowRolesReference] = React.useState(false);
+
+  // Add Staff Modal state
+  const [isAddingStaff, setIsAddingStaff] = React.useState(false);
+  const [newFirstName, setNewFirstName] = React.useState('');
+  const [newLastName, setNewLastName] = React.useState('');
+  const [newEmail, setNewEmail] = React.useState('');
+  const [newPassword, setNewPassword] = React.useState('');
+  const [newJobTitle, setNewJobTitle] = React.useState('');
+  const [newRoleIds, setNewRoleIds] = React.useState<string[]>([]);
+  const [creating, setCreating] = React.useState(false);
+  const [createError, setCreateError] = React.useState<string | null>(null);
+
+  const toggleNewRoleId = (roleId: string) => {
+    setNewRoleIds((prev) =>
+      prev.includes(roleId) ? prev.filter((id) => id !== roleId) : [...prev, roleId],
+    );
+  };
+
+  const handleCreateStaff = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newFirstName || !newLastName || !newEmail || !newPassword) {
+      setCreateError('Please complete all required fields.');
+      return;
+    }
+    if (newPassword.length < 8) {
+      setCreateError('Password must be at least 8 characters.');
+      return;
+    }
+
+    setCreating(true);
+    setCreateError(null);
+    try {
+      const created = await createStaffMember({
+        firstName: newFirstName.trim(),
+        lastName: newLastName.trim(),
+        email: newEmail.trim(),
+        password: newPassword,
+        jobTitle: newJobTitle.trim() || undefined,
+        roleIds: newRoleIds,
+      });
+
+      setStaff((prev) => [created, ...prev]);
+      setSuccessMsg(`Successfully created staff account for ${created.firstName} ${created.lastName}`);
+      setIsAddingStaff(false);
+      setNewFirstName('');
+      setNewLastName('');
+      setNewEmail('');
+      setNewPassword('');
+      setNewJobTitle('');
+      setNewRoleIds([]);
+      setTimeout(() => setSuccessMsg(null), 3500);
+    } catch (err: any) {
+      setCreateError(err.message || 'Failed to create staff member');
+    } finally {
+      setCreating(false);
+    }
+  };
 
   const loadData = React.useCallback(async (searchTerm?: string) => {
     setLoading(true);
@@ -126,6 +185,18 @@ export default function AdminStaffPage() {
         </div>
 
         <div className="flex items-center gap-2">
+          <Button
+            size="sm"
+            onClick={() => {
+              setIsAddingStaff(true);
+              setCreateError(null);
+            }}
+            className="h-8 text-xs gap-1.5 bg-blue-600 hover:bg-blue-700 text-white shadow-xs font-semibold"
+          >
+            <UserPlus className="h-3.5 w-3.5" />
+            Add Staff Member
+          </Button>
+
           <Button
             variant="outline"
             size="sm"
@@ -434,6 +505,168 @@ export default function AdminStaffPage() {
                 {saving ? 'Saving...' : 'Save Role Assignments'}
               </Button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Add Staff Member Modal */}
+      {isAddingStaff && (
+        <div className="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="w-full max-w-lg bg-white rounded-xl shadow-2xl p-6 space-y-4">
+            <div className="flex items-center justify-between border-b border-slate-200 pb-3">
+              <div>
+                <h2 className="text-base font-bold text-slate-900 flex items-center gap-2">
+                  <UserPlus className="h-4 w-4 text-blue-600" />
+                  Add New Staff Member
+                </h2>
+                <span className="text-xs text-slate-500">
+                  Create a new staff portal account and assign initial platform roles.
+                </span>
+              </div>
+              <button
+                type="button"
+                onClick={() => setIsAddingStaff(false)}
+                className="rounded-md p-1.5 text-slate-400 hover:text-slate-700"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+
+            {createError && (
+              <div className="p-3 rounded-md bg-rose-50 border border-rose-200 text-rose-800 text-xs flex items-center gap-2">
+                <AlertTriangle className="h-4 w-4 shrink-0" />
+                <span>{createError}</span>
+              </div>
+            )}
+
+            <form onSubmit={handleCreateStaff} className="space-y-4">
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-1">
+                  <label className="text-xs font-semibold text-slate-700" htmlFor="new-first-name">
+                    First Name *
+                  </label>
+                  <Input
+                    id="new-first-name"
+                    required
+                    placeholder="e.g. Hamish"
+                    value={newFirstName}
+                    onChange={(e) => setNewFirstName(e.target.value)}
+                    className="text-xs h-8"
+                  />
+                </div>
+                <div className="space-y-1">
+                  <label className="text-xs font-semibold text-slate-700" htmlFor="new-last-name">
+                    Last Name *
+                  </label>
+                  <Input
+                    id="new-last-name"
+                    required
+                    placeholder="e.g. MacDonald"
+                    value={newLastName}
+                    onChange={(e) => setNewLastName(e.target.value)}
+                    className="text-xs h-8"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-1">
+                <label className="text-xs font-semibold text-slate-700" htmlFor="new-email">
+                  Staff Email Address *
+                </label>
+                <Input
+                  id="new-email"
+                  type="email"
+                  required
+                  placeholder="e.g. h.macdonald@pinnacleparts.co.nz"
+                  value={newEmail}
+                  onChange={(e) => setNewEmail(e.target.value)}
+                  className="text-xs h-8"
+                />
+              </div>
+
+              <div className="space-y-1">
+                <label className="text-xs font-semibold text-slate-700" htmlFor="new-password">
+                  Initial Password * (min 8 chars)
+                </label>
+                <Input
+                  id="new-password"
+                  type="password"
+                  required
+                  placeholder="Create secure password"
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                  className="text-xs h-8"
+                />
+              </div>
+
+              <div className="space-y-1">
+                <label className="text-xs font-semibold text-slate-700" htmlFor="new-job-title">
+                  Job Title / Department
+                </label>
+                <Input
+                  id="new-job-title"
+                  placeholder="e.g. Penrose Depot Inventory Specialist"
+                  value={newJobTitle}
+                  onChange={(e) => setNewJobTitle(e.target.value)}
+                  className="text-xs h-8"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <span className="text-xs font-semibold text-slate-700 uppercase tracking-wider block">
+                  Assign Initial Platform Roles:
+                </span>
+                <div className="max-h-40 overflow-y-auto space-y-1.5 border border-slate-200 rounded-lg p-2">
+                  {roles.map((r) => {
+                    const isSelected = newRoleIds.includes(r.id);
+                    return (
+                      <div
+                        key={r.id}
+                        onClick={() => toggleNewRoleId(r.id)}
+                        className={`p-2 rounded border text-xs cursor-pointer flex items-center justify-between ${
+                          isSelected ? 'border-blue-600 bg-blue-50/60 font-medium' : 'border-slate-100 hover:border-slate-200'
+                        }`}
+                      >
+                        <div className="flex items-center gap-2">
+                          <span className="text-slate-900">{r.name}</span>
+                          <Badge variant="outline" className="font-mono text-[9px]">
+                            {r.key}
+                          </Badge>
+                        </div>
+                        <div
+                          className={`h-4 w-4 rounded border flex items-center justify-center shrink-0 ${
+                            isSelected ? 'bg-blue-600 border-blue-600 text-white' : 'border-slate-300 bg-white'
+                          }`}
+                        >
+                          {isSelected && <Check className="h-3 w-3" />}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
+              <div className="flex items-center justify-end gap-2 border-t border-slate-200 pt-3">
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setIsAddingStaff(false)}
+                  disabled={creating}
+                  className="text-xs"
+                >
+                  Cancel
+                </Button>
+                <Button
+                  type="submit"
+                  size="sm"
+                  disabled={creating}
+                  className="text-xs bg-blue-600 hover:bg-blue-700 text-white font-semibold"
+                >
+                  {creating ? 'Creating Account...' : 'Create Staff Member'}
+                </Button>
+              </div>
+            </form>
           </div>
         </div>
       )}

@@ -22,6 +22,7 @@
     "format": "prettier --write \"**/*.{ts,tsx,json,md,yml,yaml}\"",
     "docker:up": "docker compose up -d",
     "docker:down": "docker compose down",
+    "smoke-test": "ts-node scripts/smoke-test.ts",
     "clean": "turbo run clean"
   },
   "devDependencies": {

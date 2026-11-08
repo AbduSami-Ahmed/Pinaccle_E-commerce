@@ -21,6 +21,7 @@ import { DocumentsModule } from './documents/documents.module';
 import { NotificationsModule } from './notifications/notifications.module';
 import { IntegrationsModule } from './integrations/integrations.module';
 import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
+import { RateLimiterGuard } from './common/guards/rate-limiter.guard';
 
 @Module({
   imports: [
@@ -58,6 +59,11 @@ import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
     {
       provide: APP_GUARD,
       useClass: JwtAuthGuard,
+    },
+    // Global RateLimiterGuard: intercepts routes decorated with @RateLimit
+    {
+      provide: APP_GUARD,
+      useClass: RateLimiterGuard,
     },
   ],
 })

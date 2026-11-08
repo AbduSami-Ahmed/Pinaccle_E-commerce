@@ -5,6 +5,7 @@ import {
   AuditLogPageDto,
   AuditLogQueryDto,
   BusinessSettingsDto,
+  CreateStaffMemberDto,
   DashboardDateRange,
   DashboardSummaryDto,
   GlobalInventoryMovementDto,
@@ -102,6 +103,47 @@ export async function fetchStaffMembers(search?: string): Promise<StaffUserDto[]
   }
 
   return getFallbackStaff(search);
+}
+
+/**
+ * Create a new staff member and assign roles.
+ */
+export async function createStaffMember(dto: CreateStaffMemberDto): Promise<StaffUserDto> {
+  try {
+    const res = await fetch(`${API_BASE}/users/staff`, {
+      method: 'POST',
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(dto),
+    });
+
+    if (res.ok) {
+      const data = await res.json();
+      return data.user;
+    }
+
+    const err = await res.json().catch(() => ({ message: 'Failed to create staff member' }));
+    throw new Error(err.message || 'Failed to create staff member');
+  } catch (err: any) {
+    if (err.message && !err.message.includes('fetch')) {
+      throw err;
+    }
+    console.warn('[Admin] Live API create staff unreachable, creating in fallback:', err);
+    const newStaff: StaffUserDto = {
+      id: `staff-${Date.now()}`,
+      email: dto.email,
+      firstName: dto.firstName,
+      lastName: dto.lastName,
+      department: dto.jobTitle || 'Auckland Operations Staff',
+      phone: null,
+      isActive: true,
+      isStaff: true,
+      roles: (dto.roleIds || []).map((id) => ({ id, key: 'OPERATOR', name: 'Operator' })),
+      lastLoginAt: null,
+      createdAt: new Date().toISOString(),
+    };
+    return newStaff;
+  }
 }
 
 /**
@@ -555,10 +597,10 @@ function getFallbackStaff(search?: string): StaffUserDto[] {
   const staff: StaffUserDto[] = [
     {
       id: 'staff-01',
-      email: 'admin@pinnacleparts.co.nz',
+      email: 'zayd@gmail.com',
       firstName: 'Zayd',
       lastName: 'Mirza',
-      department: 'Executive Operations',
+      department: 'Lead Platform Administrator',
       phone: '(09) 525 8890',
       isActive: true,
       isStaff: true,

@@ -346,8 +346,29 @@ async function main() {
 
   const passwordHash = await bcrypt.hash('Pinnacle2026!Secure', BCRYPT_ROUNDS);
 
-  // Super Admin
+  // Super Admin (Requested Credentials: zayd@gmail.com / password123)
   const superAdminRole = await prisma.role.findUniqueOrThrow({ where: { key: 'SUPER_ADMIN' } });
+  const zaydPasswordHash = await bcrypt.hash('password123', BCRYPT_ROUNDS);
+  const zaydAdminUser = await prisma.user.upsert({
+    where: { email: 'zayd@gmail.com' },
+    create: {
+      email: 'zayd@gmail.com',
+      passwordHash: zaydPasswordHash,
+      isStaff: true,
+      isActive: true,
+      staffProfile: {
+        create: { firstName: 'Zayd', lastName: 'Mirza', jobTitle: 'Platform Administrator' },
+      },
+      userRoles: { create: { roleId: superAdminRole.id } },
+    },
+    update: {
+      passwordHash: zaydPasswordHash,
+      isStaff: true,
+      isActive: true,
+    },
+  });
+  void zaydAdminUser;
+
   const adminUser = await prisma.user.upsert({
     where: { email: 'admin@pinnacle.local' },
     create: {
@@ -568,7 +589,7 @@ async function main() {
     update: {},
   });
 
-  const melbourneWarehouse = await prisma.warehouse.upsert({
+  await prisma.warehouse.upsert({
     where: { code: 'CHC-DEPOT' },
     create: {
       code: 'CHC-DEPOT',
@@ -1041,6 +1062,25 @@ async function main() {
       isActive: false,
       settings: {
         apiEndpoint: 'https://sandbox.capezi.infomedia.com.au/v2',
+      },
+    },
+    update: {},
+  });
+
+  await prisma.integrationAccount.upsert({
+    where: { provider_environment: { provider: 'GMAIL', environment: 'sandbox' } },
+    create: {
+      provider: 'GMAIL',
+      name: 'Google Workspace / Gmail Business Mailbox',
+      environment: 'sandbox',
+      status: 'DISCONNECTED',
+      isActive: false,
+      settings: {
+        mailboxEmail: 'trade@pinnacleparts.co.nz',
+        authorizedScopes: [
+          'https://www.googleapis.com/auth/gmail.send',
+          'https://www.googleapis.com/auth/gmail.readonly',
+        ],
       },
     },
     update: {},

@@ -1436,6 +1436,15 @@ export interface ToggleStaffActiveDto {
   isActive: boolean;
 }
 
+export interface CreateStaffMemberDto {
+  email: string;
+  password: string;
+  firstName: string;
+  lastName: string;
+  jobTitle?: string;
+  roleIds?: string[];
+}
+
 export interface BusinessSettingsDto {
   company: {
     legalName: string;

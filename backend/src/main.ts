@@ -36,20 +36,23 @@ async function bootstrap() {
   // Global API prefix (all routes under /api/v1)
   app.setGlobalPrefix('api/v1');
 
-  // Swagger Documentation Setup
-  const config = new DocumentBuilder()
-    .setTitle('Pinnacle Automotive Parts API')
-    .setDescription('Modular Monolith REST API for Pinnacle Automotive Parts E-Commerce Platform')
-    .setVersion('0.1.0')
-    .addTag('Health', 'Service health check and telemetry')
-    .addTag('Auth', 'Authentication and session management')
-    .addTag('Users', 'User management (staff only)')
-    .addBearerAuth()
-    .addCookieAuth('access_token')
-    .build();
+  // Swagger Documentation Setup (Disabled in production unless explicitly enabled)
+  const isProduction = process.env['NODE_ENV'] === 'production';
+  if (!isProduction || process.env['ENABLE_SWAGGER_IN_PROD'] === 'true') {
+    const config = new DocumentBuilder()
+      .setTitle('Pinnacle Automotive Parts API')
+      .setDescription('Modular Monolith REST API for Pinnacle Automotive Parts E-Commerce Platform')
+      .setVersion('0.1.0')
+      .addTag('Health', 'Service health check and telemetry')
+      .addTag('Auth', 'Authentication and session management')
+      .addTag('Users', 'User management (staff only)')
+      .addBearerAuth()
+      .addCookieAuth('access_token')
+      .build();
 
-  const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api/docs', app, document);
+    const document = SwaggerModule.createDocument(app, config);
+    SwaggerModule.setup('api/docs', app, document);
+  }
 
   await app.listen(port, '0.0.0.0');
   // eslint-disable-next-line no-console

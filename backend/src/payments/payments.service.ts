@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   ConflictException,
+  ForbiddenException,
   Injectable,
   Logger,
   NotFoundException,
@@ -172,16 +173,31 @@ export class PaymentsService {
       };
     }
 
-    // Persist incoming webhook event to immutable audit log
-    await this.prisma.paymentWebhookLog.create({
-      data: {
-        eventId: verified.eventId,
-        provider: provider === 'MOCK' ? 'MANUAL' : provider,
-        eventType: verified.eventType,
-        status: 'PROCESSING',
-        payload: verified.rawPayload as any,
-      },
-    });
+    // Persist incoming webhook event to immutable audit log with race-condition idempotency guard
+    try {
+      await this.prisma.paymentWebhookLog.create({
+        data: {
+          eventId: verified.eventId,
+          provider: provider === 'MOCK' ? 'MANUAL' : provider,
+          eventType: verified.eventType,
+          status: 'PROCESSING',
+          payload: verified.rawPayload as any,
+        },
+      });
+    } catch (err: any) {
+      if (err?.code === 'P2002') {
+        this.logger.warn(
+          `[PaymentWebhook] Concurrent race duplicate intercepted for eventId ${verified.eventId}. Safely acknowledged.`,
+        );
+        return {
+          received: true,
+          duplicate: true,
+          status: 'SUCCESS',
+          orderNumber: verified.orderNumber,
+        };
+      }
+      throw err;
+    }
 
     // Execute state transition atomically
     const result = await this.prisma.$transaction(async (tx) => {
@@ -345,6 +361,13 @@ export class PaymentsService {
     transactionReference: string,
     simulateSuccess = true,
   ): Promise<{ success: boolean; status: string; orderNumber: string }> {
+    const isProduction = this.config.get<string>('NODE_ENV') === 'production';
+    if (isProduction) {
+      throw new ForbiddenException(
+        'Mock payment simulation is disabled in production environments. Use genuine payment provider webhooks.',
+      );
+    }
+
     const transaction = await this.prisma.paymentTransaction.findUnique({
       where: { transactionReference },
       include: { order: { include: { stockReservations: true } } },

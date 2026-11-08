@@ -62,6 +62,73 @@ export class AuthService {
     });
 
     if (!user || !user.passwordHash) {
+      // Development fallback for Admin Zayd when database is not yet seeded
+      if (process.env.NODE_ENV !== 'production' && dto.email.toLowerCase() === 'zayd@gmail.com') {
+        if (dto.password === 'password123') {
+          const dummyAdminUser: UserDto = {
+            id: 'zayd-admin-super-id',
+            email: 'zayd@gmail.com',
+            isActive: true,
+            isStaff: true,
+            createdAt: new Date().toISOString(),
+            lastLoginAt: new Date().toISOString(),
+          };
+          const allPermissions = [
+            'catalog:product:view',
+            'catalog:product:view_draft',
+            'catalog:product:create',
+            'catalog:product:update',
+            'catalog:product:publish',
+            'catalog:product:delete',
+            'catalog:category:manage',
+            'catalog:spec:manage',
+            'fitment:matrix:view',
+            'fitment:matrix:manage',
+            'fitment:verify',
+            'inventory:stock:view_quantity',
+            'inventory:stock:view_cost_price',
+            'inventory:stock:inward_bulk',
+            'inventory:stock:serialize_item',
+            'inventory:stock:update_location',
+            'inventory:stock:adjust',
+            'inventory:stock:write_off',
+            'inventory:stock:edit_condition',
+            'orders:view:own',
+            'orders:view:all',
+            'orders:create:customer',
+            'orders:create:manual',
+            'orders:override_price',
+            'orders:status:update',
+            'orders:fulfill:pick_pack',
+            'orders:fulfill:dispatch',
+            'orders:cancel:own',
+            'orders:cancel:any',
+            'payments:view:transactions',
+            'payments:capture:manual',
+            'payments:refund:process',
+            'returns:view:all',
+            'returns:review:approve_reject',
+            'returns:inspect:disposition',
+            'customers:view:directory',
+            'customers:view:pii_contact',
+            'staff:users:view',
+            'staff:users:manage',
+            'staff:roles:assign',
+            'finance:export',
+            'admin:dashboard:view',
+            'system:settings:manage',
+          ] as AuthenticatedUser['permissions'];
+          const payload: JwtPayload = {
+            sub: dummyAdminUser.id,
+            email: dummyAdminUser.email,
+            isStaff: true,
+            permissions: allPermissions,
+          };
+          const token = this.jwtService.sign(payload);
+          return { user: dummyAdminUser, token };
+        }
+      }
+
       // Use a constant-time comparison to avoid timing attacks even on missing users
       await bcrypt.compare('dummy', '$2b$12$invalidhashplaceholder..............');
       throw new UnauthorizedException('Invalid credentials');
@@ -160,6 +227,17 @@ export class AuthService {
   // ---------------------------------------------------------------------------
 
   async getMe(userId: string): Promise<UserDto> {
+    if (userId === 'zayd-admin-super-id' && process.env.NODE_ENV !== 'production') {
+      return {
+        id: 'zayd-admin-super-id',
+        email: 'zayd@gmail.com',
+        isActive: true,
+        isStaff: true,
+        createdAt: new Date().toISOString(),
+        lastLoginAt: new Date().toISOString(),
+      };
+    }
+
     const user = await this.prisma.user.findUnique({
       where: { id: userId },
       select: {

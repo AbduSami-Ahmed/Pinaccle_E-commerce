@@ -97,7 +97,14 @@ describe('AuthController', () => {
     it('clears the access_token cookie', () => {
       const result = controller.logout(mockRes);
 
-      expect(mockRes.clearCookie).toHaveBeenCalledWith('access_token', { path: '/' });
+      expect(mockRes.clearCookie).toHaveBeenCalledWith(
+        'access_token',
+        expect.objectContaining({
+          path: '/',
+          httpOnly: true,
+          sameSite: 'strict',
+        }),
+      );
       expect(result.message).toContain('Logged out');
     });
   });

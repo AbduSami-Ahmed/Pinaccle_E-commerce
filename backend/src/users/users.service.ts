@@ -1,4 +1,5 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import * as bcrypt from 'bcryptjs';
 import { PrismaService } from '../prisma/prisma.service';
 import { RoleWithPermissionsDto, StaffUserDto, UserDto } from '@pinnacle/contracts';
 import { AuditService } from '../audit/audit.service';
@@ -227,6 +228,90 @@ export class UsersService {
     return staffList.find((s) => s.id === userId)!;
   }
 
+
+  async createStaff(
+    dto: {
+      email: string;
+      password: string;
+      firstName: string;
+      lastName: string;
+      jobTitle?: string;
+      roleIds?: string[];
+    },
+    actorId: string,
+  ): Promise<StaffUserDto> {
+    const existing = await this.prisma.user.findUnique({
+      where: { email: dto.email.toLowerCase() },
+    });
+    if (existing) {
+      throw new ConflictException(`User with email '${dto.email}' already exists`);
+    }
+
+    if (dto.roleIds?.length) {
+      const roles = await this.prisma.role.findMany({ where: { id: { in: dto.roleIds } } });
+      if (roles.length !== dto.roleIds.length) {
+        throw new BadRequestException('One or more selected role IDs are invalid');
+      }
+    }
+
+    const passwordHash = await bcrypt.hash(dto.password, 12);
+
+    const user = await this.prisma.user.create({
+      data: {
+        email: dto.email.toLowerCase(),
+        passwordHash,
+        isStaff: true,
+        isActive: true,
+        staffProfile: {
+          create: {
+            firstName: dto.firstName,
+            lastName: dto.lastName,
+            jobTitle: dto.jobTitle || 'Auckland Operations Staff',
+          },
+        },
+        userRoles: dto.roleIds?.length
+          ? {
+              create: dto.roleIds.map((roleId) => ({ roleId })),
+            }
+          : undefined,
+      },
+      include: {
+        staffProfile: true,
+        userRoles: { include: { role: true } },
+      },
+    });
+
+    await this.auditService.recordLog({
+      actorId,
+      domain: 'STAFF',
+      action: 'STAFF_CREATED',
+      entityType: 'USER',
+      entityId: user.id,
+      afterState: {
+        email: user.email,
+        name: `${dto.firstName} ${dto.lastName}`,
+        roles: user.userRoles.map((r) => r.role.key),
+      },
+    });
+
+    return {
+      id: user.id,
+      email: user.email,
+      firstName: user.staffProfile?.firstName || dto.firstName,
+      lastName: user.staffProfile?.lastName || dto.lastName,
+      department: user.staffProfile?.jobTitle || null,
+      phone: null,
+      isActive: user.isActive,
+      isStaff: user.isStaff,
+      roles: user.userRoles.map((ur) => ({
+        id: ur.role.id,
+        key: ur.role.key,
+        name: ur.role.name,
+      })),
+      lastLoginAt: null,
+      createdAt: user.createdAt.toISOString(),
+    };
+  }
 
   // ---------------------------------------------------------------------------
   // Private

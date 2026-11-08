@@ -985,8 +985,8 @@ export class OrdersService {
   }
 
   private mapOrderToAdminDto(order: any, canViewPii: boolean): OrderAdminDetailsDto {
-    const rawShipping = order.shippingAddress as OrderAddressSnapshot;
-    const rawBilling = order.billingAddress as OrderAddressSnapshot;
+    const rawShipping = (order.shippingAddress || {}) as OrderAddressSnapshot;
+    const rawBilling = (order.billingAddress || {}) as OrderAddressSnapshot;
 
     const shippingAddress: OrderAddressSnapshot = canViewPii
       ? rawShipping

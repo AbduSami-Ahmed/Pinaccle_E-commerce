@@ -22,6 +22,7 @@ import { LoginDto } from './dto/login.dto';
 import { RegisterCustomerDto } from './dto/register-customer.dto';
 import { Public } from './decorators/public.decorator';
 import { CurrentUser } from './decorators/current-user.decorator';
+import { RateLimit } from '../common/decorators/rate-limit.decorator';
 import { AuthenticatedUser, LoginResponseDto, UserDto } from '@pinnacle/contracts';
 import { ConfigService } from '@nestjs/config';
 
@@ -46,6 +47,7 @@ export class AuthController {
    * This endpoint MUST NOT be reachable in a production deployment.
    */
   @Public()
+  @RateLimit({ windowSeconds: 60, maxRequests: 5, message: 'Too many login attempts. Please wait 1 minute before retrying.' })
   @Post('login')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: '[LOCAL DEV] Email + password login' })
@@ -73,6 +75,7 @@ export class AuthController {
   // ---------------------------------------------------------------------------
 
   @Public()
+  @RateLimit({ windowSeconds: 60, maxRequests: 3, message: 'Too many registration requests. Please wait 1 minute before retrying.' })
   @Post('register')
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({ summary: 'Customer self-registration' })
@@ -106,7 +109,13 @@ export class AuthController {
   @ApiCookieAuth('access_token')
   @ApiOperation({ summary: 'Logout — clears the access_token cookie' })
   logout(@Res({ passthrough: true }) res: Response): { message: string } {
-    res.clearCookie('access_token', { path: '/' });
+    const isProduction = this.configService.get<string>('NODE_ENV') === 'production';
+    res.clearCookie('access_token', {
+      httpOnly: true,
+      secure: isProduction,
+      sameSite: isProduction ? 'strict' : 'lax',
+      path: '/',
+    });
     return { message: 'Logged out successfully' };
   }
 

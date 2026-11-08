@@ -1,6 +1,7 @@
 import { Controller, Get, Param, Query } from '@nestjs/common';
 import { ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Public } from '../auth/decorators/public.decorator';
+import { RateLimit } from '../common/decorators/rate-limit.decorator';
 import { StorefrontService } from './storefront.service';
 import { StorefrontQueryDto } from './dto/storefront-query.dto';
 import {
@@ -18,6 +19,7 @@ export class StorefrontController {
 
   @Get('products')
   @Public()
+  @RateLimit({ windowSeconds: 60, maxRequests: 60, message: 'Search query rate limit reached. Please slow down.' })
   @ApiOperation({
     summary: 'Public storefront product search with multi-faceted filtering and pagination',
   })

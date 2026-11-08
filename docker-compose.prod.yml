@@ -1,0 +1,90 @@
+# ==============================================================================
+# PINNACLE E-COMMERCE - REPRODUCIBLE STAGING / PRODUCTION LOCAL PREVIEW STACK
+# Builds and links production containers using multi-stage non-root images
+# ==============================================================================
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: pinnacle-staging-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-pinnacle_app}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-pinnacle_staging_pass_change_me}
+      POSTGRES_DB: ${POSTGRES_DB:-pinnacle_staging}
+    ports:
+      - '5432:5432'
+    volumes:
+      - staging_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U ${POSTGRES_USER:-pinnacle_app} -d ${POSTGRES_DB:-pinnacle_staging}']
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - pinnacle-network
+
+  api:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    container_name: pinnacle-staging-api
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      NODE_ENV: staging
+      PORT: 4000
+      DATABASE_URL: postgresql://${POSTGRES_USER:-pinnacle_app}:${POSTGRES_PASSWORD:-pinnacle_staging_pass_change_me}@postgres:5432/${POSTGRES_DB:-pinnacle_staging}?schema=public
+      JWT_SECRET: ${JWT_SECRET:-staging_jwt_secret_min_32_characters_long_entropy}
+      ENCRYPTION_SECRET: ${ENCRYPTION_SECRET:-staging_aes_secret_key_minimum_32_chars_ok}
+      FRONTEND_URL: http://localhost:3000
+      API_BASE_URL: http://localhost:4000/api/v1
+      CURRENCY: NZD
+      TAX_RATE_PERCENT: 15
+      TRANSACTIONAL_EMAIL_PROVIDER: MOCK
+      PAYMENT_DEFAULT_PROVIDER: MOCK
+    ports:
+      - '4000:4000'
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://localhost:4000/api/v1/health']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+    networks:
+      - pinnacle-network
+
+  web:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+    container_name: pinnacle-staging-web
+    restart: unless-stopped
+    depends_on:
+      api:
+        condition: service_healthy
+    environment:
+      NODE_ENV: staging
+      PORT: 3000
+      NEXT_PUBLIC_API_URL: http://localhost:4000/api/v1
+    ports:
+      - '3000:3000'
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://localhost:3000/api/health']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+    networks:
+      - pinnacle-network
+
+volumes:
+  staging_pgdata:
+    driver: local
+
+networks:
+  pinnacle-network:
+    driver: bridge
+

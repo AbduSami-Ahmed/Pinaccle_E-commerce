@@ -43,7 +43,7 @@ export function StorefrontFooter() {
                 </Link>
               </li>
               <li>
-                <Link href="/admin/dashboard" className="hover:text-blue-700 transition-colors">
+                <Link href="/admin/login" className="hover:text-blue-700 transition-colors">
                   Staff Admin Portal
                 </Link>
               </li>
