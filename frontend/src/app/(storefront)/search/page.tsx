@@ -82,19 +82,23 @@ export default async function UniversalSearchPage({ searchParams }: SearchPagePr
         </BreadcrumbList>
       </Breadcrumb>
 
-      {/* Global Search Header */}
-      <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-xs space-y-4">
+      {/* Clean, Bright Search Header */}
+      <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-2xs space-y-4">
         <div>
-          <h1 className="text-xl font-bold tracking-tight text-slate-900">
-            {resolvedParams.search ? (
-              <>Search Results for &ldquo;{resolvedParams.search}&rdquo;</>
-            ) : (
-              'Search Full Product Catalogue'
-            )}
-          </h1>
+          <div className="flex items-center gap-2 mb-1">
+            <span className="flex h-7 w-7 items-center justify-center rounded-md bg-blue-50 text-blue-600">
+              <Search className="h-4 w-4" />
+            </span>
+            <h1 className="text-xl font-bold tracking-tight text-slate-900">
+              {resolvedParams.search ? (
+                <>Search Results for &ldquo;{resolvedParams.search}&rdquo;</>
+              ) : (
+                'Search Full Product Catalogue'
+              )}
+            </h1>
+          </div>
           <p className="mt-1 text-xs text-slate-500">
-            Search by part number, tyre dimension (e.g. 225/45 R17), vehicle make/model, or
-            serialized barcode.
+            Search across commercial tyres, seat belts, OEM numbers, tyre dimensions (e.g. 205/55 R16), and vehicle makes.
           </p>
         </div>
 
@@ -104,7 +108,7 @@ export default async function UniversalSearchPage({ searchParams }: SearchPagePr
         />
 
         {activeFilters.length > 0 && (
-          <div className="pt-2 border-t border-slate-100">
+          <div className="pt-3 border-t border-slate-100">
             <SelectedFilterChips filters={activeFilters} />
           </div>
         )}

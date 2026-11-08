@@ -151,31 +151,33 @@ export default async function TyresListingPage({ searchParams }: TyresPageProps)
         </BreadcrumbList>
       </Breadcrumb>
 
-      {/* Header Banner */}
-      <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-xs">
+      {/* Clean, Bright Header Banner */}
+      <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-2xs">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <div className="flex items-center gap-2">
-              <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-50 text-blue-700">
-                <Disc className="h-4 w-4" />
+            <div className="flex items-center gap-3">
+              <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-50 text-blue-600">
+                <Disc className="h-5 w-5" />
               </span>
-              <h1 className="text-2xl font-bold tracking-tight text-slate-900">
-                Commercial & Passenger Tyres
-              </h1>
+              <div>
+                <h1 className="text-2xl font-bold tracking-tight text-slate-900">
+                  Commercial &amp; Passenger Tyres
+                </h1>
+                <p className="text-xs text-slate-500">Direct Importer Warehouse Stock · Penrose Auckland Hub</p>
+              </div>
             </div>
-            <p className="mt-1 text-xs text-slate-500 max-w-2xl">
-              Direct importer stock from leading manufacturers. Available as singles, axle pairs
-              (2), or full vehicle sets (4) with trade savings. Drive-in fitting & balancing
-              available at our Penrose Auckland facility for $25/corner.
+            <p className="mt-2 text-xs text-slate-600 max-w-2xl leading-relaxed">
+              Available in singles, axle pairs (2), and full sets (4) with wholesale trade savings.
+              Fresh DOT date codes and verified factory tread. Drive-in fitting &amp; balancing for $25/corner.
             </p>
           </div>
 
-          <div className="text-right">
-            <span className="text-sm font-semibold text-slate-900">
-              {meta.total} {meta.total === 1 ? 'Product' : 'Products'} Found
+          <div className="text-left md:text-right shrink-0">
+            <span className="text-lg font-bold text-slate-900 block">
+              {meta.total} {meta.total === 1 ? 'Product' : 'Products'} Available
             </span>
-            <div className="text-[11px] text-slate-400">
-              Page {meta.page} of {meta.totalPages}
+            <div className="text-xs text-slate-400">
+              Page {meta.page} of {meta.totalPages || 1}
             </div>
           </div>
         </div>

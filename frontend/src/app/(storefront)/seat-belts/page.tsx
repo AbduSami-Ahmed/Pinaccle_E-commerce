@@ -148,31 +148,33 @@ export default async function SeatBeltsListingPage({ searchParams }: SeatBeltsPa
         </BreadcrumbList>
       </Breadcrumb>
 
-      {/* Header Banner */}
-      <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-xs">
+      {/* Clean, Bright Header Banner */}
+      <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-2xs">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <div className="flex items-center gap-2">
-              <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-amber-50 text-amber-700">
-                <ShieldCheck className="h-4 w-4" />
+            <div className="flex items-center gap-3">
+              <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-emerald-50 text-emerald-600">
+                <ShieldCheck className="h-5 w-5" />
               </span>
-              <h1 className="text-2xl font-bold tracking-tight text-slate-900">
-                Seat Belts & Restraint Systems
-              </h1>
+              <div>
+                <h1 className="text-2xl font-bold tracking-tight text-slate-900">
+                  Tested Seat Belts &amp; Restraints
+                </h1>
+                <p className="text-xs text-slate-500">Serialized Stock · 2.1–2.4Ω Resistance Certified · Donor VIN Verified</p>
+              </div>
             </div>
-            <p className="mt-1 text-xs text-slate-500 max-w-2xl">
-              Safety-critical automotive restraint systems. Each used/refurbished unit includes
-              pyrotechnic pretensioner resistance test certification, genuine condition grading, and
-              actual unit photos.
+            <p className="mt-2 text-xs text-slate-600 max-w-2xl leading-relaxed">
+              Every unit is multimeter-tested for pretensioner circuit resistance and mechanical lock.
+              Actual photos of the exact physical unit on our shelf with WOF compliance tags intact.
             </p>
           </div>
 
-          <div className="text-right">
-            <span className="text-sm font-semibold text-slate-900">
-              {meta.total} {meta.total === 1 ? 'Part' : 'Parts'} Found
+          <div className="text-left md:text-right shrink-0">
+            <span className="text-lg font-bold text-slate-900 block">
+              {meta.total} {meta.total === 1 ? 'Part' : 'Parts'} In-Stock
             </span>
-            <div className="text-[11px] text-slate-400">
-              Page {meta.page} of {meta.totalPages}
+            <div className="text-xs text-slate-400">
+              Page {meta.page} of {meta.totalPages || 1}
             </div>
           </div>
         </div>

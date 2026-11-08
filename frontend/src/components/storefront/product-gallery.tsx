@@ -70,6 +70,7 @@ export function ProductGallery({
           src={activeImage.cdnUrl}
           alt={activeImage.altText || productTitle}
           fill
+          unoptimized
           priority
           sizes="(max-width: 1024px) 100vw, 55vw"
           className="object-cover transition-transform duration-300 group-hover:scale-[1.02] cursor-zoom-in"
