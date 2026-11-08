@@ -7,6 +7,7 @@ import { ProviderRegistryService } from './core/provider-registry.service';
 import { MockIntegrationAdapter } from './adapters/mock-integration.adapter';
 import { MockVehicleAdapter } from './adapters/mock-vehicle.adapter';
 import { CarJamAdapter } from './adapters/carjam.adapter';
+import { EbayAdapter } from './adapters/ebay.adapter';
 import { VehicleLookupService } from './vehicle-lookup.service';
 
 @Module({
@@ -19,6 +20,7 @@ import { VehicleLookupService } from './vehicle-lookup.service';
     MockIntegrationAdapter,
     MockVehicleAdapter,
     CarJamAdapter,
+    EbayAdapter,
     VehicleLookupService,
   ],
   exports: [
@@ -28,6 +30,7 @@ import { VehicleLookupService } from './vehicle-lookup.service';
     MockIntegrationAdapter,
     MockVehicleAdapter,
     CarJamAdapter,
+    EbayAdapter,
     VehicleLookupService,
   ],
 })

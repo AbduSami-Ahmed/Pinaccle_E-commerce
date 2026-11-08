@@ -3,6 +3,7 @@ import { IntegrationProviderAdapter } from './integration-adapter.interface';
 import { MockIntegrationAdapter } from '../adapters/mock-integration.adapter';
 import { MockVehicleAdapter } from '../adapters/mock-vehicle.adapter';
 import { CarJamAdapter } from '../adapters/carjam.adapter';
+import { EbayAdapter } from '../adapters/ebay.adapter';
 import { IntegrationCapability } from '@pinnacle/contracts';
 
 export interface ProviderDefinition {
@@ -53,8 +54,8 @@ export const KNOWN_PROVIDERS: ProviderDefinition[] = [
   },
   {
     key: 'EBAY',
-    name: 'eBay Motors Australia',
-    description: 'eBay Australia parts & accessories marketplace integration.',
+    name: 'eBay Marketplace (Motors Spares & Accessories)',
+    description: 'eBay parts & accessories marketplace integration for listing publication, inventory sync, order import, and fulfillment.',
     category: 'MARKETPLACE',
     isMock: false,
     capabilities: [
@@ -62,6 +63,7 @@ export const KNOWN_PROVIDERS: ProviderDefinition[] = [
       'INVENTORY_SYNC_OUTBOUND',
       'ORDERS_IMPORT',
       'ORDERS_STATUS_UPDATE',
+      'WEBHOOK_INGESTION',
     ],
   },
   {
@@ -116,10 +118,12 @@ export class ProviderRegistryService {
     private readonly mockAdapter: MockIntegrationAdapter,
     private readonly mockVehicleAdapter?: MockVehicleAdapter,
     private readonly carjamAdapter?: CarJamAdapter,
+    private readonly ebayAdapter?: EbayAdapter,
   ) {
     if (this.mockAdapter) this.registerAdapter(this.mockAdapter);
     if (this.mockVehicleAdapter) this.registerAdapter(this.mockVehicleAdapter);
     if (this.carjamAdapter) this.registerAdapter(this.carjamAdapter);
+    if (this.ebayAdapter) this.registerAdapter(this.ebayAdapter);
   }
 
   registerAdapter(adapter: IntegrationProviderAdapter) {

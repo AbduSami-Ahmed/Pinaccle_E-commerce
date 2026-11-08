@@ -984,6 +984,22 @@ async function main() {
     update: {},
   });
 
+  await prisma.integrationAccount.upsert({
+    where: { provider_environment: { provider: 'EBAY', environment: 'sandbox' } },
+    create: {
+      provider: 'EBAY',
+      name: 'eBay Marketplace (AU/NZ Motors)',
+      environment: 'sandbox',
+      status: 'DISCONNECTED',
+      isActive: false,
+      settings: {
+        marketplaceId: 'EBAY_AU',
+        apiEndpoint: 'https://api.sandbox.ebay.com',
+      },
+    },
+    update: {},
+  });
+
   console.log('------------------------------------------------------------');
   console.log('[Seed] Phase 4 Domain Seed completed successfully! 🎉');
   console.log('------------------------------------------------------------');
