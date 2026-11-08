@@ -1000,6 +1000,22 @@ async function main() {
     update: {},
   });
 
+  await prisma.integrationAccount.upsert({
+    where: { provider_environment: { provider: 'TRADE_ME', environment: 'sandbox' } },
+    create: {
+      provider: 'TRADE_ME',
+      name: 'Trade Me Motors & Parts (NZ)',
+      environment: 'sandbox',
+      status: 'DISCONNECTED',
+      isActive: false,
+      settings: {
+        apiEndpoint: 'https://api.tmsandbox.co.nz/v1',
+        isInTrade: true,
+      },
+    },
+    update: {},
+  });
+
   console.log('------------------------------------------------------------');
   console.log('[Seed] Phase 4 Domain Seed completed successfully! 🎉');
   console.log('------------------------------------------------------------');
