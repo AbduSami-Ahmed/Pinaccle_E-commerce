@@ -3,6 +3,7 @@ import { BadRequestException } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { SkuService } from './sku.service';
 import { PrismaService } from '../prisma/prisma.service';
+import { CacheService } from '../common/cache/cache.service';
 import { AuthenticatedUser } from '@pinnacle/contracts';
 import { Prisma } from '@prisma/client';
 
@@ -80,6 +81,7 @@ describe('ProductsService (Phase 5 Catalog)', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         ProductsService,
+        CacheService,
         {
           provide: PrismaService,
           useValue: mockPrisma,

@@ -20,8 +20,11 @@ import { AdminModule } from './admin/admin.module';
 import { DocumentsModule } from './documents/documents.module';
 import { NotificationsModule } from './notifications/notifications.module';
 import { IntegrationsModule } from './integrations/integrations.module';
+import { AppCacheModule } from './common/cache/cache.module';
 import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 import { RateLimiterGuard } from './common/guards/rate-limiter.guard';
+import { CacheControlInterceptor } from './common/interceptors/cache-control.interceptor';
+import { APP_INTERCEPTOR } from '@nestjs/core';
 
 @Module({
   imports: [
@@ -51,6 +54,7 @@ import { RateLimiterGuard } from './common/guards/rate-limiter.guard';
     DocumentsModule,
     NotificationsModule,
     IntegrationsModule,
+    AppCacheModule,
   ],
   controllers: [],
   providers: [
@@ -64,6 +68,11 @@ import { RateLimiterGuard } from './common/guards/rate-limiter.guard';
     {
       provide: APP_GUARD,
       useClass: RateLimiterGuard,
+    },
+    // Global HTTP Cache-Control interceptor
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: CacheControlInterceptor,
     },
   ],
 })

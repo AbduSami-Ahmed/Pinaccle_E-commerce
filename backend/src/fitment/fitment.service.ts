@@ -6,6 +6,7 @@ import {
 } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
+import { CacheService } from '../common/cache/cache.service';
 import {
   MakesQueryDto,
   ModelsQueryDto,
@@ -31,16 +32,24 @@ import {
 
 @Injectable()
 export class FitmentService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly cacheService: CacheService,
+  ) {}
 
   // =========================================================================
   // 1. Customer Dependent Vehicle Taxonomy
   // =========================================================================
 
   /**
-   * Return normalized vehicle makes.
+   * Return normalized vehicle makes (Cached for 1800s).
    */
   async getMakes(query: MakesQueryDto): Promise<VehicleMakeDto[]> {
+    const cacheKey = `fitment:makes:${query.search?.trim().toLowerCase() || 'all'}`;
+    return this.cacheService.getOrSet(cacheKey, () => this.executeGetMakes(query), 1800);
+  }
+
+  private async executeGetMakes(query: MakesQueryDto): Promise<VehicleMakeDto[]> {
     const where: Prisma.VehicleMakeWhereInput = query.search
       ? {
           OR: [
@@ -69,9 +78,14 @@ export class FitmentService {
   }
 
   /**
-   * Return dependent vehicle models for a selected make.
+   * Return dependent vehicle models for a selected make (Cached for 1800s).
    */
   async getModels(query: ModelsQueryDto): Promise<VehicleModelDto[]> {
+    const cacheKey = `fitment:models:${query.makeId || ''}:${query.make?.trim().toLowerCase() || ''}`;
+    return this.cacheService.getOrSet(cacheKey, () => this.executeGetModels(query), 1800);
+  }
+
+  private async executeGetModels(query: ModelsQueryDto): Promise<VehicleModelDto[]> {
     if (!query.makeId && !query.make) {
       throw new BadRequestException('Either makeId or make slug/name is required');
     }
@@ -125,9 +139,16 @@ export class FitmentService {
   }
 
   /**
-   * Return available model years for a selected model based on generations.
+   * Return available model years for a selected model based on generations (Cached for 1800s).
    */
   async getYears(
+    query: YearsQueryDto,
+  ): Promise<{ years: number[]; generations: { id: string; name: string; range: string }[] }> {
+    const cacheKey = `fitment:years:${query.modelId || ''}:${query.model?.trim().toLowerCase() || ''}`;
+    return this.cacheService.getOrSet(cacheKey, () => this.executeGetYears(query), 1800);
+  }
+
+  private async executeGetYears(
     query: YearsQueryDto,
   ): Promise<{ years: number[]; generations: { id: string; name: string; range: string }[] }> {
     if (!query.modelId && !query.model) {
@@ -182,9 +203,14 @@ export class FitmentService {
   }
 
   /**
-   * Return dependent chassis variants for a selected model and year.
+   * Return dependent chassis variants for a selected model and year (Cached for 1800s).
    */
   async getVariants(query: VariantsQueryDto): Promise<VehicleChassisDto[]> {
+    const cacheKey = `fitment:variants:${query.modelId || ''}:${query.model?.trim().toLowerCase() || ''}:${query.year || 'all'}`;
+    return this.cacheService.getOrSet(cacheKey, () => this.executeGetVariants(query), 1800);
+  }
+
+  private async executeGetVariants(query: VariantsQueryDto): Promise<VehicleChassisDto[]> {
     if (!query.modelId && !query.model) {
       throw new BadRequestException('Either modelId or model is required');
     }

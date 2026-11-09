@@ -158,48 +158,92 @@ export const SEED_CHASSIS: Record<string, VehicleChassisDto[]> = {
 };
 
 // ===========================================================================
-// Public Customer Fitment API
+// Public Customer Fitment API (with Client-Side & Next.js ISR Caching)
 // ===========================================================================
 
+const clientMakesCache = new Map<string, VehicleMakeDto[]>();
+const clientModelsCache = new Map<string, VehicleModelDto[]>();
+const clientYearsCache = new Map<
+  string,
+  { years: number[]; generations: { id: string; name: string; range: string }[] }
+>();
+const clientVariantsCache = new Map<string, VehicleChassisDto[]>();
+
 export async function fetchVehicleMakes(search?: string): Promise<VehicleMakeDto[]> {
+  const cacheKey = search?.trim().toLowerCase() || 'all';
+  if (clientMakesCache.has(cacheKey)) {
+    return clientMakesCache.get(cacheKey)!;
+  }
+
   try {
     const url = search
       ? `${API_BASE_URL}/fitment/makes?search=${encodeURIComponent(search)}`
       : `${API_BASE_URL}/fitment/makes`;
-    const res = await fetch(url, { cache: 'no-store' });
-    if (res.ok) return await res.json();
+    const res = await fetch(url, { next: { revalidate: 1800, tags: ['fitment', 'makes'] } });
+    if (res.ok) {
+      const data = (await res.json()) as VehicleMakeDto[];
+      clientMakesCache.set(cacheKey, data);
+      return data;
+    }
   } catch {
     // Fallback
   }
 
   if (search) {
     const term = search.toLowerCase();
-    return SEED_MAKES.filter((m) => m.name.toLowerCase().includes(term));
+    const filtered = SEED_MAKES.filter((m) => m.name.toLowerCase().includes(term));
+    clientMakesCache.set(cacheKey, filtered);
+    return filtered;
   }
+
+  clientMakesCache.set(cacheKey, SEED_MAKES);
   return SEED_MAKES;
 }
 
 export async function fetchVehicleModels(make: string): Promise<VehicleModelDto[]> {
+  const cacheKey = make.trim().toLowerCase();
+  if (clientModelsCache.has(cacheKey)) {
+    return clientModelsCache.get(cacheKey)!;
+  }
+
   try {
     const res = await fetch(`${API_BASE_URL}/fitment/models?make=${encodeURIComponent(make)}`, {
-      cache: 'no-store',
+      next: { revalidate: 1800, tags: ['fitment', `models-${cacheKey}`] },
     });
-    if (res.ok) return await res.json();
+    if (res.ok) {
+      const data = (await res.json()) as VehicleModelDto[];
+      clientModelsCache.set(cacheKey, data);
+      return data;
+    }
   } catch {
     // Fallback
   }
 
-  return SEED_MODELS[make.toLowerCase()] || [];
+  const fallback = SEED_MODELS[make.toLowerCase()] || [];
+  clientModelsCache.set(cacheKey, fallback);
+  return fallback;
 }
 
 export async function fetchVehicleYears(
   model: string,
 ): Promise<{ years: number[]; generations: { id: string; name: string; range: string }[] }> {
+  const cacheKey = model.trim().toLowerCase();
+  if (clientYearsCache.has(cacheKey)) {
+    return clientYearsCache.get(cacheKey)!;
+  }
+
   try {
     const res = await fetch(`${API_BASE_URL}/fitment/years?model=${encodeURIComponent(model)}`, {
-      cache: 'no-store',
+      next: { revalidate: 1800, tags: ['fitment', `years-${cacheKey}`] },
     });
-    if (res.ok) return await res.json();
+    if (res.ok) {
+      const data = (await res.json()) as {
+        years: number[];
+        generations: { id: string; name: string; range: string }[];
+      };
+      clientYearsCache.set(cacheKey, data);
+      return data;
+    }
   } catch {
     // Fallback
   }
@@ -209,27 +253,42 @@ export async function fetchVehicleYears(
   for (let y = currentYear + 1; y >= 2012; y--) {
     years.push(y);
   }
-  return {
+  const fallback = {
     years,
     generations: [{ id: 'gen-default', name: 'Standard Series', range: '2012–Current' }],
   };
+  clientYearsCache.set(cacheKey, fallback);
+  return fallback;
 }
 
 export async function fetchVehicleVariants(
   model: string,
   year?: number,
 ): Promise<VehicleChassisDto[]> {
+  const cacheKey = `${model.trim().toLowerCase()}:${year || 'all'}`;
+  if (clientVariantsCache.has(cacheKey)) {
+    return clientVariantsCache.get(cacheKey)!;
+  }
+
   try {
     const url = year
       ? `${API_BASE_URL}/fitment/variants?model=${encodeURIComponent(model)}&year=${year}`
       : `${API_BASE_URL}/fitment/variants?model=${encodeURIComponent(model)}`;
-    const res = await fetch(url, { cache: 'no-store' });
-    if (res.ok) return await res.json();
+    const res = await fetch(url, {
+      next: { revalidate: 1800, tags: ['fitment', `variants-${cacheKey}`] },
+    });
+    if (res.ok) {
+      const data = (await res.json()) as VehicleChassisDto[];
+      clientVariantsCache.set(cacheKey, data);
+      return data;
+    }
   } catch {
     // Fallback
   }
 
-  return SEED_CHASSIS[model.toLowerCase()] || [];
+  const fallback = SEED_CHASSIS[model.toLowerCase()] || [];
+  clientVariantsCache.set(cacheKey, fallback);
+  return fallback;
 }
 
 export async function searchVehicleFitment(
@@ -248,7 +307,7 @@ export async function searchVehicleFitment(
 
   try {
     const res = await fetch(`${API_BASE_URL}/fitment/search?${params.toString()}`, {
-      cache: 'no-store',
+      next: { revalidate: 60, tags: ['fitment'] },
     });
     if (res.ok) return await res.json();
   } catch {

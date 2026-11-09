@@ -21,6 +21,8 @@ import { SerializedInspectionCard } from '@/components/storefront/serialized-ins
 import { TradeDeliveryWarrantyCard } from '@/components/storefront/trade-delivery-warranty-card';
 import { RelatedProductsSection } from '@/components/storefront/related-products-section';
 
+export const revalidate = 120;
+
 interface PageProps {
   params: Promise<{ slug: string }>;
 }

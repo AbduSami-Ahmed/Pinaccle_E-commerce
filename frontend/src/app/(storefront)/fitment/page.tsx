@@ -21,6 +21,8 @@ export const metadata = {
     'Browse automotive parts verified for your exact vehicle make, model, year, and chassis code. Avoid returns with verified OEM matching.',
 };
 
+export const revalidate = 60;
+
 interface FitmentPageProps {
   searchParams: Promise<{
     make?: string;

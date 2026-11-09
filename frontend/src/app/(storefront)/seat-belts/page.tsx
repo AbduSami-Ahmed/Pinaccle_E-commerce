@@ -30,6 +30,8 @@ export const metadata = {
   },
 };
 
+export const revalidate = 60;
+
 interface SeatBeltsPageProps {
   searchParams: Promise<{
     search?: string;

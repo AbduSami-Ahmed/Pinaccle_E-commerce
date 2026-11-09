@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
+import { CacheService } from '../common/cache/cache.service';
 import { StorefrontQueryDto } from './dto/storefront-query.dto';
 import {
   ConditionGrade,
@@ -17,12 +18,22 @@ import {
 
 @Injectable()
 export class StorefrontService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly cacheService: CacheService,
+  ) {}
 
   /**
-   * Search and filter published products with server-side pagination.
+   * Search and filter published products with server-side pagination (Cached for 60s).
    */
   async search(query: StorefrontQueryDto): Promise<PaginatedResponse<StorefrontProductSummaryDto>> {
+    const cacheKey = `storefront:search:${JSON.stringify(query)}`;
+    return this.cacheService.getOrSet(cacheKey, () => this.executeSearch(query), 60);
+  }
+
+  private async executeSearch(
+    query: StorefrontQueryDto,
+  ): Promise<PaginatedResponse<StorefrontProductSummaryDto>> {
     const page = Number(query.page) || 1;
     const pageSize = Number(query.pageSize) || 12;
     const skip = (page - 1) * pageSize;
@@ -394,9 +405,14 @@ export class StorefrontService {
   }
 
   /**
-   * Retrieve a published product by slug with full storefront details.
+   * Retrieve a published product by slug with full storefront details (Cached for 120s).
    */
   async findBySlug(slug: string): Promise<StorefrontProductDetailDto> {
+    const cacheKey = `storefront:product:${slug.toLowerCase()}`;
+    return this.cacheService.getOrSet(cacheKey, () => this.executeFindBySlug(slug), 120);
+  }
+
+  private async executeFindBySlug(slug: string): Promise<StorefrontProductDetailDto> {
     const product = await this.prisma.product.findFirst({
       where: {
         slug: slug.toLowerCase(),
@@ -597,9 +613,14 @@ export class StorefrontService {
   }
 
   /**
-   * Aggregated filter metadata for discovery facets.
+   * Aggregated filter metadata for discovery facets (Cached for 300s).
    */
   async getFilterMeta(categorySlug?: string): Promise<StorefrontFilterMetaDto> {
+    const cacheKey = `storefront:filters:${categorySlug?.toLowerCase() || 'all'}`;
+    return this.cacheService.getOrSet(cacheKey, () => this.executeGetFilterMeta(categorySlug), 300);
+  }
+
+  private async executeGetFilterMeta(categorySlug?: string): Promise<StorefrontFilterMetaDto> {
     const where: Prisma.ProductWhereInput = {
       status: 'PUBLISHED',
       ...(categorySlug ? { category: { slug: categorySlug.toLowerCase() } } : {}),
@@ -718,9 +739,14 @@ export class StorefrontService {
   }
 
   /**
-   * Return vehicle makes and models hierarchy for vehicle fitment selector.
+   * Return vehicle makes and models hierarchy for vehicle fitment selector (Cached for 1800s).
    */
   async getVehicleTaxonomy(): Promise<VehicleMakeOptionDto[]> {
+    const cacheKey = 'storefront:vehicles';
+    return this.cacheService.getOrSet(cacheKey, () => this.executeGetVehicleTaxonomy(), 1800);
+  }
+
+  private async executeGetVehicleTaxonomy(): Promise<VehicleMakeOptionDto[]> {
     const makes = await this.prisma.vehicleMake.findMany({
       orderBy: { name: 'asc' },
       include: {

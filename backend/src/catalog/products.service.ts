@@ -6,6 +6,7 @@ import {
 } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
+import { CacheService } from '../common/cache/cache.service';
 import { SkuService } from './sku.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto, UpdateProductStatusDto } from './dto/update-product.dto';
@@ -22,6 +23,7 @@ export class ProductsService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly skuService: SkuService,
+    private readonly cacheService: CacheService,
   ) {}
 
   /**
@@ -314,6 +316,7 @@ export class ProductsService {
       });
     });
 
+    this.cacheService.invalidatePattern('storefront:*');
     return this.mapToProductDto(created);
   }
 
@@ -484,6 +487,7 @@ export class ProductsService {
       });
     });
 
+    this.cacheService.invalidatePattern('storefront:*');
     return this.mapToProductDto(updated);
   }
 
@@ -544,6 +548,7 @@ export class ProductsService {
       },
     });
 
+    this.cacheService.invalidatePattern('storefront:*');
     return this.mapToProductDto(updated);
   }
 
@@ -562,6 +567,7 @@ export class ProductsService {
       throw new NotFoundException(`Product with ID ${id} not found`);
     }
 
+    this.cacheService.invalidatePattern('storefront:*');
     if (product.orderItems.length > 0) {
       // Historical orders exist: cannot delete row, must archive
       await this.prisma.product.update({

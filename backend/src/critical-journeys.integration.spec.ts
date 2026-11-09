@@ -15,6 +15,7 @@ import { ShippingCalculatorService } from './checkout/shipping-calculator.servic
 import { MockPaymentGatewayAdapter } from './payments/mock-payment.adapter';
 import { StripePaymentGatewayAdapter } from './payments/stripe-payment.adapter';
 import { NotificationsService } from './notifications/notifications.service';
+import { CacheService } from './common/cache/cache.service';
 import { Decimal } from '@prisma/client/runtime/library';
 
 // Mock Config Provider
@@ -127,6 +128,7 @@ describe('System-Wide Critical Journeys Integration Suite (Phase 17)', () => {
         PricingTaxService,
         PermissionsGuard,
         Reflector,
+        CacheService,
         { provide: PrismaService, useValue: mockPrisma },
         { provide: ConfigService, useClass: MockConfigService },
         {

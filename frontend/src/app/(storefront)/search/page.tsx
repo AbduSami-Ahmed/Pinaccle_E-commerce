@@ -22,6 +22,8 @@ export const metadata = {
   description: 'Search results across commercial tyres and inspected serialized seat belts.',
 };
 
+export const revalidate = 60;
+
 interface SearchPageProps {
   searchParams: Promise<{
     search?: string;

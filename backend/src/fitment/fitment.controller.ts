@@ -1,6 +1,7 @@
 import { Controller, Get, Query } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Public } from '../auth/decorators/public.decorator';
+import { CacheControl } from '../common/decorators/cache-control.decorator';
 import { FitmentService } from './fitment.service';
 import {
   MakesQueryDto,
@@ -29,6 +30,7 @@ export class FitmentController {
 
   @Get('makes')
   @Public()
+  @CacheControl({ public: true, maxAge: 1800, sMaxAge: 3600, staleWhileRevalidate: 86400 })
   @ApiOperation({ summary: 'Get list of vehicle makes' })
   @ApiResponse({ status: 200, description: 'List of vehicle makes' })
   async getMakes(@Query() query: MakesQueryDto): Promise<VehicleMakeDto[]> {
@@ -37,6 +39,7 @@ export class FitmentController {
 
   @Get('models')
   @Public()
+  @CacheControl({ public: true, maxAge: 1800, sMaxAge: 3600, staleWhileRevalidate: 86400 })
   @ApiOperation({ summary: 'Get dependent models for selected make' })
   @ApiResponse({ status: 200, description: 'List of vehicle models for make' })
   async getModels(@Query() query: ModelsQueryDto): Promise<VehicleModelDto[]> {
@@ -45,6 +48,7 @@ export class FitmentController {
 
   @Get('years')
   @Public()
+  @CacheControl({ public: true, maxAge: 1800, sMaxAge: 3600, staleWhileRevalidate: 86400 })
   @ApiOperation({ summary: 'Get dependent years and generations for selected model' })
   @ApiResponse({ status: 200, description: 'Available years and generation ranges' })
   async getYears(
@@ -55,6 +59,7 @@ export class FitmentController {
 
   @Get('variants')
   @Public()
+  @CacheControl({ public: true, maxAge: 1800, sMaxAge: 3600, staleWhileRevalidate: 86400 })
   @ApiOperation({ summary: 'Get dependent variants / chassis codes for model & year' })
   @ApiResponse({ status: 200, description: 'List of vehicle chassis variants' })
   async getVariants(@Query() query: VariantsQueryDto): Promise<VehicleChassisDto[]> {

@@ -26,6 +26,8 @@ export const metadata = {
   },
 };
 
+export const revalidate = 60;
+
 interface TyresPageProps {
   searchParams: Promise<{
     search?: string;

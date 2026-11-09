@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { NotFoundException } from '@nestjs/common';
 import { StorefrontService } from './storefront.service';
 import { PrismaService } from '../prisma/prisma.service';
+import { CacheService } from '../common/cache/cache.service';
 
 describe('StorefrontService', () => {
   let service: StorefrontService;
@@ -129,7 +130,7 @@ describe('StorefrontService', () => {
     };
 
     const module: TestingModule = await Test.createTestingModule({
-      providers: [StorefrontService, { provide: PrismaService, useValue: prisma }],
+      providers: [StorefrontService, CacheService, { provide: PrismaService, useValue: prisma }],
     }).compile();
 
     service = module.get<StorefrontService>(StorefrontService);

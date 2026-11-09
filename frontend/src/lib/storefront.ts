@@ -5,6 +5,7 @@
  * When running offline or during static compilation, provides realistic development seed data.
  */
 
+import { cache } from 'react';
 import {
   PaginatedResponse,
   ProductFitmentDetailDto,
@@ -429,7 +430,7 @@ export async function fetchStorefrontProducts(
     const res = await fetch(`${API_BASE_URL}/storefront/products?${params.toString()}`, {
       method: 'GET',
       headers: { 'Content-Type': 'application/json' },
-      cache: 'no-store',
+      next: { revalidate: 60, tags: ['products'] },
     });
 
     if (res.ok) {
@@ -444,24 +445,23 @@ export async function fetchStorefrontProducts(
 
 /**
  * Fetch full published product detail by slug with comprehensive specifications,
- * inventory availability, fitment compatibility, and warehouse dispatch info.
+ * inventory availability, fitment compatibility, and warehouse dispatch info (Deduplicated & Cached).
  */
-export async function fetchStorefrontProductBySlug(
-  slug: string,
-): Promise<StorefrontProductDetailDto> {
-  try {
-    const res = await fetch(`${API_BASE_URL}/storefront/products/${slug}`, {
-      method: 'GET',
-      headers: { 'Content-Type': 'application/json' },
-      cache: 'no-store',
-    });
+export const fetchStorefrontProductBySlug = cache(
+  async (slug: string): Promise<StorefrontProductDetailDto> => {
+    try {
+      const res = await fetch(`${API_BASE_URL}/storefront/products/${slug}`, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
+        next: { revalidate: 120, tags: ['products', `product-${slug}`] },
+      });
 
-    if (res.ok) {
-      return await res.json();
+      if (res.ok) {
+        return await res.json();
+      }
+    } catch {
+      // Fallback
     }
-  } catch {
-    // Fallback
-  }
 
   const seed = SEED_STOREFRONT_PRODUCTS.find((p) => p.slug === slug);
   if (!seed) {
@@ -690,72 +690,74 @@ export async function fetchStorefrontProductBySlug(
     },
     relatedProducts,
   };
-}
+});
 
 /**
- * Fetch filter metadata (brands, price range, tyre dimensions, seat belt options).
+ * Fetch filter metadata (brands, price range, tyre dimensions, seat belt options) (Deduplicated & Cached).
  */
-export async function fetchStorefrontFilterMeta(
-  categorySlug?: string,
-): Promise<StorefrontFilterMetaDto> {
-  try {
-    const url = categorySlug
-      ? `${API_BASE_URL}/storefront/filters/meta?categorySlug=${categorySlug}`
-      : `${API_BASE_URL}/storefront/filters/meta`;
-    const res = await fetch(url, {
-      method: 'GET',
-      headers: { 'Content-Type': 'application/json' },
-      cache: 'no-store',
-    });
+export const fetchStorefrontFilterMeta = cache(
+  async (categorySlug?: string): Promise<StorefrontFilterMetaDto> => {
+    try {
+      const url = categorySlug
+        ? `${API_BASE_URL}/storefront/filters/meta?categorySlug=${categorySlug}`
+        : `${API_BASE_URL}/storefront/filters/meta`;
+      const res = await fetch(url, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
+        next: { revalidate: 300, tags: ['filter-meta'] },
+      });
 
-    if (res.ok) {
-      return (await res.json()) as StorefrontFilterMetaDto;
+      if (res.ok) {
+        return (await res.json()) as StorefrontFilterMetaDto;
+      }
+    } catch {
+      // Fallback
     }
-  } catch {
-    // Fallback
-  }
 
-  return {
-    brands: ['Continental', 'Goodyear', 'Michelin', 'Pirelli', 'Ford', 'Toyota', 'BMW'],
-    priceRange: { min: 65, max: 560 },
-    tyreFilters: {
-      widths: [195, 205, 215, 225],
-      profiles: [40, 45, 55, 65],
-      rimDiameters: [15, 16, 17, 18],
-      speedRatings: ['V', 'W', 'Y'],
-      seasons: ['SUMMER', 'ALL_SEASON'],
-      terrainTypes: ['HIGHWAY', 'PERFORMANCE'],
-    },
-    seatBeltFilters: {
-      positions: ['FRONT_LEFT_DRIVER', 'FRONT_RIGHT_PASSENGER', 'REAR_RIGHT', 'REAR_LEFT'],
-      componentTypes: ['RETRACTOR_ASSEMBLY', 'BUCKLE_STALK', 'COMPLETE_ASSEMBLY'],
-      conditionGrades: ['NEW_SURPLUS', 'GRADE_A_LIKE_NEW', 'GRADE_B_MINOR_WEAR'],
-      makes: ['Toyota', 'Ford', 'BMW', 'Volkswagen'],
-      models: ['RAV4', 'Transit Custom', '3 Series (F30)', 'Golf Mk7'],
-    },
-  };
-}
+    return {
+      brands: ['Continental', 'Goodyear', 'Michelin', 'Pirelli', 'Ford', 'Toyota', 'BMW'],
+      priceRange: { min: 65, max: 560 },
+      tyreFilters: {
+        widths: [195, 205, 215, 225],
+        profiles: [40, 45, 55, 65],
+        rimDiameters: [15, 16, 17, 18],
+        speedRatings: ['V', 'W', 'Y'],
+        seasons: ['SUMMER', 'ALL_SEASON'],
+        terrainTypes: ['HIGHWAY', 'PERFORMANCE'],
+      },
+      seatBeltFilters: {
+        positions: ['FRONT_LEFT_DRIVER', 'FRONT_RIGHT_PASSENGER', 'REAR_RIGHT', 'REAR_LEFT'],
+        componentTypes: ['RETRACTOR_ASSEMBLY', 'BUCKLE_STALK', 'COMPLETE_ASSEMBLY'],
+        conditionGrades: ['NEW_SURPLUS', 'GRADE_A_LIKE_NEW', 'GRADE_B_MINOR_WEAR'],
+        makes: ['Toyota', 'Ford', 'BMW', 'Volkswagen'],
+        models: ['RAV4', 'Transit Custom', '3 Series (F30)', 'Golf Mk7'],
+      },
+    };
+  },
+);
 
 /**
- * Fetch vehicle hierarchy makes and models.
+ * Fetch vehicle hierarchy makes and models (Deduplicated & Cached).
  */
-export async function fetchStorefrontVehicles(): Promise<VehicleMakeOptionDto[]> {
-  try {
-    const res = await fetch(`${API_BASE_URL}/storefront/vehicles`, {
-      method: 'GET',
-      headers: { 'Content-Type': 'application/json' },
-      cache: 'no-store',
-    });
+export const fetchStorefrontVehicles = cache(
+  async (): Promise<VehicleMakeOptionDto[]> => {
+    try {
+      const res = await fetch(`${API_BASE_URL}/storefront/vehicles`, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
+        next: { revalidate: 1800, tags: ['vehicles'] },
+      });
 
-    if (res.ok) {
-      return (await res.json()) as VehicleMakeOptionDto[];
+      if (res.ok) {
+        return (await res.json()) as VehicleMakeOptionDto[];
+      }
+    } catch {
+      // Fallback
     }
-  } catch {
-    // Fallback
-  }
 
-  return SEED_VEHICLES;
-}
+    return SEED_VEHICLES;
+  },
+);
 
 // ===========================================================================
 // In-Memory Seed Data Filter (for offline SSR / SSG)

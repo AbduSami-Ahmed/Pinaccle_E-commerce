@@ -26,6 +26,8 @@ export const metadata = {
   },
 };
 
+export const revalidate = 60;
+
 export default async function StorefrontHomePage() {
   const [tyresRes, seatBeltsRes] = await Promise.all([
     fetchStorefrontProducts({ categorySlug: 'tyres', pageSize: 3 }),

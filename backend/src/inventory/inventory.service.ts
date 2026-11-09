@@ -6,6 +6,7 @@ import {
 } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
+import { CacheService } from '../common/cache/cache.service';
 import { ReceiveBulkStockDto } from './dto/receive-bulk-stock.dto';
 import { ReceiveSerializedPartDto } from './dto/receive-serialized-part.dto';
 import { StockAdjustmentDto } from './dto/stock-adjustment.dto';
@@ -29,7 +30,10 @@ import { randomBytes } from 'crypto';
 
 @Injectable()
 export class InventoryService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly cacheService: CacheService,
+  ) {}
 
   /**
    * 1. Receive Bulk Stock into a specific warehouse and bin location.
@@ -104,6 +108,7 @@ export class InventoryService {
       return item;
     });
 
+    this.cacheService.invalidatePattern('storefront:*');
     return {
       id: result.id,
       productId: result.productId,
@@ -191,6 +196,7 @@ export class InventoryService {
       return serialized;
     });
 
+    this.cacheService.invalidatePattern('storefront:*');
     return {
       id: result.id,
       productId: result.productId,
@@ -225,7 +231,7 @@ export class InventoryService {
     }
 
     if (dto.inventoryItemId) {
-      return this.prisma.$transaction(async (tx) => {
+      const result = await this.prisma.$transaction(async (tx) => {
         const item = await tx.inventoryItem.findUnique({
           where: { id: dto.inventoryItemId },
         });
@@ -274,10 +280,12 @@ export class InventoryService {
           movementId: movement.id,
         };
       });
+      this.cacheService.invalidatePattern('storefront:*');
+      return result;
     }
 
     // Serialized adjustment (e.g. scrap or mark under inspection)
-    return this.prisma.$transaction(async (tx) => {
+    const result = await this.prisma.$transaction(async (tx) => {
       const serialized = await tx.serializedInventoryItem.findUnique({
         where: { id: dto.serializedItemId },
       });
@@ -320,6 +328,9 @@ export class InventoryService {
 
       throw new BadRequestException('Cannot increase quantity of a serialized single-unit part');
     });
+
+    this.cacheService.invalidatePattern('storefront:*');
+    return result;
   }
 
   /**
@@ -989,6 +1000,7 @@ export class InventoryService {
       };
     });
 
+    this.cacheService.invalidatePattern('storefront:*');
     return {
       productId: product.id,
       sku: product.sku,
@@ -1319,6 +1331,7 @@ export class InventoryService {
       };
     });
 
+    this.cacheService.invalidatePattern('storefront:*');
     return {
       items,
       total,

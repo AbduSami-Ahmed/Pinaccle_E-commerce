@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { BadRequestException, ConflictException } from '@nestjs/common';
 import { InventoryService } from './inventory.service';
 import { PrismaService } from '../prisma/prisma.service';
+import { CacheService } from '../common/cache/cache.service';
 import { AuthenticatedUser } from '@pinnacle/contracts';
 import { Prisma } from '@prisma/client';
 
@@ -75,6 +76,7 @@ describe('InventoryService (Phase 6 - Auditable Ledger & Concurrency)', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         InventoryService,
+        CacheService,
         {
           provide: PrismaService,
           useValue: mockPrisma,

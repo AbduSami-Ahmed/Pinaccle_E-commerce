@@ -3,6 +3,7 @@ import { BadRequestException, ConflictException } from '@nestjs/common';
 import { FitmentService } from './fitment.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { StorefrontService } from '../catalog/storefront.service';
+import { CacheService } from '../common/cache/cache.service';
 
 describe('FitmentService', () => {
   let service: FitmentService;
@@ -133,6 +134,7 @@ describe('FitmentService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         FitmentService,
+        CacheService,
         { provide: PrismaService, useValue: prisma },
         { provide: StorefrontService, useValue: {} },
       ],

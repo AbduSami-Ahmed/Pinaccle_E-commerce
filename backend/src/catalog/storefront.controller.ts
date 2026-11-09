@@ -2,6 +2,7 @@ import { Controller, Get, Param, Query } from '@nestjs/common';
 import { ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Public } from '../auth/decorators/public.decorator';
 import { RateLimit } from '../common/decorators/rate-limit.decorator';
+import { CacheControl } from '../common/decorators/cache-control.decorator';
 import { StorefrontService } from './storefront.service';
 import { StorefrontQueryDto } from './dto/storefront-query.dto';
 import {
@@ -19,6 +20,7 @@ export class StorefrontController {
 
   @Get('products')
   @Public()
+  @CacheControl({ public: true, maxAge: 60, sMaxAge: 120, staleWhileRevalidate: 300 })
   @RateLimit({ windowSeconds: 60, maxRequests: 60, message: 'Search query rate limit reached. Please slow down.' })
   @ApiOperation({
     summary: 'Public storefront product search with multi-faceted filtering and pagination',
@@ -35,6 +37,7 @@ export class StorefrontController {
 
   @Get('products/:slug')
   @Public()
+  @CacheControl({ public: true, maxAge: 120, sMaxAge: 300, staleWhileRevalidate: 600 })
   @ApiOperation({ summary: 'Get published product detail by slug for Storefront PDP' })
   @ApiResponse({ status: 200, description: 'Product detail with fitment and media' })
   @ApiResponse({ status: 404, description: 'Product not found or unpublished' })
@@ -44,6 +47,7 @@ export class StorefrontController {
 
   @Get('filters/meta')
   @Public()
+  @CacheControl({ public: true, maxAge: 300, sMaxAge: 600, staleWhileRevalidate: 1800 })
   @ApiOperation({ summary: 'Get dynamic filter facets and price bounds for category' })
   @ApiQuery({ name: 'categorySlug', required: false })
   async getFilterMeta(
@@ -54,6 +58,7 @@ export class StorefrontController {
 
   @Get('vehicles')
   @Public()
+  @CacheControl({ public: true, maxAge: 1800, sMaxAge: 3600, staleWhileRevalidate: 86400 })
   @ApiOperation({ summary: 'Get vehicle makes and models for Year-Make-Model selector' })
   async getVehicleTaxonomy(): Promise<VehicleMakeOptionDto[]> {
     return this.storefrontService.getVehicleTaxonomy();
