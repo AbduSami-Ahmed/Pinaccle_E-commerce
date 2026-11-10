@@ -471,6 +471,7 @@ export class FitmentService {
           defaultSaleUnitCode: defaultUnit?.code || 'UNIT',
           defaultSaleUnitName: defaultUnit?.name || 'Unit',
           availableSaleUnits: p.saleUnits.map((u) => ({
+            id: u.id,
             code: u.code,
             name: u.name,
             multiplier: u.baseQuantityMultiplier,

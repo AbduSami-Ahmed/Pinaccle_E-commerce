@@ -219,6 +219,7 @@ export default async function ProductUniversalDetailPage({ params }: PageProps) 
               sellableBaseUnits={product.availability.sellableBaseUnits}
               availableSaleUnits={product.availableSaleUnits}
               isIndividuallyTracked={!!product.serializedItem}
+              serializedItemId={product.serializedItem?.id}
               stockNumber={product.stockNumber}
               categorySlug={product.categorySlug}
             />

@@ -272,6 +272,7 @@ export class StorefrontService {
       const maxPrice = prices.length ? Math.max(...prices) : defaultPrice;
 
       const availableSaleUnits = p.saleUnits.map((su) => ({
+        id: su.id,
         code: su.code,
         name: su.name,
         multiplier: su.baseQuantityMultiplier,

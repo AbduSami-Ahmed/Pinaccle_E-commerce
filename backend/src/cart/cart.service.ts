@@ -248,8 +248,17 @@ export class CartService {
       throw new BadRequestException('Product is not active or available in the catalog');
     }
 
-    // Verify sale unit config exists and belongs to product
-    const saleUnit = product.saleUnits.find((s) => s.id === dto.saleUnitConfigId);
+    // Verify sale unit config exists and belongs to product (supports UUID, unit code, or default)
+    const saleUnit =
+      product.saleUnits.find(
+        (s) =>
+          s.id === dto.saleUnitConfigId ||
+          s.code === dto.saleUnitConfigId ||
+          s.code.toLowerCase() === dto.saleUnitConfigId.toLowerCase(),
+      ) ||
+      product.saleUnits.find((s) => s.isDefault) ||
+      product.saleUnits[0];
+
     if (!saleUnit || !saleUnit.isActive) {
       throw new BadRequestException('Selected sale unit configuration is invalid or inactive');
     }
@@ -257,7 +266,28 @@ export class CartService {
     const multiplier = saleUnit.baseQuantityMultiplier;
     const unitPrice = Number(saleUnit.retailPrice);
 
-    if (dto.serializedItemId) {
+    // Resolve serialized item if individually tracked or if product is INDIVIDUALLY_SERIALIZED
+    let serializedItemId = dto.serializedItemId;
+    if (!serializedItemId && product.productType === 'INDIVIDUALLY_SERIALIZED') {
+      const availableItem = await this.prisma.serializedInventoryItem.findFirst({
+        where: {
+          productId: product.id,
+          status: 'AVAILABLE',
+          cartItem: null,
+        },
+      });
+      if (availableItem) {
+        serializedItemId = availableItem.id;
+      }
+    }
+
+    if (serializedItemId || product.productType === 'INDIVIDUALLY_SERIALIZED') {
+      if (!serializedItemId) {
+        throw new BadRequestException(
+          'This serialized part is currently out of stock or reserved in another cart',
+        );
+      }
+
       // Individually tracked part check
       if (quantityToAdd !== 1) {
         throw new BadRequestException(
@@ -266,7 +296,7 @@ export class CartService {
       }
 
       const serializedItem = await this.prisma.serializedInventoryItem.findUnique({
-        where: { id: dto.serializedItemId },
+        where: { id: serializedItemId },
       });
 
       if (!serializedItem || serializedItem.status !== 'AVAILABLE') {
@@ -275,7 +305,7 @@ export class CartService {
 
       // Check if item is already in another cart
       const existingInCart = await this.prisma.cartItem.findUnique({
-        where: { serializedItemId: dto.serializedItemId },
+        where: { serializedItemId: serializedItemId },
       });
 
       if (existingInCart) {
@@ -290,7 +320,7 @@ export class CartService {
           cartId: cart.id,
           productId: product.id,
           saleUnitConfigId: saleUnit.id,
-          serializedItemId: dto.serializedItemId,
+          serializedItemId: serializedItemId,
           quantity: 1,
           unitPrice,
         },

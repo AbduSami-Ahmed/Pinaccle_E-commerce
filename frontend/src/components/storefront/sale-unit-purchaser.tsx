@@ -18,6 +18,7 @@ import { cn } from '@/lib/utils';
 import { addToCart } from '@/lib/cart';
 
 export interface SaleUnitOption {
+  id?: string;
   code: string;
   name: string;
   multiplier: number;
@@ -32,6 +33,7 @@ export interface SaleUnitPurchaserProps {
   sellableBaseUnits: number;
   availableSaleUnits: SaleUnitOption[];
   isIndividuallyTracked?: boolean;
+  serializedItemId?: string;
   stockNumber?: string;
   categorySlug?: string;
 }
@@ -44,6 +46,7 @@ export function SaleUnitPurchaser({
   sellableBaseUnits,
   availableSaleUnits,
   isIndividuallyTracked = false,
+  serializedItemId,
   stockNumber: _stockNumber,
   categorySlug,
 }: SaleUnitPurchaserProps) {
@@ -61,6 +64,7 @@ export function SaleUnitPurchaser({
   const [selectedUnitCode, setSelectedUnitCode] = React.useState<string>(initialCode);
   const [quantity, setQuantity] = React.useState<number>(1);
   const [addedToastMessage, setAddedToastMessage] = React.useState<string | null>(null);
+  const [errorMessage, setErrorMessage] = React.useState<string | null>(null);
   const [addingToCart, setAddingToCart] = React.useState<boolean>(false);
 
   const activeUnit: SaleUnitOption =
@@ -82,6 +86,7 @@ export function SaleUnitPurchaser({
   const handleUnitChange = (code: string) => {
     setSelectedUnitCode(code);
     setAddedToastMessage(null);
+    setErrorMessage(null);
   };
 
   const handleIncrement = () => {
@@ -112,18 +117,22 @@ export function SaleUnitPurchaser({
     if (isOutOfStock || quantity <= 0) return;
     setAddingToCart(true);
     setAddedToastMessage(null);
+    setErrorMessage(null);
 
     try {
+      const targetUnitConfigId = activeUnit.id || activeUnit.code;
       await addToCart({
         productId: _productId,
-        saleUnitConfigId: activeUnit.code,
+        saleUnitConfigId: targetUnitConfigId,
         quantity,
+        serializedItemId: isIndividuallyTracked && serializedItemId ? serializedItemId : undefined,
       });
       setAddedToastMessage(
         `Added ${quantity}x ${activeUnit.name} (${totalBaseUnitsConsumed} physical base units) to your parts cart.`,
       );
     } catch (err) {
-      alert(err instanceof Error ? err.message : 'Error adding to cart');
+      const msg = err instanceof Error ? err.message : 'Error adding to cart';
+      setErrorMessage(msg);
     } finally {
       setAddingToCart(false);
     }
@@ -369,6 +378,14 @@ export function SaleUnitPurchaser({
           >
             <Link href="/cart">View Cart & Checkout</Link>
           </Button>
+        </div>
+      )}
+
+      {/* Error Message Banner */}
+      {errorMessage && (
+        <div className="rounded-lg border border-rose-200 bg-rose-50 p-3.5 text-xs text-rose-950 flex items-start gap-2 animate-in fade-in-50 duration-200">
+          <AlertCircle className="h-4 w-4 text-rose-600 shrink-0 mt-0.5" />
+          <p className="leading-relaxed font-medium">{errorMessage}</p>
         </div>
       )}
     </div>

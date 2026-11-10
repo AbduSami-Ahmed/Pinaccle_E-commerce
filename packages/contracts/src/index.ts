@@ -488,6 +488,7 @@ export interface StorefrontProductSummaryDto {
   defaultSaleUnitCode: string;
   defaultSaleUnitName: string;
   availableSaleUnits: {
+    id?: string;
     code: string;
     name: string;
     multiplier: number;

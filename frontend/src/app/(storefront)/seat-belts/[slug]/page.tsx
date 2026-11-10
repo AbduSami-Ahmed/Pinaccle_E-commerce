@@ -242,6 +242,7 @@ export default async function SeatBeltDetailPage({ params }: PageProps) {
               sellableBaseUnits={product.availability.sellableBaseUnits}
               availableSaleUnits={product.availableSaleUnits}
               isIndividuallyTracked={true}
+              serializedItemId={product.serializedItem?.id}
               stockNumber={product.stockNumber}
               categorySlug={product.categorySlug}
             />

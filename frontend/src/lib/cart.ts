@@ -122,16 +122,28 @@ export async function addToCart(dto: AddToCartDto): Promise<CartDto> {
 
     if (res.ok) {
       const data = await res.json();
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new CustomEvent('pinnacle_cart_updated', { detail: data.cart }));
+      }
       return data.cart;
     } else {
-      const err = await res.json();
-      throw new Error(err.message || 'Failed to add item to cart');
+      const err = await res.json().catch(() => ({}));
+      const rawMsg = err.message || err.error;
+      const message = Array.isArray(rawMsg)
+        ? rawMsg.join(', ')
+        : typeof rawMsg === 'string'
+          ? rawMsg
+          : 'Failed to add item to cart';
+      throw new Error(message);
     }
   } catch (error) {
     if (error instanceof Error && error.message !== 'Failed to fetch') {
       throw error;
     }
     // Fallback local modification
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('pinnacle_cart_updated', { detail: inMemoryCart }));
+    }
     return inMemoryCart;
   }
 }
@@ -147,10 +159,19 @@ export async function updateCartItemQuantity(itemId: string, quantity: number): 
 
     if (res.ok) {
       const data = await res.json();
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new CustomEvent('pinnacle_cart_updated', { detail: data.cart }));
+      }
       return data.cart;
     } else {
-      const err = await res.json();
-      throw new Error(err.message || 'Failed to update item quantity');
+      const err = await res.json().catch(() => ({}));
+      const rawMsg = err.message || err.error;
+      const message = Array.isArray(rawMsg)
+        ? rawMsg.join(', ')
+        : typeof rawMsg === 'string'
+          ? rawMsg
+          : 'Failed to update item quantity';
+      throw new Error(message);
     }
   } catch (error) {
     if (error instanceof Error && error.message !== 'Failed to fetch') {
@@ -187,6 +208,10 @@ export async function updateCartItemQuantity(itemId: string, quantity: number): 
     updatedAt: new Date().toISOString(),
   };
 
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new CustomEvent('pinnacle_cart_updated', { detail: inMemoryCart }));
+  }
+
   return inMemoryCart;
 }
 
@@ -199,6 +224,9 @@ export async function removeFromCart(itemId: string): Promise<CartDto> {
 
     if (res.ok) {
       const data = await res.json();
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new CustomEvent('pinnacle_cart_updated', { detail: data.cart }));
+      }
       return data.cart;
     }
   } catch {
@@ -219,6 +247,10 @@ export async function removeFromCart(itemId: string): Promise<CartDto> {
     updatedAt: new Date().toISOString(),
   };
 
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new CustomEvent('pinnacle_cart_updated', { detail: inMemoryCart }));
+  }
+
   return inMemoryCart;
 }
 
@@ -231,6 +263,9 @@ export async function clearCart(): Promise<CartDto> {
 
     if (res.ok) {
       const data = await res.json();
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new CustomEvent('pinnacle_cart_updated', { detail: data.cart }));
+      }
       return data.cart;
     }
   } catch {
@@ -253,6 +288,10 @@ export async function clearCart(): Promise<CartDto> {
     hasUnavailableItems: false,
     updatedAt: new Date().toISOString(),
   };
+
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new CustomEvent('pinnacle_cart_updated', { detail: inMemoryCart }));
+  }
 
   return inMemoryCart;
 }

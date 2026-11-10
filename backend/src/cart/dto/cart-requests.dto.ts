@@ -8,9 +8,9 @@ export class AddItemBodyDto implements AddToCartDto {
   @IsUUID()
   productId!: string;
 
-  @ApiProperty({ example: 'c0eebc99-9c0b-4ef8-bb6d-6bb9bd380a22' })
+  @ApiProperty({ example: 'c0eebc99-9c0b-4ef8-bb6d-6bb9bd380a22', description: 'UUID or unit code (e.g. TYRE_PAIR, SINGLE)' })
   @IsNotEmpty()
-  @IsUUID()
+  @IsString()
   saleUnitConfigId!: string;
 
   @ApiPropertyOptional({ example: 1, default: 1 })
@@ -21,7 +21,7 @@ export class AddItemBodyDto implements AddToCartDto {
 
   @ApiPropertyOptional({ example: 'd0eebc99-9c0b-4ef8-bb6d-6bb9bd380a33' })
   @IsOptional()
-  @IsUUID()
+  @IsString()
   serializedItemId?: string;
 }
 
