@@ -42,19 +42,19 @@ export default function AccountLayout({ children }: { children: React.ReactNode 
     },
     {
       href: '/account/orders',
-      label: 'Order History & Returns',
+      label: 'Orders & Returns',
       icon: ShoppingBag,
       active: pathname.startsWith('/account/orders'),
     },
     {
       href: '/account/profile',
-      label: 'Profile & Contact Details',
+      label: 'Profile & Contact',
       icon: User,
       active: pathname === '/account/profile',
     },
     {
       href: '/account/addresses',
-      label: 'Delivery & Workshop Addresses',
+      label: 'Saved Addresses',
       icon: MapPin,
       active: pathname === '/account/addresses',
     },
@@ -72,7 +72,7 @@ export default function AccountLayout({ children }: { children: React.ReactNode 
           </BreadcrumbItem>
           <BreadcrumbSeparator />
           <BreadcrumbItem>
-            <BreadcrumbPage>Customer Account</BreadcrumbPage>
+            <BreadcrumbPage>My Account</BreadcrumbPage>
           </BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb>
@@ -88,7 +88,7 @@ export default function AccountLayout({ children }: { children: React.ReactNode 
             <div className="space-y-1">
               <div className="flex flex-wrap items-center gap-2">
                 <h1 className="text-xl font-bold text-slate-900">
-                  {profile ? `${profile.firstName} ${profile.lastName}` : 'Workshop Account'}
+                  {profile ? `${profile.firstName} ${profile.lastName}` : 'My Account'}
                 </h1>
 
                 {profile?.accountType === 'TRADE' && (
@@ -97,7 +97,7 @@ export default function AccountLayout({ children }: { children: React.ReactNode 
                     className="border-blue-300 bg-blue-50 text-blue-800 text-xs font-semibold gap-1"
                   >
                     <Building2 className="h-3 w-3 text-blue-600" />
-                    Verified Trade Account
+                    Trade Account
                   </Badge>
                 )}
 
@@ -121,7 +121,7 @@ export default function AccountLayout({ children }: { children: React.ReactNode 
               </div>
 
               <p className="text-xs text-slate-500">
-                {profile?.email || 'trade@aucklandmechanical.co.nz'} · Auckland Depot Customer
+                {profile?.email || 'sales@pinnacleparts.co.nz'} · Auckland Customer
               </p>
             </div>
           </div>

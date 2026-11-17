@@ -68,14 +68,14 @@ export default function AdminDashboardPage() {
         <div>
           <div className="flex items-center gap-2">
             <h1 className="text-2xl font-bold tracking-tight text-slate-900">
-              Operations & Performance
+              Store Dashboard
             </h1>
             <Badge variant="outline" className="font-mono text-xs font-medium text-slate-600">
               NZ MVD-89211
             </Badge>
           </div>
           <p className="text-sm text-slate-500 mt-1">
-            Real-time trade telemetry for Auckland Penrose depot, commercial inventory, and order fulfilment.
+            Overview of sales, inventory, and order fulfillment for the Auckland warehouse.
           </p>
         </div>
 
@@ -138,7 +138,7 @@ export default function AdminDashboardPage() {
                   onClick={() => setExportOpen(false)}
                   className="block px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-100 rounded"
                 >
-                  Export Inventory Stock Valuation
+                  Export Stock &amp; Inventory
                 </a>
                 <a
                   href={getExportAuditLogsUrl()}
@@ -146,7 +146,7 @@ export default function AdminDashboardPage() {
                   onClick={() => setExportOpen(false)}
                   className="block px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-100 rounded"
                 >
-                  Export Security & Audit Trail
+                  Export Activity Log
                 </a>
               </div>
             )}
@@ -263,8 +263,8 @@ export default function AdminDashboardPage() {
       {/* 2. Operational Backlog & Fulfilment Queues */}
       <div>
         <div className="flex items-center justify-between mb-3">
-          <h2 className="text-base font-semibold text-slate-900">Fulfilment & Warehouse Queues</h2>
-          <span className="text-xs text-slate-400">Immediate action items for warehouse & dispatch</span>
+          <h2 className="text-base font-semibold text-slate-900">Orders to Ship &amp; Process</h2>
+          <span className="text-xs text-slate-400">Current order fulfillment status</span>
         </div>
 
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
@@ -273,7 +273,7 @@ export default function AdminDashboardPage() {
             className="group flex flex-col justify-between p-4 rounded-lg border border-slate-200 bg-white hover:border-blue-400 hover:shadow-xs transition-all"
           >
             <div className="flex items-center justify-between">
-              <span className="text-xs font-medium text-slate-600">Awaiting Pick & Pack</span>
+              <span className="text-xs font-medium text-slate-600">Ready to Pack</span>
               <span className="h-2 w-2 rounded-full bg-blue-600" />
             </div>
             <div className="mt-3 flex items-baseline justify-between">
@@ -291,7 +291,7 @@ export default function AdminDashboardPage() {
             className="group flex flex-col justify-between p-4 rounded-lg border border-slate-200 bg-white hover:border-amber-400 hover:shadow-xs transition-all"
           >
             <div className="flex items-center justify-between">
-              <span className="text-xs font-medium text-slate-600">Ready for Dispatch / Pickup</span>
+              <span className="text-xs font-medium text-slate-600">Ready to Ship or Collect</span>
               <span className="h-2 w-2 rounded-full bg-amber-500" />
             </div>
             <div className="mt-3 flex items-baseline justify-between">
@@ -299,7 +299,7 @@ export default function AdminDashboardPage() {
                 {summary?.fulfillmentQueues.inFulfillmentCount ?? 0}
               </span>
               <span className="text-xs font-medium text-amber-600 group-hover:translate-x-0.5 transition-transform flex items-center gap-0.5">
-                Consignments &rarr;
+                View orders &rarr;
               </span>
             </div>
           </Link>
@@ -309,7 +309,7 @@ export default function AdminDashboardPage() {
             className="group flex flex-col justify-between p-4 rounded-lg border border-slate-200 bg-white hover:border-emerald-400 hover:shadow-xs transition-all"
           >
             <div className="flex items-center justify-between">
-              <span className="text-xs font-medium text-slate-600">In Transit (CourierPost / Mainfreight)</span>
+              <span className="text-xs font-medium text-slate-600">On the Way (Courier)</span>
               <Truck className="h-4 w-4 text-emerald-600" />
             </div>
             <div className="mt-3 flex items-baseline justify-between">
@@ -325,7 +325,7 @@ export default function AdminDashboardPage() {
             className="group flex flex-col justify-between p-4 rounded-lg border border-slate-200 bg-white hover:border-purple-400 hover:shadow-xs transition-all"
           >
             <div className="flex items-center justify-between">
-              <span className="text-xs font-medium text-slate-600">Pending RMA Inspection</span>
+              <span className="text-xs font-medium text-slate-600">Returned Items to Inspect</span>
               <RotateCcw className="h-4 w-4 text-purple-600" />
             </div>
             <div className="mt-3 flex items-baseline justify-between">
@@ -346,10 +346,10 @@ export default function AdminDashboardPage() {
         <Card className="border-slate-200 shadow-xs lg:col-span-1">
           <CardHeader className="pb-3">
             <CardTitle className="text-sm font-semibold text-slate-900">
-              Operations Shortcuts
+              Quick Actions
             </CardTitle>
             <CardDescription className="text-xs">
-              Direct access to frequent administrative desk tasks
+              Shortcuts to common daily tasks
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-2">
@@ -359,7 +359,7 @@ export default function AdminDashboardPage() {
             >
               <div className="flex items-center gap-2.5">
                 <Package className="h-4 w-4 text-blue-600" />
-                <span>Create Catalogue Product</span>
+                <span>Add New Product</span>
               </div>
               <ArrowRight className="h-3.5 w-3.5 text-slate-400" />
             </Link>
@@ -370,7 +370,7 @@ export default function AdminDashboardPage() {
             >
               <div className="flex items-center gap-2.5">
                 <Boxes className="h-4 w-4 text-emerald-600" />
-                <span>Stock Overview & Receive</span>
+                <span>Stock &amp; Inventory</span>
               </div>
               <ArrowRight className="h-3.5 w-3.5 text-slate-400" />
             </Link>
@@ -381,7 +381,7 @@ export default function AdminDashboardPage() {
             >
               <div className="flex items-center gap-2.5">
                 <Wrench className="h-4 w-4 text-amber-600" />
-                <span>Vehicle Fitment Compatibility</span>
+                <span>Vehicle Fitment</span>
               </div>
               <ArrowRight className="h-3.5 w-3.5 text-slate-400" />
             </Link>
@@ -392,7 +392,7 @@ export default function AdminDashboardPage() {
             >
               <div className="flex items-center gap-2.5">
                 <Users className="h-4 w-4 text-indigo-600" />
-                <span>Customer Directory Lookup</span>
+                <span>Customers</span>
               </div>
               <ArrowRight className="h-3.5 w-3.5 text-slate-400" />
             </Link>
@@ -403,7 +403,7 @@ export default function AdminDashboardPage() {
             >
               <div className="flex items-center gap-2.5">
                 <ShieldAlert className="h-4 w-4 text-slate-600" />
-                <span>Business & Tax Settings</span>
+                <span>Store Settings</span>
               </div>
               <ArrowRight className="h-3.5 w-3.5 text-slate-400" />
             </Link>
@@ -415,10 +415,10 @@ export default function AdminDashboardPage() {
           <CardHeader className="flex flex-row items-center justify-between pb-3">
             <div>
               <CardTitle className="text-sm font-semibold text-slate-900">
-                Active Category Breakdown
+                Product Categories
               </CardTitle>
               <CardDescription className="text-xs">
-                Catalogue distribution across supported automotive disciplines
+                Number of products in each category
               </CardDescription>
             </div>
             <Link
@@ -553,7 +553,7 @@ export default function AdminDashboardPage() {
                       </span>
                     </div>
                     <Button asChild variant="ghost" size="sm" className="h-7 text-xs text-amber-800">
-                      <Link href={`/admin/inventory/${item.productId}`}>View Ledger</Link>
+                      <Link href={`/admin/inventory/${item.productId}`}>View Stock</Link>
                     </Button>
                   </div>
                 ))}
@@ -602,7 +602,7 @@ export default function AdminDashboardPage() {
                         minute: '2-digit',
                       })}
                       {' &bull; '}
-                      {ord.shippingMethod === 'CLICK_AND_COLLECT' ? 'Trade Hub Pickup' : 'Courier Delivery'}
+                      {ord.shippingMethod === 'CLICK_AND_COLLECT' ? 'Store Pickup' : 'Courier Delivery'}
                     </span>
                   </div>
 
@@ -636,17 +636,17 @@ export default function AdminDashboardPage() {
           <CardHeader className="flex flex-row items-center justify-between pb-3">
             <div>
               <CardTitle className="text-sm font-semibold text-slate-900">
-                Warehouse Movement Ledger
+                Recent Stock History
               </CardTitle>
               <CardDescription className="text-xs">
-                Physical adjustments, sales deductions, and RMA restocks
+                Stock adjustments, sales, and returns
               </CardDescription>
             </div>
             <Link
               href="/admin/inventory/movements"
               className="text-xs font-medium text-blue-600 hover:text-blue-800"
             >
-              Full ledger &rarr;
+              All stock history &rarr;
             </Link>
           </CardHeader>
           <CardContent>

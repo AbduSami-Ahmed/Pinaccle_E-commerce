@@ -85,25 +85,25 @@ export default function AdminOrdersListPage() {
       case 'PAID':
         return (
           <Badge className="bg-blue-50 text-blue-700 border-blue-200">
-            <CheckCircle2 className="mr-1 h-3 w-3" /> Paid (Queued)
+            <CheckCircle2 className="mr-1 h-3 w-3" /> Paid (Ready to Pack)
           </Badge>
         );
       case 'PROCESSING':
         return (
           <Badge className="bg-amber-50 text-amber-700 border-amber-200">
-            <Boxes className="mr-1 h-3 w-3" /> Picking & Packing
+            <Boxes className="mr-1 h-3 w-3" /> Packing
           </Badge>
         );
       case 'SHIPPED':
         return (
           <Badge className="bg-indigo-50 text-indigo-700 border-indigo-200">
-            <Truck className="mr-1 h-3 w-3" /> In Transit
+            <Truck className="mr-1 h-3 w-3" /> Shipped
           </Badge>
         );
       case 'DELIVERED':
         return (
           <Badge className="bg-emerald-50 text-emerald-700 border-emerald-200">
-            <CheckCircle2 className="mr-1 h-3 w-3" /> Delivered
+            <CheckCircle2 className="mr-1 h-3 w-3" /> Delivered / Collected
           </Badge>
         );
       case 'CANCELLED':
@@ -158,14 +158,14 @@ export default function AdminOrdersListPage() {
         <div>
           <div className="flex items-center gap-2">
             <h1 className="text-2xl font-bold tracking-tight text-slate-900">
-              Order Operations & Fulfilment
+              Customer Orders
             </h1>
             <Badge variant="outline" className="text-xs font-mono bg-slate-50 text-slate-600">
               NZ MVD-89211
             </Badge>
           </div>
           <p className="mt-1 text-sm text-slate-600">
-            Auckland Penrose Trade Depot & NZ Nationwide Courier Freight Pipeline
+            Manage and fulfill orders for Auckland warehouse pickup and NZ courier delivery.
           </p>
         </div>
         <div className="flex items-center gap-2">
@@ -195,29 +195,29 @@ export default function AdminOrdersListPage() {
 
         <div className="rounded-xl border border-amber-200 bg-amber-50/40 p-4 shadow-2xs">
           <div className="flex items-center justify-between text-xs font-semibold text-amber-700 uppercase tracking-wider">
-            <span>Awaiting Fulfillment</span>
+            <span>Ready to Pack</span>
             <Boxes className="h-4 w-4 text-amber-600" />
           </div>
           <div className="mt-2 text-2xl font-bold text-amber-900">{awaitingDispatch}</div>
-          <div className="mt-1 text-xs text-amber-700">Require pick & pack</div>
+          <div className="mt-1 text-xs text-amber-700">Paid orders to fulfill</div>
         </div>
 
         <div className="rounded-xl border border-indigo-200 bg-indigo-50/40 p-4 shadow-2xs">
           <div className="flex items-center justify-between text-xs font-semibold text-indigo-700 uppercase tracking-wider">
-            <span>In Transit</span>
+            <span>On the Way</span>
             <Truck className="h-4 w-4 text-indigo-600" />
           </div>
           <div className="mt-2 text-2xl font-bold text-indigo-900">{inTransit}</div>
-          <div className="mt-1 text-xs text-indigo-700">Couriers on road</div>
+          <div className="mt-1 text-xs text-indigo-700">Dispatched via courier</div>
         </div>
 
         <div className="rounded-xl border border-emerald-200 bg-emerald-50/40 p-4 shadow-2xs">
           <div className="flex items-center justify-between text-xs font-semibold text-emerald-700 uppercase tracking-wider">
-            <span>Delivered / Collected</span>
+            <span>Completed</span>
             <CheckCircle2 className="h-4 w-4 text-emerald-600" />
           </div>
           <div className="mt-2 text-2xl font-bold text-emerald-900">{completed}</div>
-          <div className="mt-1 text-xs text-emerald-700">Trade counter & signed</div>
+          <div className="mt-1 text-xs text-emerald-700">Picked up or delivered</div>
         </div>
       </div>
 
@@ -265,9 +265,9 @@ export default function AdminOrdersListPage() {
           </span>
           {[
             { key: 'ALL', label: 'All Statuses' },
-            { key: 'PAID', label: 'Paid (Awaiting Pick)' },
-            { key: 'PROCESSING', label: 'Picking / Packing' },
-            { key: 'SHIPPED', label: 'Dispatched / Courier' },
+            { key: 'PAID', label: 'Paid' },
+            { key: 'PROCESSING', label: 'Packing' },
+            { key: 'SHIPPED', label: 'Shipped' },
             { key: 'DELIVERED', label: 'Delivered / Collected' },
             { key: 'CANCELLED', label: 'Cancelled' },
             { key: 'REFUNDED', label: 'Refunded' },
@@ -308,7 +308,7 @@ export default function AdminOrdersListPage() {
         {loading ? (
           <div className="p-12 text-center text-slate-500">
             <RefreshCw className="h-6 w-6 animate-spin mx-auto mb-2 text-slate-400" />
-            <p className="text-sm">Retrieving orders from Auckland database...</p>
+            <p className="text-sm">Loading orders...</p>
           </div>
         ) : orders.length === 0 ? (
           <div className="p-12 text-center text-slate-500">
@@ -325,13 +325,13 @@ export default function AdminOrdersListPage() {
               <thead>
                 <tr className="bg-slate-50/80 border-b border-slate-200 text-xs font-semibold text-slate-600 uppercase tracking-wider">
                   <th className="py-3 px-4">Order #</th>
-                  <th className="py-3 px-4">Date (NZST)</th>
-                  <th className="py-3 px-4">Customer Details</th>
-                  <th className="py-3 px-4">Method / Destination</th>
+                  <th className="py-3 px-4">Date &amp; Time</th>
+                  <th className="py-3 px-4">Customer</th>
+                  <th className="py-3 px-4">Delivery / Pickup</th>
                   <th className="py-3 px-4">Items</th>
-                  <th className="py-3 px-4 text-right">Total (NZD)</th>
+                  <th className="py-3 px-4 text-right">Total</th>
                   <th className="py-3 px-4">Payment</th>
-                  <th className="py-3 px-4">Lifecycle State</th>
+                  <th className="py-3 px-4">Order Status</th>
                   <th className="py-3 px-4 text-center">Action</th>
                 </tr>
               </thead>
@@ -389,7 +389,7 @@ export default function AdminOrdersListPage() {
                       <td className="py-3 px-4 whitespace-nowrap">
                         {order.shippingMethod === 'CLICK_AND_COLLECT' ? (
                           <span className="inline-flex items-center gap-1 text-xs font-medium text-amber-700 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded">
-                            <Boxes className="h-3 w-3" /> Trade Counter Pickup
+                            <Boxes className="h-3 w-3" /> Warehouse Pickup
                           </span>
                         ) : (
                           <span className="inline-flex items-center gap-1 text-xs font-medium text-slate-700">
@@ -404,7 +404,7 @@ export default function AdminOrdersListPage() {
                       <td className="py-3 px-4 whitespace-nowrap text-xs text-slate-600">
                         <span className="font-semibold">{order.items.length} lines</span>
                         <span className="text-slate-400 text-[11px] block">
-                          {totalPhysicalUnits} physical units
+                          {totalPhysicalUnits} items
                         </span>
                       </td>
 

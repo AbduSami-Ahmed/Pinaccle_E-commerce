@@ -25,12 +25,12 @@ export default function AdminError({
         </div>
 
         <h3 className="mt-4 text-xl font-bold text-slate-900">
-          Admin Service Operation Failed
+          Something went wrong
         </h3>
 
         <p className="mt-2 text-sm text-slate-600 leading-relaxed">
-          The requested administration service or database query encountered an unexpected error.
-          Ensure the backend API service is running and your administrative privileges are active.
+          We encountered an unexpected error while loading this page. Please try again or return
+          to the dashboard.
         </p>
 
         {error.message && (
@@ -41,7 +41,7 @@ export default function AdminError({
 
         {error.digest && (
           <p className="mt-2 text-[11px] font-mono text-slate-400">
-            Correlation Digest: {error.digest}
+            Error ID: {error.digest}
           </p>
         )}
 
@@ -51,7 +51,7 @@ export default function AdminError({
             className="w-full sm:w-auto bg-red-600 hover:bg-red-700 text-white gap-2 font-semibold text-xs h-10 px-5"
           >
             <RotateCcw className="h-4 w-4" />
-            Retry Operation
+            Try Again
           </Button>
           <Button
             asChild
@@ -60,7 +60,7 @@ export default function AdminError({
           >
             <Link href="/admin/dashboard">
               <LayoutDashboard className="h-4 w-4" />
-              Return to Dashboard
+              Back to Dashboard
             </Link>
           </Button>
         </div>

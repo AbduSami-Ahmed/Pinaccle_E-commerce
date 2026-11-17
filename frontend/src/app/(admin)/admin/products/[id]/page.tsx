@@ -89,8 +89,8 @@ export default async function AdminProductDetailPage({ params }: PageProps) {
               </Badge>
               <Badge variant="outline" className="text-xs">
                 {product.productType === 'BULK_QUANTITY'
-                  ? 'Bulk Quantity'
-                  : 'Individually Serialized'}
+                  ? 'Bulk Stock'
+                  : 'Serialized Part'}
               </Badge>
             </div>
             <p className="text-xs text-slate-500 font-mono mt-0.5">
@@ -152,10 +152,10 @@ export default async function AdminProductDetailPage({ params }: PageProps) {
               <CardHeader className="bg-amber-50/30 border-b border-amber-100">
                 <CardTitle className="text-base text-amber-950 flex items-center gap-2">
                   <Package className="h-4 w-4 text-amber-600" />
-                  <span>Tyre Dimensional & Performance Specifications</span>
+                  <span>Tyre Specifications &amp; Performance</span>
                 </CardTitle>
                 <CardDescription className="text-amber-800/80">
-                  Normalized technical attributes for tyre fitment calculations.
+                  Dimensions, load ratings, and performance details for vehicle fitment.
                 </CardDescription>
               </CardHeader>
               <CardContent className="pt-4 space-y-4">
@@ -243,10 +243,10 @@ export default async function AdminProductDetailPage({ params }: PageProps) {
               <CardHeader className="bg-blue-50/30 border-b border-blue-100">
                 <CardTitle className="text-base text-blue-950 flex items-center gap-2">
                   <ShieldAlert className="h-4 w-4 text-blue-600" />
-                  <span>Seat Belt Safety & Installation Specifications</span>
+                  <span>Seat Belt Specifications &amp; Safety Details</span>
                 </CardTitle>
                 <CardDescription className="text-blue-800/80">
-                  ADR safety compliance, position, and pretensioner details.
+                  Seating position, pretensioner, and safety compliance details.
                 </CardDescription>
               </CardHeader>
               <CardContent className="pt-4 space-y-4 text-xs">
@@ -295,10 +295,9 @@ export default async function AdminProductDetailPage({ params }: PageProps) {
           {/* Commercial Sale Units Card */}
           <Card>
             <CardHeader>
-              <CardTitle className="text-base">Commercial Sale Units & Multipliers</CardTitle>
+              <CardTitle className="text-base">Selling Packs &amp; Multipliers</CardTitle>
               <CardDescription>
-                Base stock consumed per customer purchase option. Physical inventory is always
-                stored as single units.
+                Inventory consumed per pack option. Physical stock is tracked as single items.
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -306,9 +305,9 @@ export default async function AdminProductDetailPage({ params }: PageProps) {
                 <table className="w-full text-left text-xs border-collapse">
                   <thead>
                     <tr className="border-b border-slate-200 text-slate-500 uppercase tracking-wider font-semibold">
-                      <th className="py-2 px-3">Sale Unit</th>
+                      <th className="py-2 px-3">Pack Option</th>
                       <th className="py-2 px-3">Unit Code</th>
-                      <th className="py-2 px-3">Base Multiplier</th>
+                      <th className="py-2 px-3">Tyres / Pack</th>
                       <th className="py-2 px-3">Retail Price</th>
                       <th className="py-2 px-3">Status</th>
                     </tr>
@@ -319,7 +318,7 @@ export default async function AdminProductDetailPage({ params }: PageProps) {
                         <td className="py-2.5 px-3 font-medium text-slate-900">{u.name}</td>
                         <td className="py-2.5 px-3 font-mono text-slate-500">{u.code}</td>
                         <td className="py-2.5 px-3 font-mono">
-                          {u.baseQuantityMultiplier}x base units
+                          {u.baseQuantityMultiplier} tyres
                         </td>
                         <td className="py-2.5 px-3 font-mono font-bold text-slate-900">
                           ${u.retailPrice}
@@ -348,16 +347,16 @@ export default async function AdminProductDetailPage({ params }: PageProps) {
           {/* Product Media Gallery */}
           <Card>
             <CardHeader>
-              <CardTitle className="text-base">Product Photography</CardTitle>
+              <CardTitle className="text-base">Product Photos</CardTitle>
               <CardDescription>
-                {product.media.length} image(s) hosted in secure object storage.
+                {product.media.length} image(s) uploaded.
               </CardDescription>
             </CardHeader>
             <CardContent>
               {product.media.length === 0 ? (
                 <div className="text-center py-6 border-2 border-dashed border-slate-200 rounded-lg text-xs text-slate-400">
                   <ImageIcon className="mx-auto h-6 w-6 text-slate-300 mb-1" />
-                  No photos uploaded for this product catalogue entry.
+                  No photos uploaded for this product.
                 </div>
               ) : (
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
@@ -399,7 +398,7 @@ export default async function AdminProductDetailPage({ params }: PageProps) {
             <CardHeader>
               <CardTitle className="text-base flex items-center gap-1.5">
                 <Database className="h-4 w-4 text-slate-500" />
-                <span>Audit & System Metadata</span>
+                <span>Product Details &amp; System Info</span>
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-3 text-xs">
@@ -435,12 +434,11 @@ export default async function AdminProductDetailPage({ params }: PageProps) {
             <CardContent className="pt-4 text-xs text-slate-600 space-y-2">
               <p className="font-semibold text-slate-900 flex items-center gap-1.5">
                 <Package className="h-4 w-4 text-slate-700" />
-                <span>Catalogue vs Inventory Rule</span>
+                <span>Stock &amp; Inventory Info</span>
               </p>
               <p className="leading-relaxed">
-                This record is strictly a master catalogue definition. Physical inventory balances,
-                warehouse bin locations, serial numbers, and condition grades are recorded in the
-                Inventory Module upon inward stock intake.
+                This page displays the product details. To view or adjust current warehouse stock, bins,
+                and serial numbers, visit the Inventory section.
               </p>
             </CardContent>
           </Card>

@@ -198,7 +198,7 @@ export default function CheckoutPage() {
 
       if (!confirmRes.success) {
         setErrorBanner(
-          'Payment simulation declined. Soft reservation has been safely released back to inventory.',
+          'Payment simulation declined. Reserved items have been released back to stock.',
         );
         setIsSubmitting(false);
         return;
@@ -256,7 +256,7 @@ export default function CheckoutPage() {
               <ArrowLeft className="w-4 h-4" /> Return to Cart
             </Link>
             <span className="text-slate-600">/</span>
-            <span className="text-white font-medium text-sm">Secure Trade Checkout</span>
+            <span className="text-white font-medium text-sm">Secure Checkout</span>
           </div>
           <div className="flex items-center gap-2 text-xs text-slate-400">
             <Lock className="w-3.5 h-3.5 text-emerald-400" />
@@ -271,9 +271,9 @@ export default function CheckoutPage() {
               <Clock className="w-5 h-5 animate-pulse" />
             </div>
             <div>
-              <p className="text-sm font-semibold text-amber-200">Temporary Stock Hold Active</p>
+              <p className="text-sm font-semibold text-amber-200">Items Reserved in Cart</p>
               <p className="text-xs text-amber-300/80">
-                Your items are reserved in our Auckland Penrose depot inventory for{' '}
+                Your items are reserved in our Auckland warehouse for{' '}
                 <span className="font-mono font-bold text-amber-100">
                   {formatTime(secondsRemaining)}
                 </span>{' '}
@@ -308,9 +308,9 @@ export default function CheckoutPage() {
                   <span className="w-6 h-6 rounded-full bg-amber-500 text-slate-950 text-xs font-black flex items-center justify-center">
                     1
                   </span>
-                  Customer & Contact Information
+                  Contact Information
                 </h2>
-                <span className="text-xs text-slate-400">Tax Invoice Recipient</span>
+                <span className="text-xs text-slate-400">Receipt &amp; Order Updates</span>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -382,9 +382,9 @@ export default function CheckoutPage() {
                   <span className="w-6 h-6 rounded-full bg-amber-500 text-slate-950 text-xs font-black flex items-center justify-center">
                     2
                   </span>
-                  Fulfilment & Delivery Method
+                  Delivery &amp; Pickup
                 </h2>
-                <span className="text-xs text-slate-400">Auckland Penrose Hub Dispatch</span>
+                <span className="text-xs text-slate-400">Auckland Warehouse Dispatch</span>
               </div>
 
               <div className="space-y-3 mb-6">
@@ -409,14 +409,14 @@ export default function CheckoutPage() {
                       <div className="flex items-center gap-2">
                         <MapPin className="w-4 h-4 text-amber-400" />
                         <span className="font-semibold text-sm">
-                          Click & Collect (Auckland Trade Hub)
+                          Store Pickup (Auckland Warehouse)
                         </span>
                         <span className="text-[10px] bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded font-mono font-bold">
                           FREE
                         </span>
                       </div>
                       <p className="text-xs text-slate-400 mt-1">
-                        18 Industry Road, Penrose, Auckland 1061 — Ready in 2 business hours.
+                        18 Industry Road, Penrose, Auckland 1061 — Ready in 30 minutes.
                       </p>
                     </div>
                   </div>
@@ -443,13 +443,13 @@ export default function CheckoutPage() {
                     <div>
                       <div className="flex items-center gap-2">
                         <Truck className="w-4 h-4 text-amber-400" />
-                        <span className="font-semibold text-sm">Standard Freight Courier</span>
+                        <span className="font-semibold text-sm">Standard Courier Delivery</span>
                         <span className="text-[10px] bg-slate-800 text-slate-300 px-2 py-0.5 rounded font-mono">
                           2–5 Days
                         </span>
                       </div>
                       <p className="text-xs text-slate-400 mt-1">
-                        CourierPost / Mainfreight road delivery direct to your workshop across North & South Islands.
+                        Courier tracking direct to your address across New Zealand.
                       </p>
                     </div>
                   </div>
@@ -476,13 +476,13 @@ export default function CheckoutPage() {
                     <div>
                       <div className="flex items-center gap-2">
                         <Truck className="w-4 h-4 text-amber-400" />
-                        <span className="font-semibold text-sm">Express Priority Courier</span>
+                        <span className="font-semibold text-sm">Express Courier Delivery</span>
                         <span className="text-[10px] bg-amber-500/20 text-amber-300 px-2 py-0.5 rounded font-mono font-bold">
                           1–2 Days
                         </span>
                       </div>
                       <p className="text-xs text-slate-400 mt-1">
-                        Expedited transport priority dispatch for urgent automotive repairs.
+                        Priority courier dispatch for urgent replacement parts.
                       </p>
                     </div>
                   </div>
@@ -495,7 +495,7 @@ export default function CheckoutPage() {
                 <div className="bg-slate-950 border border-slate-800 rounded-lg p-4 text-xs space-y-2">
                   <div className="flex items-center gap-2 text-amber-400 font-semibold">
                     <Building2 className="w-4 h-4" />
-                    <span>Depot Trade Collection Instructions</span>
+                    <span>Warehouse Pickup Details</span>
                   </div>
                   <p className="text-slate-300">
                     <span className="font-bold text-white">{DEPOT_ADDRESS.name}</span>
@@ -616,11 +616,11 @@ export default function CheckoutPage() {
                   <span className="w-6 h-6 rounded-full bg-amber-500 text-slate-950 text-xs font-black flex items-center justify-center">
                     3
                   </span>
-                  Payment Gateway
+                  Payment Details
                 </h2>
                 <div className="flex items-center gap-1.5 text-xs text-emerald-400">
                   <ShieldCheck className="w-4 h-4" />
-                  <span>Verified PCI-DSS Level 1</span>
+                  <span>256-Bit SSL Encrypted</span>
                 </div>
               </div>
 
@@ -629,8 +629,7 @@ export default function CheckoutPage() {
                 <div className="flex items-center gap-2 text-blue-300">
                   <CreditCard className="w-4 h-4 text-blue-400" />
                   <span>
-                    <strong className="text-blue-200">Sandbox Gateway:</strong> Test credit card
-                    execution or simulate gateway rejection.
+                    <strong className="text-blue-200">Test Mode:</strong> Use any test card or simulate a declined payment.
                   </span>
                 </div>
                 <div className="flex items-center gap-2">
@@ -719,8 +718,8 @@ export default function CheckoutPage() {
               </div>
 
               <div className="mt-4 pt-4 border-t border-slate-800/80 flex items-center justify-between text-xs text-slate-500">
-                <span>Raw card numbers are never stored on Pinnacle servers.</span>
-                <span>Registered Motor Vehicle Trader MVD-89211</span>
+                <span>Card numbers are never stored on our servers.</span>
+                <span>Licensed NZ Vehicle Trader MVD-89211</span>
               </div>
             </div>
           </div>
@@ -793,9 +792,9 @@ export default function CheckoutPage() {
                 </div>
                 <div className="flex justify-between text-slate-400">
                   <span className="flex items-center gap-1.5">
-                    Freight / Delivery
+                    Delivery / Pickup
                     <span className="text-[10px] bg-slate-800 px-1.5 py-0.2 rounded text-slate-300">
-                      {shippingMethod === 'CLICK_AND_COLLECT' ? 'Depot Collection' : 'Courier'}
+                      {shippingMethod === 'CLICK_AND_COLLECT' ? 'Store Pickup' : 'Courier'}
                     </span>
                   </span>
                   <span className="font-mono text-slate-200">
@@ -807,7 +806,7 @@ export default function CheckoutPage() {
                   </span>
                 </div>
                 <div className="flex justify-between text-xs text-slate-400">
-                  <span>Statutory GST Included (15% NZ IRD)</span>
+                  <span>Includes 15% GST</span>
                   <span className="font-mono text-slate-300">${taxIncluded.toFixed(2)} NZD</span>
                 </div>
 
@@ -834,12 +833,12 @@ export default function CheckoutPage() {
                 {isSubmitting ? (
                   <>
                     <Loader2 className="w-5 h-5 animate-spin text-slate-950" />
-                    <span>Authorising Payment...</span>
+                    <span>Processing Payment...</span>
                   </>
                 ) : (
                   <>
                     <Lock className="w-4 h-4" />
-                    <span>Pay ${grossTotal.toFixed(2)} NZD & Confirm Order</span>
+                    <span>Pay ${grossTotal.toFixed(2)} NZD &amp; Confirm Order</span>
                   </>
                 )}
               </button>
@@ -848,15 +847,15 @@ export default function CheckoutPage() {
               <div className="pt-2 border-t border-slate-800/80 space-y-1.5 text-[11px] text-slate-400">
                 <div className="flex items-center gap-2">
                   <Check className="w-3.5 h-3.5 text-emerald-400" />
-                  <span>Registered New Zealand Motor Vehicle Trader (MVD-89211)</span>
+                  <span>Licensed New Zealand Vehicle Trader (MVD-89211)</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Check className="w-3.5 h-3.5 text-emerald-400" />
-                  <span>Tax Invoice generated with NZ IRD GST &amp; NZBN compliance</span>
+                  <span>Official GST receipt included with every order</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Check className="w-3.5 h-3.5 text-emerald-400" />
-                  <span>Standard 90-day trade warranty on all inspected parts</span>
+                  <span>30-Day Money-Back Guarantee on all parts</span>
                 </div>
               </div>
             </div>

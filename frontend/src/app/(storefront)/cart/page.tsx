@@ -122,7 +122,7 @@ export default function CartPage() {
           </BreadcrumbItem>
           <BreadcrumbSeparator />
           <BreadcrumbItem>
-            <BreadcrumbPage>Parts Cart</BreadcrumbPage>
+            <BreadcrumbPage>Cart</BreadcrumbPage>
           </BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb>
@@ -131,10 +131,10 @@ export default function CartPage() {
         <div>
           <h1 className="text-2xl font-extrabold text-slate-900 flex items-center gap-2">
             <ShoppingCart className="h-6 w-6 text-blue-700" />
-            Parts Cart & Staged Items
+            Shopping Cart
           </h1>
           <p className="mt-1 text-xs text-slate-500">
-            Real-time physical stock validation from our Auckland Penrose central depot.
+            Live warehouse stock check from our Auckland location.
           </p>
         </div>
 
@@ -157,10 +157,9 @@ export default function CartPage() {
           <div className="h-16 w-16 rounded-full bg-slate-100 text-slate-400 mx-auto flex items-center justify-center">
             <ShoppingCart className="h-8 w-8 stroke-[1.5]" />
           </div>
-          <h2 className="text-lg font-bold text-slate-900">Your parts cart is empty</h2>
+          <h2 className="text-lg font-bold text-slate-900">Your cart is empty</h2>
           <p className="text-xs text-slate-500 max-w-md mx-auto leading-relaxed">
-            Looking for passenger/commercial tyres or workshop-inspected seat belts? Browse our
-            catalogue or check exact vehicle fitment.
+            Looking for quality tyres or tested seat belts? Browse our products or search by car.
           </p>
           <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
             <Button
@@ -173,7 +172,7 @@ export default function CartPage() {
               <Link href="/seat-belts">Explore Seat Belts</Link>
             </Button>
             <Button asChild variant="outline" className="text-xs font-semibold">
-              <Link href="/fitment">Vehicle Finder</Link>
+              <Link href="/fitment">Vehicle Search</Link>
             </Button>
           </div>
         </div>
@@ -186,9 +185,9 @@ export default function CartPage() {
               <div className="rounded-xl border border-amber-300 bg-amber-50 p-4 text-xs text-amber-950 flex items-start gap-3">
                 <AlertTriangle className="h-5 w-5 text-amber-600 shrink-0 mt-0.5" />
                 <div className="space-y-1">
-                  <span className="font-bold">Inventory Availability Notice:</span>
+                  <span className="font-bold">Stock Notice:</span>
                   <p className="text-[11px] leading-relaxed">
-                    One or more items in your cart exceed currently available depot inventory.
+                    One or more items in your cart exceed currently available warehouse stock.
                     Please adjust quantities or remove unavailable items to proceed.
                   </p>
                 </div>
@@ -290,7 +289,7 @@ export default function CartPage() {
                           <span className="text-[11px] text-slate-500 font-medium">
                             {item.quantity} pack{item.quantity > 1 ? 's' : ''} ={' '}
                             <strong>
-                              {item.totalPhysicalUnits} physical item
+                              {item.totalPhysicalUnits} unit
                               {item.totalPhysicalUnits > 1 ? 's' : ''}
                             </strong>
                           </span>
@@ -308,12 +307,12 @@ export default function CartPage() {
                         <div className="pt-2 flex items-center justify-between border-t border-slate-100">
                           <div className="flex items-center gap-3">
                             <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
-                              Pack Quantity:
+                              Quantity:
                             </span>
 
                             {item.isIndividuallyTracked ? (
                               <span className="font-mono text-xs font-bold text-slate-800 bg-slate-100 px-2.5 py-1 rounded">
-                                1 (Unique Serialized Part)
+                                1 (Single Tested Part)
                               </span>
                             ) : (
                               <div className="flex items-center rounded-lg border border-slate-300 bg-white">
@@ -365,11 +364,11 @@ export default function CartPage() {
             <div className="rounded-xl border border-slate-200 bg-slate-50 p-4 text-xs text-slate-600 space-y-2">
               <div className="flex items-center gap-2 font-bold text-slate-900">
                 <Clock className="h-4 w-4 text-blue-700" />
-                <span>Trade Dispatch Cutoff:</span>
+                <span>Same-Day Dispatch Cutoff:</span>
               </div>
               <p className="text-[11px] leading-relaxed">
                 Orders confirmed before <strong>2:00 PM NZST</strong> dispatch same business day
-                from our Auckland Penrose depot via CourierPost or Mainfreight Express.
+                from our Auckland warehouse with courier tracking.
               </p>
             </div>
           </div>
@@ -384,7 +383,7 @@ export default function CartPage() {
               {/* Fulfilment Method Selector */}
               <div className="space-y-2">
                 <label className="text-[11px] font-bold uppercase tracking-wider text-slate-700">
-                  Select Delivery / Collection:
+                  Delivery or Pickup:
                 </label>
 
                 <div className="grid grid-cols-1 gap-2">
@@ -399,9 +398,9 @@ export default function CartPage() {
                   >
                     <MapPin className="h-4 w-4 text-blue-700 shrink-0 mt-0.5" />
                     <div>
-                      <div className="text-xs font-bold">Trade Counter Pickup (FREE)</div>
+                      <div className="text-xs font-bold">Store Pickup (FREE)</div>
                       <div className="text-[11px] text-slate-500">
-                        Auckland Penrose depot · Ready in 30 mins
+                        Auckland Warehouse · Ready in 30 mins
                       </div>
                     </div>
                   </button>
@@ -417,9 +416,9 @@ export default function CartPage() {
                   >
                     <Truck className="h-4 w-4 text-emerald-700 shrink-0 mt-0.5" />
                     <div>
-                      <div className="text-xs font-bold">Courier Freight ($25.00 NZD)</div>
+                      <div className="text-xs font-bold">Courier Delivery ($25.00 NZD)</div>
                       <div className="text-[11px] text-slate-500">
-                        CourierPost / Mainfreight across North & South Islands
+                        Courier tracking across New Zealand
                       </div>
                     </div>
                   </button>
@@ -429,19 +428,19 @@ export default function CartPage() {
               {/* Totals Breakdown */}
               <div className="space-y-2 text-xs border-t border-slate-100 pt-3">
                 <div className="flex justify-between text-slate-600">
-                  <span>Parts Subtotal:</span>
+                  <span>Subtotal:</span>
                   <span className="font-semibold text-slate-900">${subtotal.toFixed(2)}</span>
                 </div>
 
                 <div className="flex justify-between text-slate-600">
-                  <span>Fulfilment / Freight:</span>
+                  <span>Delivery / Pickup:</span>
                   <span className="font-semibold text-slate-900">
                     {courierFee > 0 ? `$${courierFee.toFixed(2)}` : 'FREE Pickup'}
                   </span>
                 </div>
 
                 <div className="flex justify-between text-slate-500 text-[11px] pt-1 border-t border-slate-100">
-                  <span>Includes approx. 15% GST:</span>
+                  <span>Includes 15% GST:</span>
                   <span>${taxIncluded.toFixed(2)} NZD</span>
                 </div>
 
@@ -453,8 +452,8 @@ export default function CartPage() {
 
               {/* Reservation Timing Disclosure */}
               <div className="rounded bg-slate-50 p-2.5 text-[10px] text-slate-500 leading-relaxed border border-slate-200">
-                <strong>Inventory Policy:</strong> Items in cart are validated against live stock
-                but are not indefinitely reserved until the order confirmation step.
+                <strong>Stock Policy:</strong> Items in your cart are confirmed against live stock
+                and reserved once you complete checkout.
               </div>
 
               {/* Checkout Action */}
@@ -467,7 +466,7 @@ export default function CartPage() {
                       : 'bg-blue-700 hover:bg-blue-800 text-white cursor-pointer'
                   }`}
                 >
-                  <span>Proceed to Workshop Checkout</span>
+                  <span>Proceed to Checkout</span>
                   <ArrowRight className="h-4 w-4" />
                 </Link>
               </div>
@@ -476,11 +475,11 @@ export default function CartPage() {
               <div className="border-t border-slate-100 pt-3 space-y-1.5 text-[11px] text-slate-500">
                 <div className="flex items-center gap-1.5">
                   <ShieldCheck className="h-3.5 w-3.5 text-emerald-600 shrink-0" />
-                  <span>30-Day Workshop Replacement Guarantee</span>
+                  <span>30-Day Money-Back Guarantee</span>
                 </div>
                 <div className="flex items-center gap-1.5">
                   <RotateCcw className="h-3.5 w-3.5 text-blue-600 shrink-0" />
-                  <span>Registered Motor Vehicle Trader MVD-89211</span>
+                  <span>Licensed NZ Vehicle Trader MVD-89211</span>
                 </div>
               </div>
             </div>

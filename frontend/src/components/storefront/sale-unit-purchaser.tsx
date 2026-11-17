@@ -128,7 +128,7 @@ export function SaleUnitPurchaser({
         serializedItemId: isIndividuallyTracked && serializedItemId ? serializedItemId : undefined,
       });
       setAddedToastMessage(
-        `Added ${quantity}x ${activeUnit.name} (${totalBaseUnitsConsumed} physical base units) to your parts cart.`,
+        `Added ${quantity}x ${activeUnit.name} to your cart.`,
       );
     } catch (err) {
       const msg = err instanceof Error ? err.message : 'Error adding to cart';
@@ -159,8 +159,7 @@ export function SaleUnitPurchaser({
           )}
         </div>
         <p className="text-[11px] text-slate-500">
-          Tax invoice supplied automatically. Direct B2B trade terms available for licensed
-          workshops.
+          GST receipt included with every order. Workshop trade discounts available.
         </p>
       </div>
 
@@ -168,10 +167,10 @@ export function SaleUnitPurchaser({
       <div className="space-y-2">
         <div className="flex items-center justify-between">
           <label className="text-xs font-bold uppercase tracking-wider text-slate-700">
-            Select Commercial Sale Unit:
+            Select Quantity Pack:
           </label>
           <span className="text-[11px] text-slate-500">
-            {units.length > 1 ? `${units.length} pack options` : 'Standard trade unit'}
+            {units.length > 1 ? `${units.length} options` : 'Standard pack'}
           </span>
         </div>
 
@@ -224,41 +223,39 @@ export function SaleUnitPurchaser({
           })}
         </div>
 
-        {/* Explicit Explanation of What 1 Unit Means */}
-        <div className="rounded-lg border border-slate-200 bg-slate-50 p-2.5 text-xs text-slate-700 flex items-start gap-2">
-          <HelpCircle className="h-4 w-4 text-blue-700 shrink-0 mt-0.5" />
-          <div className="space-y-0.5">
-            <span className="font-semibold text-slate-900">Unit Consumption Rule:</span>
-            <p className="text-[11px] text-slate-600 leading-relaxed">
-              1 purchase unit of <strong>{activeUnit.name}</strong> provides{' '}
-              <strong>{activeUnit.multiplier}</strong> physical item
-              {activeUnit.multiplier > 1 ? 's' : ''} and strictly consumes{' '}
-              <strong>{activeUnit.multiplier}</strong> base inventory unit
-              {activeUnit.multiplier > 1 ? 's' : ''} from our Sydney depot ledger.
-            </p>
+        {/* Clear explanation of what the pack includes */}
+        {activeUnit.multiplier > 1 && (
+          <div className="rounded-lg border border-slate-200 bg-slate-50 p-2.5 text-xs text-slate-700 flex items-start gap-2">
+            <HelpCircle className="h-4 w-4 text-blue-700 shrink-0 mt-0.5" />
+            <div className="space-y-0.5">
+              <span className="font-semibold text-slate-900">Pack Details:</span>
+              <p className="text-[11px] text-slate-600 leading-relaxed">
+                This option includes <strong>{activeUnit.multiplier} {categorySlug === 'tyres' ? 'tyres' : 'units'}</strong> ({activeUnit.name.toLowerCase()}).
+              </p>
+            </div>
           </div>
-        </div>
+        )}
       </div>
 
       {/* Stock Availability Breakdown */}
       <div className="space-y-1 rounded-lg border border-slate-200 p-3 bg-white">
         <div className="flex items-center justify-between text-xs">
-          <span className="text-slate-600 font-medium">Physical Stock on Hand:</span>
+          <span className="text-slate-600 font-medium">Warehouse Stock:</span>
           <span className="font-semibold text-slate-900">
-            {sellableBaseUnits} base {categorySlug === 'tyres' ? 'tyres' : 'units'} verified
+            {sellableBaseUnits} in stock
           </span>
         </div>
 
         <div className="flex items-center justify-between text-xs">
-          <span className="text-slate-600 font-medium">Sellable {activeUnit.name}s:</span>
+          <span className="text-slate-600 font-medium">Available {activeUnit.name}s:</span>
           {isOutOfStock ? (
             <span className="font-bold text-rose-600 flex items-center gap-1">
-              <AlertCircle className="h-3.5 w-3.5" /> 0 Available
+              <AlertCircle className="h-3.5 w-3.5" /> Out of stock
             </span>
           ) : (
             <span className="font-bold text-emerald-700 flex items-center gap-1">
               <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600" />
-              {maxPacks} pack{maxPacks > 1 ? 's' : ''} ready to dispatch
+              {maxPacks} pack{maxPacks > 1 ? 's' : ''} available
             </span>
           )}
         </div>
@@ -308,7 +305,7 @@ export function SaleUnitPurchaser({
               Subtotal: <strong className="text-slate-900">${totalPrice.toFixed(2)}</strong>
               {activeUnit.multiplier > 1 && (
                 <span className="block text-[10px] text-slate-400">
-                  Consumes {totalBaseUnitsConsumed} physical units
+                  {totalBaseUnitsConsumed} {categorySlug === 'tyres' ? 'tyres' : 'units'} total
                 </span>
               )}
             </div>
@@ -337,10 +334,8 @@ export function SaleUnitPurchaser({
             <span>Currently Out of Stock in this Pack Size</span>
           </div>
           <p className="text-[11px] text-amber-800 leading-relaxed">
-            Our depot inventory ledger currently holds {sellableBaseUnits} individual units, which
-            is insufficient to fulfill a {activeUnit.name} (requires {activeUnit.multiplier} units).
-            Please select a smaller pack size if available, or call our trade desk for restocking
-            ETA.
+            We currently have {sellableBaseUnits} in stock, which is not enough for a {activeUnit.name} ({activeUnit.multiplier} needed).
+            Please select a smaller pack size if available, or call our parts team for restock details.
           </p>
 
           <Button
@@ -349,11 +344,11 @@ export function SaleUnitPurchaser({
             disabled
             className="w-full text-xs font-semibold border-amber-300 text-amber-800 bg-amber-100/50 cursor-not-allowed"
           >
-            Cannot Add to Cart (Insufficient Stock)
+            Out of Stock in this Pack Size
           </Button>
 
           <div className="pt-1 flex items-center justify-between text-[11px] text-amber-900 border-t border-amber-200/60">
-            <span className="font-medium">Trade Restock Inquiry:</span>
+            <span className="font-medium">Restock Inquiry:</span>
             <a
               href="tel:0800746622"
               className="font-bold underline flex items-center gap-1 hover:text-amber-950"

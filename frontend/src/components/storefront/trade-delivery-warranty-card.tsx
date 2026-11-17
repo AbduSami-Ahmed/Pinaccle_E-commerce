@@ -29,7 +29,7 @@ export function TradeDeliveryWarrantyCard({
   return (
     <div className="space-y-4 rounded-xl border border-slate-200 bg-white p-5 shadow-xs">
       <h3 className="text-xs font-bold uppercase tracking-wider text-slate-800 border-b border-slate-100 pb-2.5">
-        Fulfilment, Collection & Workshop Warranty
+        Pickup, Delivery &amp; Warranty
       </h3>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
@@ -37,16 +37,16 @@ export function TradeDeliveryWarrantyCard({
         <div className="rounded-lg border border-slate-100 bg-slate-50/70 p-3.5 space-y-2">
           <div className="flex items-center gap-2 text-slate-900 font-bold">
             <MapPin className="h-4 w-4 text-blue-700 shrink-0" />
-            <span>Auckland Trade Counter</span>
+            <span>Free Auckland Pickup</span>
           </div>
           <p className="text-[11px] text-slate-600 leading-relaxed">
-            {warehouseLocation?.pickupLeadTime || 'Ready in 30 minutes for counter collection.'}
+            {warehouseLocation?.pickupLeadTime || 'Ready in 30 minutes for store pickup.'}
           </p>
           <div className="text-[10px] text-slate-500 font-medium">
             18 Industry Rd, Penrose, Auckland 1061
             {warehouseLocation?.bay && (
               <span className="block font-mono text-blue-800 font-semibold mt-0.5">
-                Staged at: {warehouseLocation.bay}
+                Warehouse Bay: {warehouseLocation.bay}
               </span>
             )}
           </div>
@@ -56,11 +56,11 @@ export function TradeDeliveryWarrantyCard({
         <div className="rounded-lg border border-slate-100 bg-slate-50/70 p-3.5 space-y-2">
           <div className="flex items-center gap-2 text-slate-900 font-bold">
             <Truck className="h-4 w-4 text-emerald-700 shrink-0" />
-            <span>Express Courier Dispatch</span>
+            <span>Fast Courier Delivery</span>
           </div>
           <p className="text-[11px] text-slate-600 leading-relaxed">
             {shippingInfo?.standardDispatch ||
-              `Orders confirmed prior to ${cutoff} NZST dispatch same business day via CourierPost or Mainfreight Express.`}
+              `Orders placed before ${cutoff} NZST dispatch same business day with courier tracking.`}
           </p>
           <div className="flex items-center gap-1 text-[10px] text-emerald-700 font-semibold">
             <Clock className="h-3 w-3" /> Same-day cutoff: {cutoff} NZST
@@ -71,13 +71,13 @@ export function TradeDeliveryWarrantyCard({
         <div className="rounded-lg border border-slate-100 bg-slate-50/70 p-3.5 space-y-2">
           <div className="flex items-center gap-2 text-slate-900 font-bold">
             <ShieldCheck className="h-4 w-4 text-indigo-700 shrink-0" />
-            <span>{warrantyDays}-Day Workshop Guarantee</span>
+            <span>{warrantyDays}-Day Money-Back Guarantee</span>
           </div>
           <p className="text-[11px] text-slate-600 leading-relaxed">
             {warrantyAndReturns?.returnPolicy ||
-              `${warrantyDays}-day workshop exchange or refund guarantee under Consumer Guarantees Act 1993.`}
+              `${warrantyDays}-day replacement or refund under the NZ Consumer Guarantees Act.`}
           </p>
-          <div className="text-[10px] text-slate-500 font-medium">Registered Trader MVD-89211 &bull; NZ CGA</div>
+          <div className="text-[10px] text-slate-500 font-medium">Licensed Trader MVD-89211 &bull; NZ CGA</div>
         </div>
       </div>
     </div>

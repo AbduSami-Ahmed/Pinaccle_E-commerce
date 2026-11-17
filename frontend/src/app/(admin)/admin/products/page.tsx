@@ -173,11 +173,10 @@ export default function AdminProductsListPage() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-slate-200 pb-5">
         <div>
           <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900">
-            Product Catalogue
+            Products
           </h1>
           <p className="text-xs text-slate-500 mt-0.5">
-            Manage master product records, tyre & seat-belt specifications, and commercial sale
-            tiers.
+            View and manage all products, specs, and pack pricing.
           </p>
         </div>
 
@@ -263,9 +262,9 @@ export default function AdminProductsListPage() {
                 setPage(1);
               }}
             >
-              <option value="">All Modalities</option>
-              <option value="BULK_QUANTITY">Bulk Quantity (Tyres)</option>
-              <option value="INDIVIDUALLY_SERIALIZED">Individually Serialized (Seat Belts)</option>
+              <option value="">All Tracking Types</option>
+              <option value="BULK_QUANTITY">Bulk Stock (Tyres)</option>
+              <option value="INDIVIDUALLY_SERIALIZED">Serialized Parts (Seat Belts)</option>
             </select>
           </div>
         </div>
@@ -318,7 +317,7 @@ export default function AdminProductsListPage() {
         <div className="bg-white p-6 rounded-lg border border-slate-200 shadow-sm space-y-4">
           <div className="flex items-center gap-2 text-sm text-slate-500">
             <Loader2 className="h-4 w-4 animate-spin" />
-            <span>Loading product catalogue records...</span>
+            <span>Loading products...</span>
           </div>
           <LoadingSkeleton view="table" count={5} />
         </div>
@@ -328,7 +327,7 @@ export default function AdminProductsListPage() {
           description={
             search || selectedCategory || selectedStatus
               ? 'No products matched your active filter criteria. Try adjusting your search keywords or resetting filters.'
-              : 'Your product catalogue is empty. Create your first master catalogue product to begin.'
+              : 'No products found. Add your first product to get started.'
           }
           action={
             search || selectedCategory || selectedStatus ? (
@@ -339,7 +338,7 @@ export default function AdminProductsListPage() {
               <Button asChild size="sm">
                 <Link href="/admin/products/new">
                   <Plus className="h-4 w-4 mr-1.5" />
-                  Create First Product
+                  Add First Product
                 </Link>
               </Button>
             )
@@ -354,7 +353,7 @@ export default function AdminProductsListPage() {
                   <th className="py-3 px-4">Product / SKU</th>
                   <th className="py-3 px-4">Brand</th>
                   <th className="py-3 px-4">Category</th>
-                  <th className="py-3 px-4">Modality</th>
+                  <th className="py-3 px-4">Tracking Type</th>
                   <th className="py-3 px-4">Base Price</th>
                   <th className="py-3 px-4">Status</th>
                   <th className="py-3 px-4 text-right">Actions</th>
@@ -392,7 +391,7 @@ export default function AdminProductsListPage() {
                     <td className="py-3 px-4 text-slate-600">{p.categoryName}</td>
                     <td className="py-3 px-4">
                       <Badge variant="outline" className="text-[10px] font-normal">
-                        {p.productType === 'BULK_QUANTITY' ? 'Bulk Quantity' : 'Serialized'}
+                        {p.productType === 'BULK_QUANTITY' ? 'Bulk Stock' : 'Serialized'}
                       </Badge>
                     </td>
                     <td className="py-3 px-4 font-mono font-medium text-slate-900">

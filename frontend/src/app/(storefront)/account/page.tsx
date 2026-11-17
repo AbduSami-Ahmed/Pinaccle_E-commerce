@@ -61,7 +61,7 @@ export default function AccountOverviewPage() {
 
             <div className="text-lg font-bold text-slate-900 flex items-center gap-2">
               <span>
-                {profile?.accountType === 'TRADE' ? 'Trade Workshop Tier' : 'Retail Customer'}
+                {profile?.accountType === 'TRADE' ? 'Trade Account' : 'Retail Customer'}
               </span>
               <Badge
                 variant="outline"
@@ -73,8 +73,8 @@ export default function AccountOverviewPage() {
 
             <p className="text-xs text-slate-600 leading-relaxed">
               {profile?.accountType === 'TRADE'
-                ? 'Commercial garage terms enabled. Automatic GST breakdown & priority dispatch queue.'
-                : 'Standard consumer account. Upgrade to Trade Account by providing workshop NZBN / Motor Vehicle Trader details.'}
+                ? 'Workshop trade pricing active. GST receipts & priority dispatch.'
+                : 'Standard account. Contact us with your business details to apply for trade discounts.'}
             </p>
           </div>
 
@@ -171,9 +171,9 @@ export default function AccountOverviewPage() {
             <ShoppingBag className="h-5 w-5" />
           </div>
           <div>
-            <h3 className="text-sm font-bold text-slate-900">Your Orders & Tracking</h3>
+            <h3 className="text-sm font-bold text-slate-900">Your Orders &amp; Tracking</h3>
             <p className="text-xs text-slate-600">
-              Track courier consignments, verify Gate 2 depot collections, or lodge RMA returns.
+              Track courier delivery, manage warehouse pickups, and request returns.
             </p>
           </div>
         </div>
@@ -194,15 +194,13 @@ export default function AccountOverviewPage() {
         <div className="flex items-center gap-2">
           <Lock className="h-4 w-4 text-slate-700" />
           <h3 className="text-xs font-bold uppercase tracking-wider text-slate-800">
-            Customer Self-Service & Privacy Boundary
+            Account Privacy &amp; Security
           </h3>
         </div>
 
         <p className="text-xs text-slate-600 leading-relaxed max-w-3xl">
-          Under Pinnacle Auto Spares RBAC controls and New Zealand Privacy Act 2020 principles, customer
-          accounts are strictly segregated. You can only inspect and manage your own profile,
-          delivery addresses, carts, and order history. Wholesale price margins and other customer
-          records are cryptographically restricted.
+          Your account details, saved delivery addresses, and order history are kept strictly private
+          and secure in accordance with the New Zealand Privacy Act 2020.
         </p>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs pt-1 border-t border-slate-200">

@@ -40,12 +40,20 @@ export default function AdminMovementLedgerPage() {
 
   const movementFilters = [
     { value: '', label: 'All Movements' },
-    { value: 'SALE_DEDUCTION', label: 'Sale Deductions' },
-    { value: 'RECEIPT', label: 'Inward Receipts' },
-    { value: 'MANUAL_ADJUSTMENT', label: 'Stock Adjustments' },
-    { value: 'RETURN_RESTOCK', label: 'RMA Restocks' },
-    { value: 'SCRAP_WRITEOFF', label: 'Scrap Write-offs' },
+    { value: 'SALE_DEDUCTION', label: 'Sales Orders' },
+    { value: 'RECEIPT', label: 'Stock Received' },
+    { value: 'MANUAL_ADJUSTMENT', label: 'Adjustments' },
+    { value: 'RETURN_RESTOCK', label: 'Returns Restocked' },
+    { value: 'SCRAP_WRITEOFF', label: 'Scrapped / Damaged' },
   ];
+
+  const movementLabels: Record<string, string> = {
+    SALE_DEDUCTION: 'Customer Sale',
+    RECEIPT: 'Stock Received',
+    MANUAL_ADJUSTMENT: 'Adjustment',
+    RETURN_RESTOCK: 'Returned Item',
+    SCRAP_WRITEOFF: 'Scrapped Stock',
+  };
 
   return (
     <div className="space-y-6">
@@ -58,14 +66,14 @@ export default function AdminMovementLedgerPage() {
               className="text-xs text-slate-500 hover:text-slate-800 flex items-center gap-1"
             >
               <ArrowLeft className="h-3.5 w-3.5" />
-              Inventory Overview
+              Inventory
             </Link>
           </div>
           <h1 className="text-2xl font-bold tracking-tight text-slate-900 mt-1">
-            Warehouse Movement Ledger
+            Stock History &amp; Movements
           </h1>
           <p className="text-xs text-slate-500 mt-1">
-            Complete physical inventory transaction audit trail across Auckland Penrose hub and trade counter dispatch.
+            Complete history of stock receipts, adjustments, sales, and returns across warehouses.
           </p>
         </div>
 
@@ -73,7 +81,7 @@ export default function AdminMovementLedgerPage() {
           <Button asChild variant="outline" size="sm" className="h-8 text-xs gap-1.5">
             <a href={getExportInventoryUrl()} download>
               <Download className="h-3.5 w-3.5 text-slate-600" />
-              Export Valuation CSV
+              Export Stock CSV
             </a>
           </Button>
 
@@ -110,7 +118,7 @@ export default function AdminMovementLedgerPage() {
         </div>
 
         <div className="text-xs font-mono text-slate-500">
-          Total Movements: <strong>{total}</strong>
+          Total Records: <strong>{total}</strong>
         </div>
       </div>
 
@@ -121,14 +129,14 @@ export default function AdminMovementLedgerPage() {
             <table className="w-full text-left text-xs">
               <thead className="bg-slate-50 border-b border-slate-200 text-slate-500 uppercase tracking-wider font-semibold">
                 <tr>
-                  <th className="py-3 px-4">Timestamp (NZST)</th>
-                  <th className="py-3 px-4">Part / Product</th>
-                  <th className="py-3 px-4">Movement Type</th>
-                  <th className="py-3 px-4 text-center">Qty Change</th>
+                  <th className="py-3 px-4">Date &amp; Time</th>
+                  <th className="py-3 px-4">Product</th>
+                  <th className="py-3 px-4">Activity Type</th>
+                  <th className="py-3 px-4 text-center">Quantity</th>
                   <th className="py-3 px-4">Warehouse</th>
-                  <th className="py-3 px-4">Operator / Staff</th>
-                  <th className="py-3 px-4">Reference Ref</th>
-                  <th className="py-3 px-4 text-right">Ledger</th>
+                  <th className="py-3 px-4">Staff Member</th>
+                  <th className="py-3 px-4">Reference / Order</th>
+                  <th className="py-3 px-4 text-right">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
@@ -162,7 +170,7 @@ export default function AdminMovementLedgerPage() {
                           }
                           className="text-[9px] uppercase tracking-wider font-mono"
                         >
-                          {mov.movementType.replace(/_/g, ' ')}
+                          {movementLabels[mov.movementType] || mov.movementType.replace(/_/g, ' ')}
                         </Badge>
                       </td>
 
@@ -185,7 +193,7 @@ export default function AdminMovementLedgerPage() {
                       </td>
 
                       <td className="py-3 px-4 text-slate-700">
-                        {mov.actorName || 'Warehouse Staff'}
+                        {mov.actorName || 'Warehouse Team'}
                       </td>
 
                       <td className="py-3 px-4 font-mono text-[11px] text-slate-500">
@@ -194,7 +202,7 @@ export default function AdminMovementLedgerPage() {
 
                       <td className="py-3 px-4 text-right">
                         <Button asChild variant="ghost" size="sm" className="h-7 text-xs text-blue-600">
-                          <Link href={`/admin/inventory/${mov.productId}`}>Item Ledger</Link>
+                          <Link href={`/admin/inventory/${mov.productId}`}>View Stock</Link>
                         </Button>
                       </td>
                     </tr>
@@ -202,7 +210,7 @@ export default function AdminMovementLedgerPage() {
                 ) : (
                   <tr>
                     <td colSpan={8} className="py-8 text-center text-slate-500">
-                      {loading ? 'Loading warehouse movements...' : 'No movements found for the selected filter.'}
+                      {loading ? 'Loading stock history...' : 'No stock movements found for the selected filter.'}
                     </td>
                   </tr>
                 )}

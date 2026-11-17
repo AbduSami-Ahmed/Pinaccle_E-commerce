@@ -805,7 +805,7 @@ export function ProductForm({ initialProduct, isEditMode = false }: ProductFormP
                         markDirty();
                       }}
                     >
-                      <option value="PYROTECHNIC">Pyrotechnic Gas Squib</option>
+                      <option value="PYROTECHNIC">Pyrotechnic Pretensioner</option>
                       <option value="MECHANICAL">Mechanical Inertia</option>
                       <option value="NONE">None</option>
                     </select>
@@ -1011,7 +1011,7 @@ export function ProductForm({ initialProduct, isEditMode = false }: ProductFormP
 
               <div>
                 <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
-                  Product Modality
+                  Tracking Type
                 </label>
                 <select
                   className="w-full h-9 rounded-md border border-slate-300 bg-white px-3 py-1 text-sm shadow-sm focus:border-slate-500 focus:outline-none"
@@ -1021,9 +1021,9 @@ export function ProductForm({ initialProduct, isEditMode = false }: ProductFormP
                     markDirty();
                   }}
                 >
-                  <option value="BULK_QUANTITY">Bulk Quantity (Tyres / Commodity)</option>
+                  <option value="BULK_QUANTITY">Bulk Stock (Tyres)</option>
                   <option value="INDIVIDUALLY_SERIALIZED">
-                    Individually Serialized (Seat Belts)
+                    Serialized Parts (Seat Belts)
                   </option>
                 </select>
               </div>
@@ -1033,13 +1033,13 @@ export function ProductForm({ initialProduct, isEditMode = false }: ProductFormP
           {/* Commercial Pricing Card */}
           <Card>
             <CardHeader>
-              <CardTitle>Commercial Pricing</CardTitle>
-              <CardDescription>Base sale price and customer multi-pack units.</CardDescription>
+              <CardTitle>Pricing &amp; Packs</CardTitle>
+              <CardDescription>Single unit price and multi-pack savings.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div>
                 <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
-                  Single Unit Price ($ NZD) *
+                  Unit Price ($ NZD) *
                 </label>
                 <div className="relative">
                   <span className="absolute left-3 top-2 text-sm text-slate-400 font-medium">
@@ -1062,17 +1062,17 @@ export function ProductForm({ initialProduct, isEditMode = false }: ProductFormP
 
               {isTyreCategory && (
                 <div className="p-3 bg-slate-50 rounded-md border border-slate-200 text-xs text-slate-600 space-y-1.5">
-                  <p className="font-semibold text-slate-900">Configured Sale Units:</p>
+                  <p className="font-semibold text-slate-900">Pack Sizes &amp; Pricing:</p>
                   <div className="flex justify-between">
-                    <span>Single (1x base):</span>
+                    <span>Single (1 tyre):</span>
                     <span className="font-mono">${Number(basePrice).toFixed(2)}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span>Pair of 2 (2x base):</span>
+                    <span>Pair of 2 (2 tyres):</span>
                     <span className="font-mono">${(Number(basePrice) * 2 * 0.98).toFixed(2)}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span>Set of 4 (4x base):</span>
+                    <span>Set of 4 (4 tyres):</span>
                     <span className="font-mono">${(Number(basePrice) * 4 * 0.95).toFixed(2)}</span>
                   </div>
                 </div>

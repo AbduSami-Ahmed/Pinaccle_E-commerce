@@ -33,7 +33,7 @@ export async function generateMetadata({ params }: PageProps) {
     const product = await fetchStorefrontProductBySlug(slug);
     return {
       title: `${product.title} — Pinnacle Auto Spares`,
-      description: `Tested serialized seat belt assembly for ${product.brand}. Condition: ${product.condition}. Resistance tested 2.2Ω. AS/NZS 2596 compliant. Registered Trader MVD-89211.`,
+      description: `Safety-tested seat belt for ${product.brand}. Condition: ${product.condition}. Tested and certified. Licensed Trader MVD-89211.`,
       alternates: {
         canonical: `/seat-belts/${slug}`,
       },
@@ -45,7 +45,7 @@ export async function generateMetadata({ params }: PageProps) {
     };
   } catch {
     return {
-      title: 'Seat Belt & Restraint Detail — Pinnacle Auto Spares',
+      title: 'Seat Belt Detail — Pinnacle Auto Spares',
     };
   }
 }
@@ -73,7 +73,7 @@ export default async function SeatBeltDetailPage({ params }: PageProps) {
           <BreadcrumbSeparator />
           <BreadcrumbItem>
             <BreadcrumbLink asChild>
-              <Link href="/seat-belts">Seat Belts & Restraints</Link>
+              <Link href="/seat-belts">Seat Belts</Link>
             </BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator />
@@ -105,19 +105,19 @@ export default async function SeatBeltDetailPage({ params }: PageProps) {
                 value="inspection"
                 className="rounded-none border-b-2 border-transparent px-1 py-2.5 text-xs font-bold uppercase tracking-wider text-slate-600 data-[state=active]:border-blue-700 data-[state=active]:text-blue-700 data-[state=active]:bg-transparent"
               >
-                Inspection & Salvage Report
+                Inspection Report
               </TabsTrigger>
               <TabsTrigger
                 value="fitment"
                 className="rounded-none border-b-2 border-transparent px-1 py-2.5 text-xs font-bold uppercase tracking-wider text-slate-600 data-[state=active]:border-blue-700 data-[state=active]:text-blue-700 data-[state=active]:bg-transparent"
               >
-                Vehicle Fitment ({product.fitments.length})
+                Compatible Vehicles ({product.fitments.length})
               </TabsTrigger>
               <TabsTrigger
                 value="specs"
                 className="rounded-none border-b-2 border-transparent px-1 py-2.5 text-xs font-bold uppercase tracking-wider text-slate-600 data-[state=active]:border-blue-700 data-[state=active]:text-blue-700 data-[state=active]:bg-transparent"
               >
-                Technical Specifications
+                Specifications
               </TabsTrigger>
               <TabsTrigger
                 value="overview"
@@ -136,11 +136,11 @@ export default async function SeatBeltDetailPage({ params }: PageProps) {
               ) : (
                 <div className="rounded-xl border border-slate-200 bg-white p-5 text-xs text-slate-600 space-y-3">
                   <h4 className="font-bold text-slate-900 uppercase">
-                    AS/NZS 2596 Safety Standard
+                    Safety Tested
                   </h4>
                   <p>
-                    All seat belts undergo mechanical latch testing, webbing tensile inspection, and
-                    pyrotechnic squib multimeter verification prior to cataloguing.
+                    All seat belts undergo mechanical latch testing, belt webbing inspection, and
+                    pretensioner electrical testing before listing.
                   </p>
                 </div>
               )}
@@ -160,7 +160,7 @@ export default async function SeatBeltDetailPage({ params }: PageProps) {
             <TabsContent value="overview" className="pt-4 space-y-4 text-xs text-slate-600">
               <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-xs space-y-3">
                 <h4 className="font-bold uppercase tracking-wider text-slate-900 text-xs">
-                  Recycler Part Overview
+                  Description
                 </h4>
                 <p className="leading-relaxed text-slate-700">{product.description}</p>
               </div>
@@ -169,12 +169,12 @@ export default async function SeatBeltDetailPage({ params }: PageProps) {
               <div className="rounded-xl border border-amber-200 bg-amber-50/70 p-4 space-y-2 text-xs text-amber-950">
                 <div className="flex items-center gap-2 font-bold">
                   <ShieldAlert className="h-4 w-4 text-amber-700" />
-                  <span>SRS Airbag & Seat Belt Installation Precaution</span>
+                  <span>Installation Safety Note</span>
                 </div>
                 <p className="text-[11px] text-amber-900 leading-relaxed">
-                  New Zealand Land Transport safety regulations recommend that passive occupant restraint
-                  systems be fitted by a qualified automotive technician. Always verify connector
-                  keying and color codes before final installation.
+                  New Zealand Land Transport safety regulations recommend that seat belt assemblies
+                  be fitted by a qualified automotive technician. Always verify connector
+                  plugs before final installation.
                 </p>
               </div>
             </TabsContent>
@@ -220,7 +220,7 @@ export default async function SeatBeltDetailPage({ params }: PageProps) {
                     className="border-rose-300 bg-rose-50 text-rose-800 font-semibold gap-1"
                   >
                     <AlertTriangle className="h-3 w-3 text-rose-600" />
-                    Out of Stock in Depot
+                    Out of Stock
                   </Badge>
                 )}
 
@@ -228,7 +228,7 @@ export default async function SeatBeltDetailPage({ params }: PageProps) {
                   variant="outline"
                   className="border-blue-300 bg-blue-50 text-blue-800 font-semibold"
                 >
-                  <ShieldCheck className="mr-1 h-3.5 w-3.5 text-blue-600" /> Tested 2.2Ω Pass
+                  <ShieldCheck className="mr-1 h-3.5 w-3.5 text-blue-600" /> Safety Tested
                 </Badge>
               </div>
             </div>
@@ -251,15 +251,14 @@ export default async function SeatBeltDetailPage({ params }: PageProps) {
             <div className="rounded-lg border border-slate-200 bg-slate-50 p-4 space-y-2 text-xs text-slate-600">
               <div className="flex items-center gap-2 text-slate-900 font-semibold">
                 <Clock className="h-4 w-4 text-blue-700 shrink-0" />
-                <span>Trade Collection &amp; Dispatch (Penrose Auckland):</span>
+                <span>Store Pickup &amp; Dispatch (Auckland):</span>
               </div>
               <p className="text-[11px] text-slate-500">
-                Staged in secure climate-controlled shelving. Trade counter pickup available 30 min
-                after confirmation.
+                Ready for store pickup in 30 minutes after placing your order.
               </p>
               <p className="text-[11px] text-slate-500 border-t border-slate-200 pt-2">
-                Orders placed before <strong>2:00 PM NZST</strong> dispatch same business day via
-                CourierPost or Mainfreight Express.
+                Orders placed before <strong>2:00 PM NZST</strong> dispatch same business day with
+                courier tracking.
               </p>
             </div>
           </div>

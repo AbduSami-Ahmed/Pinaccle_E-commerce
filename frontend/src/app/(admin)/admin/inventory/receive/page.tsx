@@ -104,7 +104,7 @@ export default function AdminReceiveStockPage() {
           stockBarcode: autoBarcode ? undefined : stockBarcode.trim(),
           donorVehicleVin: donorVehicleVin.trim() || undefined,
           conditionGrade,
-          conditionNotes: conditionNotes.trim() || 'Visual and squib electrical check passed.',
+          conditionNotes: conditionNotes.trim() || 'Visual and electrical check passed.',
           pretensionerResistanceOhms: pretensionerResistanceOhms || undefined,
           actualPhotos: photoUrl.trim() ? [photoUrl.trim()] : [],
           locationBin: locationBin.trim().toUpperCase(),
@@ -161,10 +161,10 @@ export default function AdminReceiveStockPage() {
           <div>
             <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900 flex items-center gap-2">
               <PackagePlus className="h-6 w-6 text-slate-700" />
-              <span>Inward Physical Stock Intake</span>
+              <span>Receive Stock</span>
             </h1>
             <p className="text-xs text-slate-500 mt-0.5">
-              Receiving stock writes an atomic RECEIPT entry into the immutable movement ledger.
+              Add arriving stock directly into warehouse inventory and update stock counts.
             </p>
           </div>
         </div>
@@ -268,13 +268,13 @@ export default function AdminReceiveStockPage() {
                   />
                 </div>
                 <p className="text-[11px] text-slate-400 mt-0.5">
-                  Wholesale receipt cost. Protected by RBAC permission.
+                  Wholesale unit cost price.
                 </p>
               </div>
 
               <div>
                 <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
-                  Purchase Order / Docket #
+                  Purchase Order / Invoice #
                 </label>
                 <Input
                   placeholder="e.g. PO-2026-8819"
@@ -292,16 +292,16 @@ export default function AdminReceiveStockPage() {
           <Card className="border-amber-200 bg-amber-50/20">
             <CardHeader>
               <CardTitle className="text-amber-950 flex items-center gap-2">
-                <span>Bulk Quantity Stock Arrival (Tyres)</span>
+                <span>Receive Bulk Tyres</span>
               </CardTitle>
               <CardDescription>
-                Arrival of brand-new commodity tyres tracked as an aggregated integer pool.
+                Add tyre stock into warehouse inventory.
               </CardDescription>
             </CardHeader>
             <CardContent>
               <div>
                 <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
-                  Physical Base Quantity Received *
+                  Quantity Received (Tyres) *
                 </label>
                 <Input
                   type="number"
@@ -312,8 +312,7 @@ export default function AdminReceiveStockPage() {
                   className="max-w-xs font-mono font-bold text-base"
                 />
                 <p className="text-xs text-slate-500 mt-1">
-                  Single base units. Customer sale tiers (Pair: 2x, Set: 4x) will consume from this
-                  count.
+                  Total tyres received. Pack sizes (pairs, sets of 4) are calculated automatically.
                 </p>
               </div>
             </CardContent>
@@ -326,11 +325,10 @@ export default function AdminReceiveStockPage() {
             <CardHeader>
               <CardTitle className="text-blue-950 flex items-center gap-2">
                 <QrCode className="h-5 w-5 text-blue-600" />
-                <span>Serialized Used Safety Component Intake (Seat Belts)</span>
+                <span>Receive Serialized Seat Belt</span>
               </CardTitle>
               <CardDescription>
-                Individually scanned physical part with condition grading, donor vehicle VIN, and
-                inspection readings.
+                Record individually tested seat belt with tag number, test ohms, and condition.
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -338,7 +336,7 @@ export default function AdminReceiveStockPage() {
                 <div>
                   <div className="flex items-center justify-between mb-1">
                     <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider">
-                      Stock Barcode Tag
+                      Stock Tag #
                     </label>
                     <label className="flex items-center gap-1.5 text-xs text-slate-500 cursor-pointer">
                       <input
@@ -363,7 +361,7 @@ export default function AdminReceiveStockPage() {
 
                 <div>
                   <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
-                    Donor Vehicle VIN
+                    Original Vehicle VIN
                   </label>
                   <Input
                     placeholder="17-character VIN (e.g. JT3HP10V277192831)"
@@ -385,16 +383,16 @@ export default function AdminReceiveStockPage() {
                     value={conditionGrade}
                     onChange={(e) => setConditionGrade(e.target.value as ConditionGrade)}
                   >
-                    <option value="NEW_SURPLUS">New Surplus (Uninstalled OEM)</option>
-                    <option value="GRADE_A_LIKE_NEW">Grade A: Like New (Pristine Webbing)</option>
+                    <option value="NEW_SURPLUS">Brand New (Uninstalled)</option>
+                    <option value="GRADE_A_LIKE_NEW">Grade A: Like New</option>
                     <option value="GRADE_B_MINOR_WEAR">Grade B: Minor Cosmetic Wear</option>
-                    <option value="GRADE_C_FUNCTIONAL_BLEMISH">Grade C: Functional Blemish</option>
+                    <option value="GRADE_C_FUNCTIONAL_BLEMISH">Grade C: Functional Wear</option>
                   </select>
                 </div>
 
                 <div>
                   <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
-                    Squib Resistance (Ohms)
+                    Pretensioner Resistance (Ω)
                   </label>
                   <Input
                     placeholder="e.g. 2.15"
@@ -407,13 +405,13 @@ export default function AdminReceiveStockPage() {
 
               <div>
                 <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
-                  Safety Inspection & Condition Notes *
+                  Inspection Notes *
                 </label>
                 <textarea
                   required
                   rows={3}
                   className="w-full rounded-md border border-slate-300 bg-white p-2.5 text-xs shadow-sm focus:border-slate-500 focus:outline-none"
-                  placeholder="Record retractor recoil test results, pyrotechnic squib test readings, webbing integrity, and latch release verification..."
+                  placeholder="Enter test readings, condition of webbing, latch operation, and general notes..."
                   value={conditionNotes}
                   onChange={(e) => setConditionNotes(e.target.value)}
                 />
@@ -449,10 +447,10 @@ export default function AdminReceiveStockPage() {
             {isSubmitting ? (
               <>
                 <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                Recording Inward...
+                Receiving Stock...
               </>
             ) : (
-              'Record Stock Inward'
+              'Receive Stock'
             )}
           </Button>
         </div>

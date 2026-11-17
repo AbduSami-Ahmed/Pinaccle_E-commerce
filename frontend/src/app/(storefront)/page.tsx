@@ -45,18 +45,18 @@ export default async function StorefrontHomePage() {
             {/* Registered Trader Badge */}
             <div className="inline-flex items-center gap-2 rounded-full border border-blue-200 bg-blue-50/80 px-3.5 py-1 text-xs font-semibold text-blue-800 mb-4 shadow-2xs">
               <span className="h-2 w-2 rounded-full bg-emerald-500" />
-              <span>Registered NZ Motor Vehicle Trader · Direct Tyre Importer</span>
+              <span>Licensed NZ Vehicle Trader · Auckland Auto Parts</span>
             </div>
 
             {/* Sharp Headline */}
             <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-slate-900 leading-tight">
-              Direct Trade Tyres &amp; Tested Safety Parts
+              Quality Tyres &amp; Tested Auto Parts
             </h1>
 
             {/* Sub-paragraph */}
             <p className="mt-3 text-sm sm:text-base text-slate-600 max-w-2xl mx-auto leading-relaxed">
-              Supplying New Zealand mechanics, panel beaters, and fleets with verified fitment parts.
-              Bench-tested AS/NZS seat belts and fresh commercial tyres in singles, pairs, or sets of 4.
+              Find the right tyres and replacement car parts for your vehicle.
+              Guaranteed fitment, safety-tested seat belts, and new tyres available in singles, pairs, or sets of 4.
             </p>
           </div>
 
@@ -73,11 +73,11 @@ export default async function StorefrontHomePage() {
             </div>
             <div className="flex items-center justify-center gap-2 text-center">
               <ShieldCheck className="h-4 w-4 text-emerald-600 shrink-0" />
-              <span>2.1–2.4Ω Tested Restraints with Donor VIN</span>
+              <span>Safety-Tested Seat Belts with Exact Photos</span>
             </div>
             <div className="flex items-center justify-center gap-2 text-center">
               <MapPin className="h-4 w-4 text-amber-600 shrink-0" />
-              <span>Penrose Auckland Trade Counter Pickup</span>
+              <span>Free Auckland Warehouse Pickup</span>
             </div>
           </div>
         </div>
@@ -180,17 +180,17 @@ export default async function StorefrontHomePage() {
                 </div>
                 <div>
                   <CardTitle className="text-xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors">
-                    Commercial &amp; Passenger Tyres
+                    Tyres for Cars, SUVs &amp; Vans
                   </CardTitle>
                   <CardDescription className="text-xs text-slate-500 mt-1">
-                    Direct Importer Pricing · Singles, Pairs (2), and Full Sets (4)
+                    Great Value Pricing · Singles, Pairs (2), and Full Sets (4)
                   </CardDescription>
                   <p className="mt-3 text-xs text-slate-600 leading-relaxed">
-                    Fresh factory stock from Michelin, Continental, Goodyear, and Pirelli.
-                    E-mark certified, factory tread depth, and on-site fitting &amp; balancing at our Penrose facility.
+                    Quality tyres from Michelin, Continental, Goodyear, and Pirelli.
+                    Standard factory tread depth, with drive-in fitting and balancing at our Penrose Auckland store.
                   </p>
                   <div className="mt-4 flex items-center gap-1.5 text-xs font-bold text-blue-600 group-hover:translate-x-1 transition-transform">
-                    <span>Shop Tyre Inventory</span>
+                    <span>Browse Tyres</span>
                     <ArrowRight className="h-4 w-4" />
                   </div>
                 </div>
@@ -207,17 +207,17 @@ export default async function StorefrontHomePage() {
                 </div>
                 <div>
                   <CardTitle className="text-xl font-bold text-slate-900 group-hover:text-emerald-600 transition-colors">
-                    Tested Seat Belts &amp; Restraints
+                    Tested Replacement Seat Belts
                   </CardTitle>
                   <CardDescription className="text-xs text-slate-500 mt-1">
-                    Individually Serialized Assemblies · AS/NZS 2596 Compliance Tested
+                    Safety Inspected · Ready to Install
                   </CardDescription>
                   <p className="mt-3 text-xs text-slate-600 leading-relaxed">
-                    Dismantled from low-km donor vehicles. Every retractor undergoes a multimeter
-                    resistance test (2.1–2.4Ω) with actual photos and donor VIN recorded on every listing.
+                    Carefully removed from vehicles and thoroughly tested for locking, tension, and electrical safety.
+                    Actual photos of the exact part on our shelf with original vehicle details.
                   </p>
                   <div className="mt-4 flex items-center gap-1.5 text-xs font-bold text-emerald-600 group-hover:translate-x-1 transition-transform">
-                    <span>Shop Tested Restraints</span>
+                    <span>Browse Seat Belts</span>
                     <ArrowRight className="h-4 w-4" />
                   </div>
                 </div>
@@ -234,10 +234,10 @@ export default async function StorefrontHomePage() {
         <div className="flex items-center justify-between mb-6">
           <div>
             <h2 className="text-xl font-bold tracking-tight text-slate-900">
-              Commercial &amp; Fleet Tyres
+              Tyres (In Stock)
             </h2>
             <p className="text-xs text-slate-500 mt-0.5">
-              In-stock in our Penrose Auckland depot · Single, pair, or set volume rates
+              In stock at our Auckland warehouse · Available as single tyres, pairs, or sets of 4
             </p>
           </div>
           <Button asChild variant="outline" size="sm" className="gap-1.5 text-xs font-semibold">
@@ -262,10 +262,10 @@ export default async function StorefrontHomePage() {
         <div className="flex items-center justify-between mb-6">
           <div>
             <h2 className="text-xl font-bold tracking-tight text-slate-900">
-              Bench-Tested Seat Belts (In-Stock)
+              Tested Seat Belts (In Stock)
             </h2>
             <p className="text-xs text-slate-500 mt-0.5">
-              Serialized safety assemblies with multimeter resistance test &amp; donor VIN records
+              Individually inspected seat belts with vehicle history and photos of the actual part
             </p>
           </div>
           <Button asChild variant="outline" size="sm" className="gap-1.5 text-xs font-semibold">
@@ -294,10 +294,10 @@ export default async function StorefrontHomePage() {
                 <ShieldCheck className="h-5 w-5" />
               </div>
               <div>
-                <h3 className="text-sm font-bold text-slate-900">AS/NZS 2596 Restraint Testing</h3>
+                <h3 className="text-sm font-bold text-slate-900">Safety &amp; Quality Tested</h3>
                 <p className="mt-1 text-xs text-slate-600 leading-relaxed">
-                  Every retractor and pretensioner squib is bench-tested with digital multimeter (2.1–2.4Ω)
-                  and tension-checked before barcoding. Zero untested safety parts leave our depot.
+                  Every seat belt is tested for mechanical locking, webbing condition, and electrical circuit integrity.
+                  You receive reliable, ready-to-install parts with a 30-day money-back guarantee.
                 </p>
               </div>
             </div>
@@ -307,10 +307,10 @@ export default async function StorefrontHomePage() {
                 <Layers className="h-5 w-5" />
               </div>
               <div>
-                <h3 className="text-sm font-bold text-slate-900">Actual Photos &amp; Donor VIN</h3>
+                <h3 className="text-sm font-bold text-slate-900">Actual Photos &amp; Vehicle VIN</h3>
                 <p className="mt-1 text-xs text-slate-600 leading-relaxed">
-                  The photos you see are of the exact physical part on our shelf, showing OEM stamping tags,
-                  webbing condition, and donor vehicle details.
+                  The photos you see are of the exact physical part on our shelf, showing manufacturer tags,
+                  webbing condition, and original car details.
                 </p>
               </div>
             </div>
@@ -320,10 +320,10 @@ export default async function StorefrontHomePage() {
                 <Truck className="h-5 w-5" />
               </div>
               <div>
-                <h3 className="text-sm font-bold text-slate-900">2:00 PM Express Dispatch</h3>
+                <h3 className="text-sm font-bold text-slate-900">Same-Day Dispatch</h3>
                 <p className="mt-1 text-xs text-slate-600 leading-relaxed">
-                  Orders placed by 2:00 PM NZST dispatch same day via CourierPost or Mainfreight Express.
-                  30-minute click &amp; collect from our Penrose Auckland trade counter.
+                  Orders placed by 2:00 PM NZST dispatch the same day with fast courier tracking.
+                  Free 30-minute warehouse pickup available at our Penrose Auckland store.
                 </p>
               </div>
             </div>

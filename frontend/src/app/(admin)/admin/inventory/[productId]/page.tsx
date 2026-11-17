@@ -110,7 +110,7 @@ export default function AdminStockDetailPage() {
     return (
       <div className="flex items-center justify-center p-12 text-sm text-slate-500">
         <Loader2 className="h-5 w-5 animate-spin mr-2 text-slate-900" />
-        <span>Loading stock details and movements audit ledger...</span>
+        <span>Loading stock details and history...</span>
       </div>
     );
   }
@@ -195,7 +195,7 @@ export default function AdminStockDetailPage() {
               ) : (
                 <Scale className="h-4 w-4 mr-1.5 text-slate-600" />
               )}
-              Reconcile Ledger
+              Check Stock Count
             </Button>
           )}
           <Button asChild variant="outline" size="sm">
@@ -207,7 +207,7 @@ export default function AdminStockDetailPage() {
           <Button asChild size="sm">
             <Link href="/admin/inventory/receive">
               <Plus className="h-4 w-4 mr-1.5" />
-              Receive Inward
+              Receive Stock
             </Link>
           </Button>
         </div>
@@ -224,14 +224,13 @@ export default function AdminStockDetailPage() {
           <ShieldCheck className="h-4 w-4 text-emerald-600" />
           <AlertTitle>
             {reconciliation.isReconciled
-              ? 'Movement Ledger Reconciled: Perfect Match'
-              : 'Inventory Variance Detected'}
+              ? 'Stock History Verified: Perfect Match'
+              : 'Stock Count Difference Detected'}
           </AlertTitle>
           <AlertDescription className="text-xs">
-            Sum of historical movements ({reconciliation.computedOnHand} units) matches physical
-            on-hand inventory ({reconciliation.actualOnHand} units). Discrepancy:{' '}
-            {reconciliation.discrepancy} units across {reconciliation.totalMovementsCount} ledger
-            entries.
+            Calculated stock from activity history ({reconciliation.computedOnHand} units) matches
+            current on-hand inventory ({reconciliation.actualOnHand} units). Difference:{' '}
+            {reconciliation.discrepancy} units across {reconciliation.totalMovementsCount} records.
           </AlertDescription>
         </Alert>
       )}
@@ -241,36 +240,36 @@ export default function AdminStockDetailPage() {
         <Card>
           <CardContent className="p-4">
             <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider block">
-              Physical Stock On Hand
+              Stock On Hand
             </span>
             <span className="text-2xl font-bold font-mono text-slate-900 mt-1 block">
               {stock.totalQuantityOnHand} units
             </span>
-            <span className="text-xs text-slate-400">Total base units in warehouse</span>
+            <span className="text-xs text-slate-400">Total units in warehouse</span>
           </CardContent>
         </Card>
 
         <Card>
           <CardContent className="p-4">
             <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider block">
-              Active Checkout Holds
+              Reserved for Orders
             </span>
             <span className="text-2xl font-bold font-mono text-amber-600 mt-1 block">
               {stock.totalQuantityReserved} units
             </span>
-            <span className="text-xs text-slate-400">15-minute soft reservations</span>
+            <span className="text-xs text-slate-400">Held during checkout</span>
           </CardContent>
         </Card>
 
         <Card>
           <CardContent className="p-4">
             <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider block">
-              Net Sellable Available
+              Available to Sell
             </span>
             <span className="text-2xl font-bold font-mono text-emerald-600 mt-1 block">
               {stock.totalQuantityAvailable} units
             </span>
-            <span className="text-xs text-slate-400">Unreserved base stock</span>
+            <span className="text-xs text-slate-400">Ready for new orders</span>
           </CardContent>
         </Card>
       </div>
@@ -280,11 +279,10 @@ export default function AdminStockDetailPage() {
         <CardHeader>
           <CardTitle className="text-base flex items-center gap-2">
             <Layers className="h-4 w-4 text-slate-600" />
-            <span>Configured Sale Units & Base Consumption Multipliers</span>
+            <span>Selling Packs &amp; Multipliers</span>
           </CardTitle>
           <CardDescription>
-            Formula: Available Sellable = Math.floor(Total Available Base Units / Base Multiplier).
-            A Pair consumes 2 base tyres; a Set of 4 consumes 4 base tyres.
+            How packs use inventory: A Single tyre uses 1 unit, a Pair uses 2 units, and a Set of 4 uses 4 units.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -298,7 +296,7 @@ export default function AdminStockDetailPage() {
                   <div className="flex items-center justify-between">
                     <span className="font-semibold text-slate-900 text-sm">{su.name}</span>
                     <Badge variant="outline" className="text-[10px] font-mono">
-                      {su.multiplier}x base
+                      {su.multiplier} tyres/pack
                     </Badge>
                   </div>
                   <span className="text-xs text-slate-500 font-mono">Code: {su.code}</span>
@@ -306,10 +304,10 @@ export default function AdminStockDetailPage() {
                 <div className="mt-3 pt-2 border-t border-slate-200 flex items-center justify-between">
                   <div>
                     <span className="text-[10px] text-slate-400 uppercase tracking-wider block">
-                      Max Sellable
+                      Packs Available
                     </span>
                     <span className="text-lg font-bold font-mono text-emerald-600">
-                      {su.sellableCount} packages
+                      {su.sellableCount} packs
                     </span>
                   </div>
                   <span className="font-mono text-sm font-semibold text-slate-800">
@@ -326,7 +324,7 @@ export default function AdminStockDetailPage() {
       {stock.inventoryItems.length > 0 && (
         <Card>
           <CardHeader>
-            <CardTitle className="text-base">Physical Warehouse Bin Allocations</CardTitle>
+            <CardTitle className="text-base">Warehouse &amp; Bin Locations</CardTitle>
           </CardHeader>
           <CardContent>
             <table className="w-full text-left text-xs border-collapse">
@@ -377,21 +375,21 @@ export default function AdminStockDetailPage() {
           <CardHeader>
             <CardTitle className="text-base flex items-center gap-2">
               <Barcode className="h-4 w-4 text-blue-600" />
-              <span>Individually Tracked Serialized Units</span>
+              <span>Individually Tracked Parts (Seat Belts)</span>
             </CardTitle>
             <CardDescription>
-              Unit-level safety parts with unique stock barcodes, condition grades, and donor VINs.
+              Individually inspected parts with unique stock tags, condition grades, and vehicle VINs.
             </CardDescription>
           </CardHeader>
           <CardContent>
             <table className="w-full text-left text-xs border-collapse">
               <thead>
                 <tr className="border-b border-slate-200 bg-slate-50 text-slate-500 uppercase tracking-wider font-semibold">
-                  <th className="py-2.5 px-3">Stock Barcode</th>
-                  <th className="py-2.5 px-3">Warehouse & Bin</th>
+                  <th className="py-2.5 px-3">Stock Tag #</th>
+                  <th className="py-2.5 px-3">Warehouse &amp; Bin</th>
                   <th className="py-2.5 px-3">Condition Grade</th>
-                  <th className="py-2.5 px-3">Squib Ohms</th>
-                  <th className="py-2.5 px-3">Donor VIN</th>
+                  <th className="py-2.5 px-3">Pretensioner (Ω)</th>
+                  <th className="py-2.5 px-3">Vehicle VIN</th>
                   <th className="py-2.5 px-3">Status</th>
                   <th className="py-2.5 px-3 text-right">Photo</th>
                 </tr>
@@ -455,11 +453,10 @@ export default function AdminStockDetailPage() {
             <div>
               <CardTitle className="text-base flex items-center gap-2">
                 <History className="h-4 w-4 text-slate-700" />
-                <span>Auditable Stock Movement Ledger</span>
+                <span>Stock Movement History</span>
               </CardTitle>
               <CardDescription>
-                Immutable record of every intake, checkout reservation hold, order deduction, and
-                adjustment.
+                Complete history of stock receipts, customer orders, reservations, and adjustments.
               </CardDescription>
             </div>
           </div>
@@ -467,20 +464,20 @@ export default function AdminStockDetailPage() {
         <CardContent>
           {movements.length === 0 ? (
             <p className="text-xs text-slate-400 py-4 text-center">
-              No movement events recorded yet.
+              No stock movements recorded yet.
             </p>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs border-collapse">
                 <thead>
                   <tr className="border-b border-slate-200 bg-slate-50 text-slate-500 uppercase tracking-wider font-semibold">
-                    <th className="py-2.5 px-3">Timestamp</th>
-                    <th className="py-2.5 px-3">Movement Type</th>
+                    <th className="py-2.5 px-3">Date &amp; Time</th>
+                    <th className="py-2.5 px-3">Activity Type</th>
                     <th className="py-2.5 px-3 font-mono text-center">Change</th>
-                    <th className="py-2.5 px-3 font-mono text-center">Prev &rarr; New</th>
-                    <th className="py-2.5 px-3">Reason Code</th>
-                    <th className="py-2.5 px-3">Operator</th>
-                    <th className="py-2.5 px-3">Reference</th>
+                    <th className="py-2.5 px-3 font-mono text-center">Before &rarr; After</th>
+                    <th className="py-2.5 px-3">Reason / Note</th>
+                    <th className="py-2.5 px-3">Staff Member</th>
+                    <th className="py-2.5 px-3">Order / Ref</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100">
@@ -494,7 +491,7 @@ export default function AdminStockDetailPage() {
                           variant={getMovementBadgeVariant(m.movementType)}
                           className="text-[10px]"
                         >
-                          {m.movementType}
+                          {m.movementType.replace(/_/g, ' ')}
                         </Badge>
                       </td>
                       <td className="py-2.5 px-3 font-mono text-center font-bold">
@@ -513,7 +510,7 @@ export default function AdminStockDetailPage() {
                       <td className="py-2.5 px-3 font-mono text-center text-slate-600">
                         {m.previousQuantity} &rarr; {m.newQuantity}
                       </td>
-                      <td className="py-2.5 px-3 text-slate-700">{m.reasonCode}</td>
+                      <td className="py-2.5 px-3 text-slate-700">{m.reasonCode || '—'}</td>
                       <td className="py-2.5 px-3 text-slate-500 font-mono">
                         {m.operatorEmail || m.operatorId}
                       </td>

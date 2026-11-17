@@ -77,7 +77,7 @@ export default function IntegrationsAdminPage() {
           ...(webhookSecretInput ? { webhookSecret: webhookSecretInput.trim() } : {}),
         },
       });
-      setSuccessMsg(`Credentials encrypted and stored successfully for ${selectedProvider}.`);
+      setSuccessMsg(`Credentials saved securely for ${selectedProvider}.`);
       setSelectedProvider(null);
       setApiKeyInput('');
       setApiSecretInput('');
@@ -109,7 +109,7 @@ export default function IntegrationsAdminPage() {
     try {
       setActionLoading(true);
       await retryIntegrationJob(jobId);
-      setSuccessMsg(`Sync job ${jobId} re-dispatched for execution.`);
+      setSuccessMsg(`Sync job ${jobId} restarted.`);
       await loadData();
     } catch (err) {
       setErrorMsg((err as Error).message);
@@ -121,7 +121,7 @@ export default function IntegrationsAdminPage() {
   const handleSimulateWebhook = async () => {
     try {
       setActionLoading(true);
-      const res = await simulateMockWebhook({
+      await simulateMockWebhook({
         eventType: 'MOCK_ORDER_SYNC',
         externalId: `EXT-ORD-${Math.floor(1000 + Math.random() * 9000)}`,
         data: {
@@ -131,7 +131,7 @@ export default function IntegrationsAdminPage() {
           currency: 'NZD',
         },
       });
-      setSuccessMsg(`Mock webhook verified and ingested. Status: ${res.status} [Corr: ${res.correlationId}]`);
+      setSuccessMsg(`Test order sync received successfully.`);
       await loadData();
     } catch (err) {
       setErrorMsg((err as Error).message);
@@ -150,10 +150,10 @@ export default function IntegrationsAdminPage() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-xl font-bold tracking-tight text-slate-900 font-sans">
-            Channel Integrations &amp; Webhooks
+            Connected Platforms &amp; Channels
           </h1>
           <p className="text-xs text-slate-500 font-sans mt-0.5">
-            Provider-neutral marketplace sync, anti-loop deduplication, and encrypted credential management.
+            Sync products, inventory, and orders with eBay, Trade Me, CarJam, and parts portals.
           </p>
         </div>
         <div className="flex items-center gap-2">
@@ -165,7 +165,7 @@ export default function IntegrationsAdminPage() {
             className="h-8 text-xs font-medium text-blue-700 bg-blue-50 border-blue-200 hover:bg-blue-100"
           >
             <Webhook className="mr-1.5 h-3.5 w-3.5 text-blue-600" />
-            Test Mock Webhook
+            Test Order Sync
           </Button>
           <Button
             variant="outline"
@@ -184,36 +184,36 @@ export default function IntegrationsAdminPage() {
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
         <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
           <div className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">
-            Connected Channels
+            Connected Platforms
           </div>
           <div className="text-2xl font-bold text-emerald-600 mt-1">{connectedCount}</div>
-          <div className="text-[10px] text-slate-400 mt-1">Live active synchronization</div>
+          <div className="text-[10px] text-slate-400 mt-1">Actively syncing</div>
         </div>
 
         <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
           <div className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">
-            Disconnected / Standby
+            Available to Connect
           </div>
           <div className="text-2xl font-bold text-slate-700 mt-1">{disconnectedCount}</div>
-          <div className="text-[10px] text-slate-400 mt-1">Foundational adapters</div>
+          <div className="text-[10px] text-slate-400 mt-1">Not connected</div>
         </div>
 
         <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
           <div className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">
-            Sync Jobs Logged
+            Sync Activity
           </div>
           <div className="text-2xl font-bold text-blue-600 mt-1">{jobs.length}</div>
-          <div className="text-[10px] text-slate-400 mt-1">Audit trail entries</div>
+          <div className="text-[10px] text-slate-400 mt-1">Total sync events</div>
         </div>
 
         <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
           <div className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">
-            Dead-Letter Jobs
+            Failed Sync Jobs
           </div>
           <div className={`text-2xl font-bold mt-1 ${deadLetterCount > 0 ? 'text-rose-600' : 'text-slate-700'}`}>
             {deadLetterCount}
           </div>
-          <div className="text-[10px] text-slate-400 mt-1">Requires manual review</div>
+          <div className="text-[10px] text-slate-400 mt-1">Needs staff attention</div>
         </div>
       </div>
 
@@ -242,7 +242,7 @@ export default function IntegrationsAdminPage() {
       <div>
         <h2 className="text-sm font-bold text-slate-900 mb-3 flex items-center gap-2 font-sans">
           <Layers className="h-4 w-4 text-slate-500" />
-          Integration Accounts &amp; Channels
+          External Channels &amp; Platforms
         </h2>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -295,11 +295,11 @@ export default function IntegrationsAdminPage() {
                       <span className="font-semibold uppercase text-[11px] text-slate-700">{acc.environment}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-slate-400 text-[11px]">Credentials:</span>
+                      <span className="text-slate-400 text-[11px]">API Keys:</span>
                       <span className="flex items-center gap-1 text-[11px]">
                         {acc.hasConfiguredSecrets ? (
                           <span className="text-emerald-600 font-semibold flex items-center gap-1">
-                            <ShieldCheck className="h-3.5 w-3.5" /> Encrypted (AES-256)
+                            <ShieldCheck className="h-3.5 w-3.5" /> Configured &amp; Secure
                           </span>
                         ) : (
                           <span className="text-slate-400">Not configured</span>
@@ -326,7 +326,7 @@ export default function IntegrationsAdminPage() {
                     className="h-8 text-xs font-semibold text-slate-700"
                   >
                     <KeyRound className="mr-1.5 h-3.5 w-3.5 text-slate-500" />
-                    Configure Secrets
+                    Setup API Keys
                   </Button>
 
                   {isConnected ? (
@@ -340,7 +340,7 @@ export default function IntegrationsAdminPage() {
                       <Power className="mr-1 h-3.5 w-3.5" /> Disconnect
                     </Button>
                   ) : (
-                    <span className="text-[10px] text-slate-400 font-medium">Phase 15 Foundation</span>
+                    <span className="text-[10px] text-slate-400 font-medium">Ready to configure</span>
                   )}
                 </div>
               </div>
@@ -355,7 +355,7 @@ export default function IntegrationsAdminPage() {
           <div className="flex items-center gap-2">
             <Cpu className="h-4 w-4 text-slate-500" />
             <h2 className="text-sm font-bold text-slate-900 font-sans">
-              Recent Synchronization Jobs &amp; Dead-Letter Queue
+              Recent Sync Jobs &amp; Activity History
             </h2>
           </div>
           <div className="text-xs text-slate-400">Last 25 Events</div>
@@ -365,12 +365,12 @@ export default function IntegrationsAdminPage() {
           <table className="w-full text-left text-xs font-sans">
             <thead>
               <tr className="border-b border-slate-200 bg-slate-50 text-[10px] uppercase tracking-wider text-slate-500">
-                <th className="py-2.5 px-4 font-semibold">Job ID &amp; Correlation</th>
-                <th className="py-2.5 px-4 font-semibold">Provider</th>
-                <th className="py-2.5 px-4 font-semibold">Direction / Type</th>
+                <th className="py-2.5 px-4 font-semibold">Job ID</th>
+                <th className="py-2.5 px-4 font-semibold">Platform</th>
+                <th className="py-2.5 px-4 font-semibold">Sync Type</th>
                 <th className="py-2.5 px-4 font-semibold">Status</th>
                 <th className="py-2.5 px-4 font-semibold">Attempts</th>
-                <th className="py-2.5 px-4 font-semibold">Last Error / Notes</th>
+                <th className="py-2.5 px-4 font-semibold">Details / Notes</th>
                 <th className="py-2.5 px-4 font-semibold text-right">Actions</th>
               </tr>
             </thead>
@@ -378,7 +378,7 @@ export default function IntegrationsAdminPage() {
               {jobs.length === 0 ? (
                 <tr>
                   <td colSpan={7} className="py-8 text-center text-slate-400">
-                    No sync jobs recorded yet. Trigger a mock webhook to see live processing.
+                    No sync activity recorded yet. Run a test order sync to see activity here.
                   </td>
                 </tr>
               ) : (
@@ -413,7 +413,7 @@ export default function IntegrationsAdminPage() {
                       {job.attempts} / {job.maxAttempts}
                     </td>
                     <td className="py-3 px-4 max-w-xs truncate text-[11px] text-slate-500">
-                      {job.lastError || 'Completed successfully with zero error.'}
+                      {job.lastError || 'Synced successfully.'}
                     </td>
                     <td className="py-3 px-4 text-right">
                       {job.status === 'DEAD_LETTER' || job.status === 'FAILED' ? (
@@ -443,10 +443,10 @@ export default function IntegrationsAdminPage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
           <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl border border-slate-200">
             <h3 className="text-base font-bold text-slate-900 font-sans">
-              Configure Encrypted Secrets: {selectedProvider}
+              Configure API Keys: {selectedProvider}
             </h3>
             <p className="text-xs text-slate-500 mt-1">
-              Credentials are encrypted using AES-256-GCM before database storage. They are never returned in frontend API responses.
+              Your API credentials are encrypted securely before storage and are never exposed in the browser.
             </p>
 
             <form onSubmit={handleSaveSecrets} className="mt-4 space-y-3">
@@ -480,13 +480,13 @@ export default function IntegrationsAdminPage() {
 
               <div>
                 <label className="text-xs font-semibold text-slate-700 block mb-1">
-                  Webhook Signing Secret (Optional)
+                  Webhook Secret (Optional)
                 </label>
                 <Input
                   type="password"
                   value={webhookSecretInput}
                   onChange={(e) => setWebhookSecretInput(e.target.value)}
-                  placeholder="Enter webhook HMAC signature secret"
+                  placeholder="Enter webhook secret"
                   className="h-9 text-xs"
                 />
               </div>
@@ -509,7 +509,7 @@ export default function IntegrationsAdminPage() {
                   className="h-8 text-xs bg-slate-900 text-white hover:bg-slate-800"
                 >
                   <ShieldCheck className="mr-1.5 h-3.5 w-3.5 text-emerald-400" />
-                  Encrypt &amp; Store Credentials
+                  Save API Keys
                 </Button>
               </div>
             </form>

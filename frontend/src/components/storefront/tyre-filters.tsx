@@ -87,7 +87,7 @@ export function TyreFilters({ meta }: TyreFiltersProps) {
       {/* 1. Dimension Quick Selector */}
       <div className="space-y-3">
         <label className="text-xs font-bold uppercase tracking-wider text-slate-900">
-          Tyre Dimensions
+          Tyre Size
         </label>
         <div className="grid grid-cols-3 gap-2">
           {/* Width */}
@@ -210,20 +210,20 @@ export function TyreFilters({ meta }: TyreFiltersProps) {
       {/* 4. Commercial Sale Unit */}
       <div className="space-y-2">
         <label className="text-xs font-bold uppercase tracking-wider text-slate-900">
-          Commercial Sale Unit
+          Pack Size
         </label>
         <Select
           value={currentSaleUnit || 'all'}
           onValueChange={(val) => updateFilter('saleUnit', val)}
         >
           <SelectTrigger className="h-9 text-xs">
-            <SelectValue placeholder="All Units" />
+            <SelectValue placeholder="All Pack Sizes" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">Any Sale Unit</SelectItem>
-            <SelectItem value="TYRE_SINGLE">Single Tyre (1)</SelectItem>
-            <SelectItem value="TYRE_PAIR">Pair of 2 Tyres</SelectItem>
-            <SelectItem value="TYRE_SET_OF_4">Full Set of 4 Tyres</SelectItem>
+            <SelectItem value="all">Any Pack Size</SelectItem>
+            <SelectItem value="TYRE_SINGLE">Single Tyre</SelectItem>
+            <SelectItem value="TYRE_PAIR">Pair (2 Tyres)</SelectItem>
+            <SelectItem value="TYRE_SET_OF_4">Set of 4 Tyres</SelectItem>
           </SelectContent>
         </Select>
       </div>
@@ -273,7 +273,7 @@ export function TyreFilters({ meta }: TyreFiltersProps) {
             htmlFor="inStockOnly"
             className="text-xs font-medium text-slate-700 cursor-pointer select-none"
           >
-            In-Stock Items Only
+            In Stock Only
           </label>
         </div>
       </div>

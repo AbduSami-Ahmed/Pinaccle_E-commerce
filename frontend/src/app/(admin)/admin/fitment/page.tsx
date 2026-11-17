@@ -89,7 +89,7 @@ export default function AdminFitmentPage() {
         fitmentNotes: newNotes,
       });
 
-      setFeedbackMsg({ type: 'success', text: `Fitment verification updated to ${newStatus}` });
+      setFeedbackMsg({ type: 'success', text: `Fitment status updated.` });
       setEditingFitment(null);
       await loadFitments();
     } catch (err: any) {
@@ -101,10 +101,10 @@ export default function AdminFitmentPage() {
 
   // Handle Delete
   const handleDeleteFitment = async (id: string) => {
-    if (!confirm('Are you sure you want to remove this vehicle fitment mapping?')) return;
+    if (!confirm('Are you sure you want to remove this vehicle fitment?')) return;
     try {
       await deleteAdminFitment('mock-token', id);
-      setFeedbackMsg({ type: 'success', text: 'Fitment record deleted successfully' });
+      setFeedbackMsg({ type: 'success', text: 'Fitment removed successfully.' });
       await loadFitments();
     } catch (err: any) {
       setFeedbackMsg({ type: 'error', text: err.message || 'Failed to delete fitment record' });
@@ -126,7 +126,7 @@ export default function AdminFitmentPage() {
           variant="outline"
           className="border-emerald-200 bg-emerald-50 text-emerald-800 text-[11px] font-medium gap-1"
         >
-          <CheckCircle2 className="h-3 w-3 text-emerald-600" /> Verified OEM Match
+          <CheckCircle2 className="h-3 w-3 text-emerald-600" /> Verified Exact Fit
         </Badge>
       );
     }
@@ -145,7 +145,7 @@ export default function AdminFitmentPage() {
         variant="outline"
         className="border-amber-200 bg-amber-50 text-amber-800 text-[11px] font-medium gap-1"
       >
-        <AlertTriangle className="h-3 w-3 text-amber-600" /> Requires VIN Check
+        <AlertTriangle className="h-3 w-3 text-amber-600" /> Check Compatibility
       </Badge>
     );
   };
@@ -162,7 +162,7 @@ export default function AdminFitmentPage() {
           </BreadcrumbItem>
           <BreadcrumbSeparator />
           <BreadcrumbItem>
-            <BreadcrumbPage>Vehicle Fitment Matrix</BreadcrumbPage>
+            <BreadcrumbPage>Vehicle Fitment</BreadcrumbPage>
           </BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb>
@@ -172,11 +172,10 @@ export default function AdminFitmentPage() {
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-slate-900 flex items-center gap-2">
             <Car className="h-6 w-6 text-blue-700" />
-            Vehicle Fitment Matrix & Verification
+            Vehicle Fitment &amp; Compatibility
           </h1>
           <p className="mt-1 text-xs text-slate-500">
-            Audit and verify parts compatibility against vehicle make, model, year, and chassis
-            codes.
+            Manage and verify which vehicles and chassis models each part fits.
           </p>
         </div>
       </div>
@@ -207,7 +206,7 @@ export default function AdminFitmentPage() {
             <Search className="pointer-events-none absolute left-3 top-2.5 h-4 w-4 text-slate-400" />
             <Input
               type="search"
-              placeholder="Search by part title, SKU, or chassis code..."
+              placeholder="Search by part name, SKU, or chassis code..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="h-9 pl-9 text-xs"
@@ -221,9 +220,9 @@ export default function AdminFitmentPage() {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="ALL">All Statuses</SelectItem>
-                <SelectItem value="VERIFIED_OEM_DIRECT">Verified OEM Direct</SelectItem>
+                <SelectItem value="VERIFIED_OEM_DIRECT">Verified Exact Fit</SelectItem>
                 <SelectItem value="UNIVERSAL_FIT">Universal Fit</SelectItem>
-                <SelectItem value="REQUIRES_CHECK">Requires VIN Check</SelectItem>
+                <SelectItem value="REQUIRES_CHECK">Check Compatibility</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -240,11 +239,11 @@ export default function AdminFitmentPage() {
           <table className="w-full text-left text-xs text-slate-600">
             <thead className="border-b border-slate-200 bg-slate-50 text-[11px] uppercase tracking-wider text-slate-500">
               <tr>
-                <th className="px-4 py-3 font-semibold">Catalogue Product</th>
+                <th className="px-4 py-3 font-semibold">Product</th>
                 <th className="px-4 py-3 font-semibold">Compatible Vehicle</th>
                 <th className="px-4 py-3 font-semibold">Chassis Code</th>
-                <th className="px-4 py-3 font-semibold">Verification Status</th>
-                <th className="px-4 py-3 font-semibold">Reviewer Notes</th>
+                <th className="px-4 py-3 font-semibold">Fitment Status</th>
+                <th className="px-4 py-3 font-semibold">Notes</th>
                 <th className="px-4 py-3 font-semibold">Verified By</th>
                 <th className="px-4 py-3 text-right font-semibold">Actions</th>
               </tr>
@@ -254,7 +253,7 @@ export default function AdminFitmentPage() {
                 <tr>
                   <td colSpan={7} className="py-12 text-center text-slate-400">
                     <Loader2 className="mx-auto h-6 w-6 animate-spin text-blue-700" />
-                    <p className="mt-2 text-xs">Loading fitment records...</p>
+                    <p className="mt-2 text-xs">Loading vehicle fitments...</p>
                   </td>
                 </tr>
               ) : fitments.length > 0 ? (
@@ -298,7 +297,7 @@ export default function AdminFitmentPage() {
                           size="sm"
                           onClick={() => openEditModal(f)}
                           className="h-8 w-8 p-0 text-slate-600 hover:text-blue-700"
-                          title="Edit verification status and review notes"
+                          title="Edit fitment status and notes"
                         >
                           <Edit2 className="h-3.5 w-3.5" />
                         </Button>
@@ -307,7 +306,7 @@ export default function AdminFitmentPage() {
                           size="sm"
                           onClick={() => handleDeleteFitment(f.id)}
                           className="h-8 w-8 p-0 text-slate-400 hover:text-rose-600"
-                          title="Remove fitment record"
+                          title="Remove fitment"
                         >
                           <Trash2 className="h-3.5 w-3.5" />
                         </Button>
@@ -320,7 +319,7 @@ export default function AdminFitmentPage() {
                   <td colSpan={7} className="py-12 text-center text-slate-400">
                     <Car className="mx-auto h-8 w-8 text-slate-300" />
                     <p className="mt-2 text-sm font-medium text-slate-700">
-                      No fitment mappings found
+                      No vehicle fitments found
                     </p>
                     <p className="text-xs text-slate-500">
                       Try adjusting your search or status filter
@@ -341,11 +340,10 @@ export default function AdminFitmentPage() {
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle className="text-base font-semibold">
-              Edit Fitment Verification State
+              Edit Vehicle Fitment
             </DialogTitle>
             <DialogDescription className="text-xs text-slate-500">
-              Update verification confidence level and technical notes for this vehicle fitment
-              mapping.
+              Update compatibility status and workshop notes for this vehicle.
             </DialogDescription>
           </DialogHeader>
 
@@ -364,7 +362,7 @@ export default function AdminFitmentPage() {
 
               {/* Status Select */}
               <div className="space-y-1.5">
-                <label className="text-xs font-semibold text-slate-700">Verification Status</label>
+                <label className="text-xs font-semibold text-slate-700">Fitment Status</label>
                 <Select
                   value={newStatus}
                   onValueChange={(val) => setNewStatus(val as FitmentVerificationStatus)}
@@ -374,13 +372,13 @@ export default function AdminFitmentPage() {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="VERIFIED_OEM_DIRECT">
-                      VERIFIED_OEM_DIRECT — Exact OEM Interchange
+                      Exact Fit — Guaranteed vehicle match
                     </SelectItem>
                     <SelectItem value="UNIVERSAL_FIT">
-                      UNIVERSAL_FIT — Compatible Across Standard
+                      Universal Fit — Fits standard configurations
                     </SelectItem>
                     <SelectItem value="REQUIRES_CHECK">
-                      REQUIRES_CHECK — Needs Human / VIN Inspection
+                      Check VIN — Requires manual confirmation
                     </SelectItem>
                   </SelectContent>
                 </Select>
@@ -389,13 +387,13 @@ export default function AdminFitmentPage() {
               {/* Notes Textarea */}
               <div className="space-y-1.5">
                 <label className="text-xs font-semibold text-slate-700">
-                  Verification / Workshop Review Notes
+                  Workshop / Inspection Notes
                 </label>
                 <textarea
                   rows={3}
                   value={newNotes}
                   onChange={(e) => setNewNotes(e.target.value)}
-                  placeholder="e.g. Cross-checked with Toyota Parts Catalog (AXAH54 hybrid build rev 3)..."
+                  placeholder="e.g. Verified with vehicle chassis and manufacturer catalog..."
                   className="w-full rounded-md border border-slate-300 p-2 text-xs text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-1 focus:ring-blue-700"
                 />
               </div>
@@ -420,7 +418,7 @@ export default function AdminFitmentPage() {
               className="text-xs bg-blue-700 hover:bg-blue-800 text-white gap-1.5"
             >
               {submittingEdit && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
-              Save Verification
+              Save Fitment
             </Button>
           </DialogFooter>
         </DialogContent>

@@ -18,8 +18,8 @@ export function StorefrontFooter() {
               </span>
             </div>
             <p className="text-xs leading-relaxed text-slate-500">
-              Registered New Zealand motor vehicle trader and direct tyre importer.
-              Supplying verified automotive parts and safety-tested restraints with guaranteed fitment.
+              Licensed New Zealand vehicle trader and direct tyre supplier.
+              High quality auto parts and safety-tested seat belts with guaranteed fit.
             </p>
             <div className="text-xs text-slate-500 space-y-1 pt-1">
               <p><strong className="text-slate-700">Licence:</strong> MVD-89211 (M409121)</p>
@@ -31,37 +31,37 @@ export function StorefrontFooter() {
           {/* Column 2: Quick Links */}
           <div>
             <h4 className="text-xs font-bold uppercase tracking-wider text-slate-900">
-              Catalogues
+              Shop
             </h4>
             <ul className="mt-4 space-y-2 text-xs">
               <li>
                 <Link href="/" className="hover:text-blue-700 transition-colors">
-                  Storefront Home
+                  Home
                 </Link>
               </li>
               <li>
                 <Link href="/tyres" className="hover:text-blue-700 transition-colors">
-                  Commercial &amp; Passenger Tyres
+                  Tyres
                 </Link>
               </li>
               <li>
                 <Link href="/seat-belts" className="hover:text-blue-700 transition-colors">
-                  Tested Seat Belts (Serialized)
+                  Seat Belts
                 </Link>
               </li>
               <li>
                 <Link href="/fitment" className="hover:text-blue-700 transition-colors">
-                  Vehicle Fitment Finder
+                  Vehicle Search
                 </Link>
               </li>
               <li>
                 <Link href="/cart" className="hover:text-blue-700 transition-colors">
-                  Shopping Cart
+                  Cart
                 </Link>
               </li>
               <li>
                 <Link href="/admin/login" className="hover:text-blue-700 text-blue-600 font-semibold transition-colors">
-                  Staff Admin Portal &rarr;
+                  Staff Portal &rarr;
                 </Link>
               </li>
             </ul>
@@ -70,7 +70,7 @@ export function StorefrontFooter() {
           {/* Column 3: Popular Dimensions */}
           <div>
             <h4 className="text-xs font-bold uppercase tracking-wider text-slate-900">
-              Popular Dimensions
+              Popular Tyre Sizes
             </h4>
             <ul className="mt-4 space-y-2 text-xs">
               <li>
@@ -110,7 +110,7 @@ export function StorefrontFooter() {
                   href="/seat-belts?make=Toyota&model=RAV4"
                   className="hover:text-blue-700 transition-colors"
                 >
-                  Toyota RAV4 Restraints
+                  Toyota RAV4 Seat Belts
                 </Link>
               </li>
             </ul>
@@ -119,7 +119,7 @@ export function StorefrontFooter() {
           {/* Column 4: Trade Counter & Depot */}
           <div>
             <h4 className="text-xs font-bold uppercase tracking-wider text-slate-900">
-              Penrose Auckland Depot
+              Auckland Store &amp; Warehouse
             </h4>
             <ul className="mt-4 space-y-2 text-xs text-slate-500">
               <li className="flex items-start gap-1.5">

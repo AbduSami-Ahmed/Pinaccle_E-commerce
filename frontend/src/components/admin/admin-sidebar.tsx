@@ -44,32 +44,32 @@ const navSections: NavSection[] = [
     items: [{ label: 'Dashboard', href: '/admin/dashboard', icon: LayoutDashboard }],
   },
   {
-    title: 'Catalogue',
+    title: 'Catalog',
     items: [
       { label: 'Products', href: '/admin/products', icon: Package },
       { label: 'Categories', href: '/admin/categories', icon: Layers },
-      { label: 'Fitment Matrix', href: '/admin/fitment', icon: Car },
+      { label: 'Vehicle Fitment', href: '/admin/fitment', icon: Car },
     ],
   },
   {
     title: 'Inventory',
     items: [
-      { label: 'Stock Management', href: '/admin/inventory', icon: Boxes },
-      { label: 'Movement Ledger', href: '/admin/inventory/movements', icon: Barcode },
+      { label: 'Stock & Inventory', href: '/admin/inventory', icon: Boxes },
+      { label: 'Stock History', href: '/admin/inventory/movements', icon: Barcode },
     ],
   },
   {
     title: 'Orders',
     items: [
       { label: 'All Orders', href: '/admin/orders', icon: ShoppingBag },
-      { label: 'Fulfilment Queue', href: '/admin/orders?status=PAID', icon: Truck },
+      { label: 'Orders to Ship', href: '/admin/orders?status=PAID', icon: Truck },
     ],
   },
   {
     title: 'Customers',
     items: [
-      { label: 'Customer Directory', href: '/admin/customers', icon: Users },
-      { label: 'RMA Returns', href: '/admin/orders?status=REFUNDED', icon: RotateCcw },
+      { label: 'Customers', href: '/admin/customers', icon: Users },
+      { label: 'Returns & Refunds', href: '/admin/orders?status=REFUNDED', icon: RotateCcw },
     ],
   },
   {
@@ -78,7 +78,7 @@ const navSections: NavSection[] = [
       { label: 'Store Settings', href: '/admin/settings', icon: Settings },
       { label: 'Integrations', href: '/admin/integrations', icon: Cpu },
       { label: 'Staff & Roles', href: '/admin/staff', icon: UserCheck },
-      { label: 'Audit Trail', href: '/admin/audit-log', icon: FileText },
+      { label: 'Activity Log', href: '/admin/audit-log', icon: FileText },
     ],
   },
 ];
@@ -162,7 +162,7 @@ export function AdminSidebar({ mobileOpen = false, onMobileClose }: AdminSidebar
         >
           <span className="flex items-center gap-2">
             <ExternalLink className="h-4 w-4" />
-            <span>Storefront Front</span>
+            <span>Customer Store</span>
           </span>
           <span className="text-[10px] bg-slate-800 text-slate-300 px-1.5 py-0.5 rounded">
             Public

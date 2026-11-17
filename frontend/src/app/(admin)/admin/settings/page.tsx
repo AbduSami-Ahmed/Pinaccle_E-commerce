@@ -53,7 +53,7 @@ export default function AdminSettingsPage() {
       const updated = await updateBusinessSettings(formData);
       setSettings(updated);
       setFormData(updated);
-      setSuccessMsg('Business settings updated successfully and logged to audit trail.');
+      setSuccessMsg('Settings saved successfully.');
       setTimeout(() => setSuccessMsg(null), 4000);
     } catch (err: any) {
       setErrorMsg(err.message || 'Failed to update store settings');
@@ -69,14 +69,14 @@ export default function AdminSettingsPage() {
         <div>
           <div className="flex items-center gap-2">
             <h1 className="text-2xl font-bold tracking-tight text-slate-900">
-              Business & Store Settings
+              Store &amp; Warehouse Settings
             </h1>
             <Badge variant="outline" className="font-mono text-xs">
               NZ MVD-89211
             </Badge>
           </div>
           <p className="text-xs text-slate-500 mt-1">
-            Statutory trade registration, New Zealand GST tax settings, Auckland Penrose depot fulfillment, and returns policy.
+            Company registration, NZ GST tax rates, warehouse pickup, and return policies.
           </p>
         </div>
 
@@ -116,11 +116,11 @@ export default function AdminSettingsPage() {
               <div className="flex items-center gap-2">
                 <Building className="h-4 w-4 text-blue-600" />
                 <CardTitle className="text-sm font-semibold text-slate-900">
-                  Legal Identity & Trade Licensing
+                  Business &amp; Company Details
                 </CardTitle>
               </div>
               <CardDescription className="text-xs">
-                Statutory registration details required on tax invoices and public storefront footer.
+                Company information shown on invoices and the storefront footer.
               </CardDescription>
             </CardHeader>
             <CardContent className="grid gap-4 sm:grid-cols-2 text-xs">
@@ -139,7 +139,7 @@ export default function AdminSettingsPage() {
               </div>
 
               <div>
-                <label className="font-medium text-slate-700 block mb-1">Public Trading Name</label>
+                <label className="font-medium text-slate-700 block mb-1">Store Trading Name</label>
                 <Input
                   value={formData.company.tradeName}
                   onChange={(e) =>
@@ -168,7 +168,7 @@ export default function AdminSettingsPage() {
 
               <div>
                 <label className="font-medium text-slate-700 block mb-1">
-                  Registered Motor Vehicle Trader (MVD) Licence
+                  Vehicle Trader Licence (MVD)
                 </label>
                 <Input
                   value={formData.company.licenseNumber}
@@ -183,7 +183,7 @@ export default function AdminSettingsPage() {
               </div>
 
               <div>
-                <label className="font-medium text-slate-700 block mb-1">Support Telephone</label>
+                <label className="font-medium text-slate-700 block mb-1">Phone Number</label>
                 <Input
                   value={formData.company.phone}
                   onChange={(e) =>
@@ -197,7 +197,7 @@ export default function AdminSettingsPage() {
               </div>
 
               <div>
-                <label className="font-medium text-slate-700 block mb-1">Support Email</label>
+                <label className="font-medium text-slate-700 block mb-1">Contact Email</label>
                 <Input
                   value={formData.company.email}
                   onChange={(e) =>
@@ -232,11 +232,11 @@ export default function AdminSettingsPage() {
               <div className="flex items-center gap-2">
                 <DollarSign className="h-4 w-4 text-emerald-600" />
                 <CardTitle className="text-sm font-semibold text-slate-900">
-                  Financial & Tax Configuration (NZ IRD Statutory)
+                  Taxes &amp; Currency
                 </CardTitle>
               </div>
               <CardDescription className="text-xs">
-                Governs currency calculations, checkout tax extraction, and storefront pricing display.
+                Configure store currency and GST rates.
               </CardDescription>
             </CardHeader>
             <CardContent className="grid gap-4 sm:grid-cols-3 text-xs">
@@ -247,11 +247,11 @@ export default function AdminSettingsPage() {
                   disabled
                   className="h-9 text-xs font-mono bg-slate-50"
                 />
-                <span className="text-[10px] text-slate-400 mt-1 block">Locked to New Zealand Dollars (NZD)</span>
+                <span className="text-[10px] text-slate-400 mt-1 block">New Zealand Dollars (NZD)</span>
               </div>
 
               <div>
-                <label className="font-medium text-slate-700 block mb-1">Statutory Tax Name</label>
+                <label className="font-medium text-slate-700 block mb-1">Tax Label</label>
                 <Input
                   value={formData.financial.taxName}
                   onChange={(e) =>
@@ -265,7 +265,7 @@ export default function AdminSettingsPage() {
               </div>
 
               <div>
-                <label className="font-medium text-slate-700 block mb-1">GST Statutory Rate (%)</label>
+                <label className="font-medium text-slate-700 block mb-1">GST Tax Rate (%)</label>
                 <Input
                   type="number"
                   step="0.1"
@@ -281,7 +281,7 @@ export default function AdminSettingsPage() {
                   }
                   className="h-9 text-xs font-mono"
                 />
-                <span className="text-[10px] text-slate-400 mt-1 block">NZ IRD standard rate is 15.0%</span>
+                <span className="text-[10px] text-slate-400 mt-1 block">NZ standard GST is 15.0%</span>
               </div>
             </CardContent>
           </Card>
@@ -292,16 +292,16 @@ export default function AdminSettingsPage() {
               <div className="flex items-center gap-2">
                 <Truck className="h-4 w-4 text-amber-600" />
                 <CardTitle className="text-sm font-semibold text-slate-900">
-                  Depot Pickup & Courier Dispatch
+                  Warehouse Pickup &amp; Delivery
                 </CardTitle>
               </div>
               <CardDescription className="text-xs">
-                Trade counter click & collect instructions and default courier consignments.
+                Warehouse pickup address, instructions, and standard delivery fees.
               </CardDescription>
             </CardHeader>
             <CardContent className="grid gap-4 sm:grid-cols-2 text-xs">
               <div className="sm:col-span-2">
-                <label className="font-medium text-slate-700 block mb-1">Depot Hub Name</label>
+                <label className="font-medium text-slate-700 block mb-1">Warehouse Location Name</label>
                 <Input
                   value={formData.fulfillment.depotName}
                   onChange={(e) =>
@@ -315,7 +315,7 @@ export default function AdminSettingsPage() {
               </div>
 
               <div className="sm:col-span-2">
-                <label className="font-medium text-slate-700 block mb-1">Physical Address</label>
+                <label className="font-medium text-slate-700 block mb-1">Warehouse Address</label>
                 <Input
                   value={formData.fulfillment.depotAddress}
                   onChange={(e) =>
@@ -329,7 +329,7 @@ export default function AdminSettingsPage() {
               </div>
 
               <div className="sm:col-span-2">
-                <label className="font-medium text-slate-700 block mb-1">Pickup Counter Instructions</label>
+                <label className="font-medium text-slate-700 block mb-1">Customer Pickup Instructions</label>
                 <Input
                   value={formData.fulfillment.depotInstructions}
                   onChange={(e) =>
@@ -344,7 +344,7 @@ export default function AdminSettingsPage() {
 
               <div>
                 <label className="font-medium text-slate-700 block mb-1">
-                  CourierPost Road Express Default Fee ($NZD)
+                  Standard Delivery Fee ($ NZD)
                 </label>
                 <Input
                   type="number"
@@ -365,7 +365,7 @@ export default function AdminSettingsPage() {
 
               <div>
                 <label className="font-medium text-slate-700 block mb-1">
-                  CourierPost Premium Express Default Fee ($NZD)
+                  Express Delivery Fee ($ NZD)
                 </label>
                 <Input
                   type="number"
@@ -392,11 +392,11 @@ export default function AdminSettingsPage() {
               <div className="flex items-center gap-2">
                 <FileText className="h-4 w-4 text-purple-600" />
                 <CardTitle className="text-sm font-semibold text-slate-900">
-                  Return Policies & Consumer Guarantees Act (CGA) Disclaimers
+                  Return &amp; Warranty Policies
                 </CardTitle>
               </div>
               <CardDescription className="text-xs">
-                Governs customer self-service return eligibility and second-hand safety part certifications.
+                Customer return eligibility and safety parts warranty terms.
               </CardDescription>
             </CardHeader>
             <CardContent className="grid gap-4 sm:grid-cols-2 text-xs">
@@ -420,7 +420,7 @@ export default function AdminSettingsPage() {
 
               <div>
                 <label className="font-medium text-slate-700 block mb-1">
-                  Discretionary Restocking Fee (%)
+                  Restocking Fee (%)
                 </label>
                 <Input
                   type="number"
@@ -440,7 +440,7 @@ export default function AdminSettingsPage() {
 
               <div className="sm:col-span-2">
                 <label className="font-medium text-slate-700 block mb-1">
-                  Reclaimed Component Statutory Warranty Disclaimer
+                  Safety Parts Warranty Disclaimer
                 </label>
                 <textarea
                   rows={3}
@@ -468,7 +468,7 @@ export default function AdminSettingsPage() {
               className="h-9 text-xs px-5 bg-blue-600 hover:bg-blue-700 gap-1.5"
             >
               <Save className="h-4 w-4" />
-              {saving ? 'Saving...' : 'Save Settings & Log Audit'}
+              {saving ? 'Saving...' : 'Save Settings'}
             </Button>
           </div>
         </form>

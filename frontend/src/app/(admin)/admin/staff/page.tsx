@@ -173,14 +173,14 @@ export default function AdminStaffPage() {
         <div>
           <div className="flex items-center gap-2">
             <h1 className="text-2xl font-bold tracking-tight text-slate-900">
-              Staff & RBAC Administration
+              Staff &amp; User Roles
             </h1>
             <Badge variant="outline" className="font-mono text-xs">
-              Strict Fine-Grained RBAC
+              Staff Permissions
             </Badge>
           </div>
           <p className="text-xs text-slate-500 mt-1">
-            Manage Auckland trade hub staff members, platform roles, and domain-level operational permissions.
+            Manage staff accounts, job roles, and operational permissions across the store.
           </p>
         </div>
 
@@ -204,7 +204,7 @@ export default function AdminStaffPage() {
             className="h-8 text-xs gap-1.5"
           >
             <KeyRound className="h-3.5 w-3.5 text-slate-600" />
-            {showRolesReference ? 'Hide Role Matrix' : 'View Role Matrix'}
+            {showRolesReference ? 'Hide Available Roles' : 'View Available Roles'}
           </Button>
 
           <Button
@@ -227,14 +227,14 @@ export default function AdminStaffPage() {
             <div className="flex items-center justify-between">
               <CardTitle className="text-sm font-semibold text-blue-900 flex items-center gap-2">
                 <Shield className="h-4 w-4 text-blue-600" />
-                Configured Platform Roles & Permissions Matrix
+                Available Roles &amp; Permissions
               </CardTitle>
               <Badge variant="outline" className="bg-white text-xs">
                 {roles.length} Active System Roles
               </Badge>
             </div>
             <CardDescription className="text-xs text-blue-800/80">
-              Fine-grained atomic permission codes mapped to designated automotive trade responsibilities.
+              Role definitions and their permissions for store operations.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -290,7 +290,7 @@ export default function AdminStaffPage() {
 
         <div className="flex items-center gap-2 text-xs text-slate-500">
           <ShieldAlert className="h-4 w-4 text-blue-600" />
-          <span>Mutations are logged to immutable audit records with actor timestamps.</span>
+          <span>All role and staff changes are recorded in the activity log.</span>
         </div>
       </div>
 
@@ -303,8 +303,8 @@ export default function AdminStaffPage() {
                 <tr>
                   <th className="py-3 px-4">Staff Member</th>
                   <th className="py-3 px-4">Department</th>
-                  <th className="py-3 px-4">Assigned Roles</th>
-                  <th className="py-3 px-4">Account Status</th>
+                  <th className="py-3 px-4">Roles</th>
+                  <th className="py-3 px-4">Status</th>
                   <th className="py-3 px-4">Last Activity</th>
                   <th className="py-3 px-4 text-right">Actions</th>
                 </tr>
@@ -331,7 +331,7 @@ export default function AdminStaffPage() {
                     </td>
 
                     <td className="py-3 px-4 text-slate-600">
-                      {s.department || 'Auckland General Operations'}
+                      {s.department || 'Store Operations'}
                     </td>
 
                     <td className="py-3 px-4">
@@ -502,7 +502,7 @@ export default function AdminStaffPage() {
                 disabled={saving}
                 className="text-xs bg-blue-600 hover:bg-blue-700"
               >
-                {saving ? 'Saving...' : 'Save Role Assignments'}
+                {saving ? 'Saving...' : 'Save Roles'}
               </Button>
             </div>
           </div>
@@ -520,7 +520,7 @@ export default function AdminStaffPage() {
                   Add New Staff Member
                 </h2>
                 <span className="text-xs text-slate-500">
-                  Create a new staff portal account and assign initial platform roles.
+                  Create a new staff account and choose their store roles.
                 </span>
               </div>
               <button
@@ -605,7 +605,7 @@ export default function AdminStaffPage() {
                 </label>
                 <Input
                   id="new-job-title"
-                  placeholder="e.g. Penrose Depot Inventory Specialist"
+                  placeholder="e.g. Warehouse Inventory Specialist"
                   value={newJobTitle}
                   onChange={(e) => setNewJobTitle(e.target.value)}
                   className="text-xs h-8"
@@ -614,7 +614,7 @@ export default function AdminStaffPage() {
 
               <div className="space-y-2">
                 <span className="text-xs font-semibold text-slate-700 uppercase tracking-wider block">
-                  Assign Initial Platform Roles:
+                  Choose Roles:
                 </span>
                 <div className="max-h-40 overflow-y-auto space-y-1.5 border border-slate-200 rounded-lg p-2">
                   {roles.map((r) => {
@@ -663,7 +663,7 @@ export default function AdminStaffPage() {
                   disabled={creating}
                   className="text-xs bg-blue-600 hover:bg-blue-700 text-white font-semibold"
                 >
-                  {creating ? 'Creating Account...' : 'Create Staff Member'}
+                  {creating ? 'Creating Account...' : 'Add Staff Member'}
                 </Button>
               </div>
             </form>

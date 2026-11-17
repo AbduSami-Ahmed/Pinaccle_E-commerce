@@ -54,7 +54,7 @@ export default function AdminRootLayout({ children }: { children: React.ReactNod
     return (
       <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center text-white space-y-3">
         <div className="h-8 w-8 rounded-full border-2 border-blue-500 border-t-transparent animate-spin" />
-        <span className="text-xs text-slate-400 font-mono">Verifying Staff Credentials...</span>
+        <span className="text-xs text-slate-400 font-mono">Signing in to Staff Portal...</span>
       </div>
     );
   }

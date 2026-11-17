@@ -12,7 +12,7 @@ import { ProductForm } from '@/components/admin/product-form';
 
 export const metadata = {
   title: 'New Product | Pinnacle Admin',
-  description: 'Create a new master catalogue product',
+  description: 'Create a new product',
 };
 
 export default function AdminNewProductPage() {

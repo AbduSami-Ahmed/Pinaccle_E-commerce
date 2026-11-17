@@ -33,7 +33,7 @@ export async function generateMetadata({ params }: PageProps) {
     const product = await fetchStorefrontProductBySlug(slug);
     return {
       title: `${product.title} (${product.brand}) — Pinnacle Auto Spares`,
-      description: `${product.title}. In stock: ${product.availability.sellableBaseUnits} units at Auckland Penrose depot.`,
+      description: `${product.title}. In stock: ${product.availability.sellableBaseUnits} at Auckland warehouse.`,
       alternates: {
         canonical: `/products/${slug}`,
       },
@@ -111,7 +111,7 @@ export default async function ProductUniversalDetailPage({ params }: PageProps) 
                   value="inspection"
                   className="rounded-none border-b-2 border-transparent px-1 py-2.5 text-xs font-bold uppercase tracking-wider text-slate-600 data-[state=active]:border-blue-700 data-[state=active]:text-blue-700 data-[state=active]:bg-transparent"
                 >
-                  Inspection & Salvage Report
+                  Inspection Report
                 </TabsTrigger>
               )}
               <TabsTrigger
@@ -125,7 +125,7 @@ export default async function ProductUniversalDetailPage({ params }: PageProps) 
                   value="fitment"
                   className="rounded-none border-b-2 border-transparent px-1 py-2.5 text-xs font-bold uppercase tracking-wider text-slate-600 data-[state=active]:border-blue-700 data-[state=active]:text-blue-700 data-[state=active]:bg-transparent"
                 >
-                  Chassis Fitment ({product.fitments.length})
+                  Compatible Vehicles ({product.fitments.length})
                 </TabsTrigger>
               )}
               <TabsTrigger
@@ -161,7 +161,7 @@ export default async function ProductUniversalDetailPage({ params }: PageProps) 
             <TabsContent value="overview" className="pt-4 space-y-4 text-xs text-slate-600">
               <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-xs space-y-3">
                 <h4 className="font-bold uppercase tracking-wider text-slate-900 text-xs">
-                  Trade Catalog Overview
+                  Description
                 </h4>
                 <p className="leading-relaxed text-slate-700">{product.description}</p>
               </div>
@@ -205,7 +205,7 @@ export default async function ProductUniversalDetailPage({ params }: PageProps) 
                     className="border-rose-300 bg-rose-50 text-rose-800 font-semibold gap-1"
                   >
                     <AlertTriangle className="h-3 w-3 text-rose-600" />
-                    Out of Stock in Depot
+                    Out of Stock
                   </Badge>
                 )}
               </div>
@@ -227,7 +227,7 @@ export default async function ProductUniversalDetailPage({ params }: PageProps) 
             <div className="rounded-lg border border-slate-200 bg-slate-50 p-4 space-y-2 text-xs text-slate-600">
               <div className="flex items-center gap-2 text-slate-900 font-semibold">
                 <Clock className="h-4 w-4 text-blue-700 shrink-0" />
-                <span>Trade Dispatch Cutoff:</span>
+                <span>Same-Day Dispatch Cutoff:</span>
               </div>
               <p className="text-[11px] text-slate-500">
                 Orders placed before <strong>2:00 PM NZST</strong> dispatch same business day via

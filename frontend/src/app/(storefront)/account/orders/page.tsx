@@ -101,14 +101,14 @@ export default function CustomerOrdersHistoryPage() {
       {/* Header */}
       <div className="border-b border-slate-200 pb-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
-          <h1 className="text-xl font-bold text-slate-900">Your Order History & Returns</h1>
+          <h1 className="text-xl font-bold text-slate-900">Orders &amp; Returns</h1>
           <p className="text-xs text-slate-500 mt-1">
-            Track consignments, view tax invoices, or lodge return authorizations
+            Track deliveries, download GST invoices, or request a return
           </p>
         </div>
-        <Link href="/catalog">
+        <Link href="/tyres">
           <Button size="sm" variant="outline" className="text-xs">
-            Browse Catalogue
+            Shop Parts
           </Button>
         </Link>
       </div>
@@ -125,11 +125,11 @@ export default function CustomerOrdersHistoryPage() {
           <ShoppingBag className="h-10 w-10 mx-auto text-slate-400" />
           <h3 className="text-base font-bold text-slate-800">No orders found on your account</h3>
           <p className="text-xs text-slate-500 max-w-sm mx-auto">
-            You haven’t placed any orders with Pinnacle yet. Explore our stock of tested commercial
-            tyres and certified seat belt assemblies.
+            You haven’t placed any orders with Pinnacle yet. Explore our stock of quality tyres
+            and safety-tested seat belts.
           </p>
           <div className="pt-2">
-            <Link href="/catalog">
+            <Link href="/tyres">
               <Button size="sm" className="bg-slate-900 text-white text-xs">
                 Start Shopping
               </Button>

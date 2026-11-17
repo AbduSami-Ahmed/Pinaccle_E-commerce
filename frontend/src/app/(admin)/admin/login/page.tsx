@@ -94,11 +94,11 @@ export default function AdminLoginPage() {
             Pinnacle Auto Parts
           </h1>
           <p className="text-xs sm:text-sm text-slate-400">
-            Staff & Operational Administration Portal
+            Staff Portal Login
           </p>
           <div className="flex items-center justify-center gap-2 pt-1">
             <Badge variant="outline" className="border-blue-500/40 text-blue-300 text-[10px] uppercase font-mono">
-              Penrose Auckland Depot
+              Auckland Warehouse
             </Badge>
             <Badge variant="outline" className="border-slate-700 text-slate-400 text-[10px] font-mono">
               NZST / NZDT
@@ -137,10 +137,10 @@ export default function AdminLoginPage() {
           <CardHeader className="space-y-1 pb-4">
             <CardTitle className="text-lg font-bold text-white flex items-center gap-2">
               <Shield className="h-4 w-4 text-blue-400" />
-              Staff Authentication
+              Staff Sign In
             </CardTitle>
             <CardDescription className="text-xs text-slate-400">
-              Sign in with your verified staff credentials to access orders, stock, and fitment controls.
+              Sign in to access orders, inventory, and store settings.
             </CardDescription>
           </CardHeader>
 
@@ -156,7 +156,7 @@ export default function AdminLoginPage() {
               {/* Email Input */}
               <div className="space-y-1.5">
                 <label className="text-xs font-medium text-slate-300 flex items-center justify-between" htmlFor="staff-email">
-                  <span>Staff Work Email</span>
+                  <span>Email Address</span>
                 </label>
                 <div className="relative">
                   <Mail className="absolute left-3 top-2.5 h-4 w-4 text-slate-500" />
@@ -183,7 +183,7 @@ export default function AdminLoginPage() {
                   <Input
                     id="staff-password"
                     type={showPassword ? 'text' : 'password'}
-                    placeholder="Enter staff password"
+                    placeholder="Enter password"
                     autoComplete="current-password"
                     required
                     value={password}
@@ -204,7 +204,7 @@ export default function AdminLoginPage() {
               {/* Security Notice */}
               <div className="rounded-lg bg-slate-950/40 border border-slate-800 p-2.5 flex items-center gap-2 text-[11px] text-slate-400">
                 <KeyRound className="h-3.5 w-3.5 text-amber-400 shrink-0" />
-                <span>Sessions are encrypted with HTTP-only tokens and strictly audited.</span>
+                <span>Secure staff access with role-based permissions.</span>
               </div>
             </CardContent>
 
@@ -215,10 +215,10 @@ export default function AdminLoginPage() {
                 className="w-full h-10 text-xs font-semibold bg-blue-600 hover:bg-blue-500 text-white shadow-md shadow-blue-600/30 flex items-center justify-center gap-2"
               >
                 {isLoading ? (
-                  <span>Verifying Credentials...</span>
+                  <span>Signing In...</span>
                 ) : (
                   <>
-                    <span>Sign In to Staff Portal</span>
+                    <span>Sign In</span>
                     <ArrowRight className="h-3.5 w-3.5" />
                   </>
                 )}
@@ -229,7 +229,7 @@ export default function AdminLoginPage() {
                   href="/"
                   className="text-xs text-slate-400 hover:text-blue-400 transition-colors inline-flex items-center gap-1"
                 >
-                  ← Return to Public Storefront
+                  ← Return to Customer Store
                 </Link>
               </div>
             </CardFooter>

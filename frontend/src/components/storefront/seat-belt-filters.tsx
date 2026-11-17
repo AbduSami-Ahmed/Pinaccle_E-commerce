@@ -88,12 +88,12 @@ export function SeatBeltFilters({ meta: _meta, vehicles = [] }: SeatBeltFiltersP
       <div className="space-y-3 rounded-md bg-blue-50/50 p-3 border border-blue-100">
         <div className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-blue-900">
           <Car className="h-3.5 w-3.5 text-blue-700" />
-          Vehicle Fitment
+          Vehicle Compatibility
         </div>
 
         {/* Make */}
         <div className="space-y-1">
-          <label className="text-[11px] font-medium text-slate-600">Vehicle Make</label>
+          <label className="text-[11px] font-medium text-slate-600">Make</label>
           <Select value={currentMake || 'all'} onValueChange={(val) => updateFilter('make', val)}>
             <SelectTrigger className="h-9 text-xs bg-white">
               <SelectValue placeholder="All Makes" />
@@ -151,7 +151,7 @@ export function SeatBeltFilters({ meta: _meta, vehicles = [] }: SeatBeltFiltersP
       {/* 2. Position */}
       <div className="space-y-2">
         <label className="text-xs font-bold uppercase tracking-wider text-slate-900">
-          Seat Position
+          Seating Position
         </label>
         <Select
           value={currentPosition || 'all'}
@@ -191,7 +191,7 @@ export function SeatBeltFilters({ meta: _meta, vehicles = [] }: SeatBeltFiltersP
             <SelectItem value="all">All Components</SelectItem>
             <SelectItem value="COMPLETE_ASSEMBLY">Complete Assembly</SelectItem>
             <SelectItem value="RETRACTOR_ASSEMBLY">Retractor & Pre-Tensioner</SelectItem>
-            <SelectItem value="BUCKLE_STALK">Buckle Stalk / Receiver</SelectItem>
+            <SelectItem value="BUCKLE_STALK">Buckle / Stalk</SelectItem>
             <SelectItem value="LAP_BELT">Lap Belt</SelectItem>
           </SelectContent>
         </Select>
@@ -202,7 +202,7 @@ export function SeatBeltFilters({ meta: _meta, vehicles = [] }: SeatBeltFiltersP
       {/* 4. Condition Grade */}
       <div className="space-y-2">
         <label className="text-xs font-bold uppercase tracking-wider text-slate-900">
-          Condition Grade
+          Condition
         </label>
         <Select
           value={currentCondition || 'all'}
@@ -212,11 +212,11 @@ export function SeatBeltFilters({ meta: _meta, vehicles = [] }: SeatBeltFiltersP
             <SelectValue placeholder="All Conditions" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">All Grades</SelectItem>
-            <SelectItem value="BRAND_NEW">Brand New OEM</SelectItem>
-            <SelectItem value="GRADE_A_LIKE_NEW">Grade A (Like-New Reconditioned)</SelectItem>
-            <SelectItem value="GRADE_B_LIGHT_WEAR">Grade B (Light Wear Tested)</SelectItem>
-            <SelectItem value="GRADE_C_FUNCTIONAL_WEAR">Grade C (Functional Tested)</SelectItem>
+            <SelectItem value="all">All Conditions</SelectItem>
+            <SelectItem value="BRAND_NEW">Brand New</SelectItem>
+            <SelectItem value="GRADE_A_LIKE_NEW">Grade A (Like New)</SelectItem>
+            <SelectItem value="GRADE_B_LIGHT_WEAR">Grade B (Tested &amp; Good)</SelectItem>
+            <SelectItem value="GRADE_C_FUNCTIONAL_WEAR">Grade C (Working)</SelectItem>
           </SelectContent>
         </Select>
       </div>
@@ -266,7 +266,7 @@ export function SeatBeltFilters({ meta: _meta, vehicles = [] }: SeatBeltFiltersP
             htmlFor="inStockOnlySb"
             className="text-xs font-medium text-slate-700 cursor-pointer select-none"
           >
-            Available In-Stock Only
+            In Stock Only
           </label>
         </div>
       </div>

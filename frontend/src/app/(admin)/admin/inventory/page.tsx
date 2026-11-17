@@ -91,7 +91,7 @@ export default function AdminInventoryOverviewPage() {
           </BreadcrumbItem>
           <BreadcrumbSeparator />
           <BreadcrumbItem>
-            <BreadcrumbPage>Inventory Management</BreadcrumbPage>
+            <BreadcrumbPage>Stock &amp; Inventory</BreadcrumbPage>
           </BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb>
@@ -101,11 +101,10 @@ export default function AdminInventoryOverviewPage() {
         <div>
           <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900 flex items-center gap-2">
             <Boxes className="h-6 w-6 text-slate-700" />
-            <span>Auditable Stock & Movement Ledger</span>
+            <span>Inventory &amp; Stock Levels</span>
           </h1>
           <p className="text-xs text-slate-500 mt-0.5">
-            Real-time physical inventory balances, warehouse bin tracking, and ledger-backed
-            adjustments.
+            Track warehouse stock levels, bin locations, and adjust stock.
           </p>
         </div>
 
@@ -242,7 +241,7 @@ export default function AdminInventoryOverviewPage() {
         <div className="flex items-center justify-between pt-2 border-t border-slate-100 text-xs text-slate-500">
           <span>
             Tracking stock for <strong>{summaries.length}</strong> of <strong>{total}</strong>{' '}
-            catalogue items
+            products
           </span>
           {(search || warehouseId || stockStatus !== 'ALL') && (
             <Button
@@ -266,14 +265,14 @@ export default function AdminInventoryOverviewPage() {
         <div className="bg-white p-6 rounded-lg border border-slate-200 shadow-sm space-y-4">
           <div className="flex items-center gap-2 text-sm text-slate-500">
             <Loader2 className="h-4 w-4 animate-spin" />
-            <span>Reconciling real-time physical inventory balances...</span>
+            <span>Loading stock levels...</span>
           </div>
           <LoadingSkeleton view="table" count={5} />
         </div>
       ) : summaries.length === 0 ? (
         <EmptyState
-          title="No inventory records found"
-          description="No stock records matched your active filter criteria. Inward new stock to begin tracking."
+          title="No stock records found"
+          description="No stock records matched your active filter criteria. Receive new stock to begin tracking."
           action={
             <Button asChild size="sm">
               <Link href="/admin/inventory/receive">
@@ -290,12 +289,12 @@ export default function AdminInventoryOverviewPage() {
               <thead>
                 <tr className="border-b border-slate-200 bg-slate-50/75 text-slate-600 font-semibold uppercase tracking-wider">
                   <th className="py-3 px-4">Product / SKU</th>
-                  <th className="py-3 px-4">Modality</th>
+                  <th className="py-3 px-4">Tracking Type</th>
                   <th className="py-3 px-4">Location Bins</th>
                   <th className="py-3 px-4 font-mono text-center">On Hand</th>
                   <th className="py-3 px-4 font-mono text-center">Reserved</th>
                   <th className="py-3 px-4 font-mono text-center">Available</th>
-                  <th className="py-3 px-4">Sellable Units (Multipliers)</th>
+                  <th className="py-3 px-4">Available Packs</th>
                   <th className="py-3 px-4">Health</th>
                   <th className="py-3 px-4 text-right">Actions</th>
                 </tr>
@@ -319,7 +318,7 @@ export default function AdminInventoryOverviewPage() {
 
                     <td className="py-3 px-4">
                       <Badge variant="outline" className="text-[10px] font-normal">
-                        {s.productType === 'BULK_QUANTITY' ? 'Bulk Quantity' : 'Serialized Parts'}
+                        {s.productType === 'BULK_QUANTITY' ? 'Bulk Stock' : 'Serialized Parts'}
                       </Badge>
                     </td>
 

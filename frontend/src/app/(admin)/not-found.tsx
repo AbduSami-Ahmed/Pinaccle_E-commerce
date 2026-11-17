@@ -12,11 +12,11 @@ export default function AdminNotFound() {
         </div>
 
         <h3 className="mt-4 text-xl font-bold text-slate-900">
-          Admin Record or Resource Not Found
+          Page or Record Not Found
         </h3>
 
         <p className="mt-2 text-sm text-slate-600 leading-relaxed">
-          The requested administration record, batch operation, or resource identifier does not exist or has been removed.
+          The page, product, or order you are looking for does not exist or has been removed.
         </p>
 
         <div className="mt-6 flex flex-col sm:flex-row items-center justify-center gap-3">
@@ -35,7 +35,7 @@ export default function AdminNotFound() {
             className="w-full sm:w-auto border-slate-300 text-slate-700 hover:bg-slate-50 gap-2 font-semibold text-xs h-10 px-5"
           >
             <Link href="/admin/products">
-              View Product Inventory
+              View Products
             </Link>
           </Button>
         </div>

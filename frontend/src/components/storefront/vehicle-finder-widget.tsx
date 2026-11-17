@@ -256,7 +256,7 @@ export function VehicleFinderWidget({
               className="rounded-lg px-4 py-2 text-xs font-bold text-slate-700 data-[state=active]:bg-white data-[state=active]:text-blue-700 data-[state=active]:shadow-xs gap-1.5 transition-all"
             >
               <Car className="h-4 w-4" />
-              <span>Select Vehicle</span>
+              <span>Search by Car</span>
             </TabsTrigger>
 
             <TabsTrigger
@@ -264,7 +264,7 @@ export function VehicleFinderWidget({
               className="rounded-lg px-4 py-2 text-xs font-bold text-slate-700 data-[state=active]:bg-white data-[state=active]:text-blue-700 data-[state=active]:shadow-xs gap-1.5 transition-all"
             >
               <Search className="h-4 w-4" />
-              <span>NZ Rego Plate</span>
+              <span>Number Plate</span>
             </TabsTrigger>
 
             <TabsTrigger
@@ -272,13 +272,13 @@ export function VehicleFinderWidget({
               className="rounded-lg px-4 py-2 text-xs font-bold text-slate-700 data-[state=active]:bg-white data-[state=active]:text-blue-700 data-[state=active]:shadow-xs gap-1.5 transition-all"
             >
               <Disc className="h-4 w-4" />
-              <span>Tyre Dimensions</span>
+              <span>Tyre Size</span>
             </TabsTrigger>
           </TabsList>
 
           <div className="flex items-center gap-1.5 text-xs text-slate-500 font-medium">
             <ShieldCheck className="h-4 w-4 text-emerald-600" />
-            <span>Guaranteed Fitment Promise</span>
+            <span>Guaranteed Fit</span>
           </div>
         </div>
 
@@ -365,7 +365,7 @@ export function VehicleFinderWidget({
 
               {/* 4. Series / Chassis */}
               <div className="space-y-1.5">
-                <label className="text-xs font-bold text-slate-800">4. Series / Body</label>
+                <label className="text-xs font-bold text-slate-800">4. Body Type</label>
                 <Select
                   value={selectedVariant}
                   onValueChange={setSelectedVariant}
@@ -377,8 +377,8 @@ export function VehicleFinderWidget({
                         loadingVariants
                           ? 'Loading...'
                           : variants.length > 0
-                            ? 'Select Chassis'
-                            : 'All Series'
+                            ? 'Select Body Type'
+                            : 'All Models'
                       }
                     />
                   </SelectTrigger>
@@ -398,7 +398,7 @@ export function VehicleFinderWidget({
                 disabled={!selectedMake}
                 className="h-11 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-lg shadow-xs transition-colors flex items-center justify-center gap-1.5"
               >
-                <span>Find Compatible Parts</span>
+                <span>Find Parts That Fit</span>
                 <ChevronRight className="h-4 w-4" />
               </Button>
             </div>
@@ -412,7 +412,7 @@ export function VehicleFinderWidget({
           <form onSubmit={handlePlateSubmit} className="flex flex-col sm:flex-row gap-3 items-end">
             <div className="flex-1 space-y-1.5 w-full">
               <label className="text-xs font-bold text-slate-800">
-                New Zealand Number Plate
+                Number Plate (Rego)
               </label>
               <div className="relative flex items-center">
                 <span className="absolute left-3 text-xs font-black text-slate-400 select-none">
@@ -434,7 +434,7 @@ export function VehicleFinderWidget({
               disabled={loadingPlate || !lookupPlate.trim()}
               className="h-11 px-6 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-lg shadow-xs shrink-0"
             >
-              {loadingPlate ? 'Checking NZTA...' : 'Search Plate'}
+              {loadingPlate ? 'Looking up plate...' : 'Search Plate'}
             </Button>
           </form>
 
@@ -475,7 +475,7 @@ export function VehicleFinderWidget({
                   </span>
                 </div>
                 <p className="text-xs text-slate-600 mt-1">
-                  Chassis: {lookupResult.chassisCode || 'Standard'} · {lookupResult.fuelType} · {lookupResult.bodyType}
+                  Body: {lookupResult.chassisCode || 'Standard'} · {lookupResult.fuelType} · {lookupResult.bodyType}
                 </p>
               </div>
 
@@ -485,7 +485,7 @@ export function VehicleFinderWidget({
                 className="h-9 px-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-lg"
               >
                 <CheckCircle2 className="h-4 w-4 mr-1" />
-                <span>View Matching Parts</span>
+                <span>View Parts That Fit</span>
               </Button>
             </div>
           )}
@@ -530,7 +530,7 @@ export function VehicleFinderWidget({
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-xs font-bold text-slate-800">Rim Diameter</label>
+                <label className="text-xs font-bold text-slate-800">Wheel / Rim Size</label>
                 <Select value={tyreRim} onValueChange={setTyreRim}>
                   <SelectTrigger className="h-11 bg-white border-slate-300 rounded-lg text-xs font-medium">
                     <SelectValue placeholder="Rim" />

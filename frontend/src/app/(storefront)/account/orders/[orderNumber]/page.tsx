@@ -115,7 +115,7 @@ export default function CustomerOrderDetailPage() {
       setShowReturnModal(false);
       await loadData();
       flashSuccess(
-        'Return request submitted successfully. Our support team will review your RMA within 1 business day.',
+        'Return request submitted successfully. Our team will review your return request within 1 business day.',
       );
     } catch (e: any) {
       setErrorMsg(e.message || 'Failed to submit return request');
@@ -200,7 +200,7 @@ export default function CustomerOrderDetailPage() {
             }}
             className="h-8 text-xs text-slate-700 font-medium"
           >
-            <Download className="mr-1.5 h-3.5 w-3.5 text-blue-600" /> Download Tax Invoice (PDF)
+            <Download className="mr-1.5 h-3.5 w-3.5 text-blue-600" /> Download GST Invoice (PDF)
           </Button>
           <Button
             variant="outline"
@@ -277,7 +277,7 @@ export default function CustomerOrderDetailPage() {
                 onClick={() => setShowReturnModal(true)}
                 className="text-xs text-purple-700 border-purple-200 hover:bg-purple-50 h-9"
               >
-                <RotateCcw className="mr-1.5 h-4 w-4" /> Request Return (RMA)
+                <RotateCcw className="mr-1.5 h-4 w-4" /> Request a Return
               </Button>
             )}
           </div>
@@ -316,7 +316,7 @@ export default function CustomerOrderDetailPage() {
             <div className="flex items-center gap-2">
               <RotateCcw className="h-5 w-5 text-purple-600" />
               <h2 className="text-sm font-bold text-purple-900">
-                Return Authorization: {order.returnRequests[0]?.rmaNumber}
+                Return Request: {order.returnRequests[0]?.rmaNumber}
               </h2>
             </div>
             <Badge className="bg-purple-200 text-purple-900 text-xs">
@@ -328,10 +328,10 @@ export default function CustomerOrderDetailPage() {
           </p>
           {order.returnRequests[0]?.status === 'APPROVED' && (
             <div className="text-xs text-emerald-800 bg-emerald-50 p-3 rounded-lg border border-emerald-200">
-              <strong>Return Instructions:</strong> Your RMA is approved! Please safely repack parts
-              in original packaging and return to{' '}
+              <strong>Return Instructions:</strong> Your return request is approved! Please repack parts
+              in safe packaging and return to{' '}
               <strong>Pinnacle Auto Spares, 18 Industry Road, Penrose, Auckland 1061</strong> quoting your
-              RMA number on the carton.
+              return number on the package.
             </div>
           )}
         </div>
@@ -342,19 +342,18 @@ export default function CustomerOrderDetailPage() {
         <div className="rounded-xl border border-amber-200 bg-amber-50/60 p-5 space-y-2">
           <div className="flex items-center gap-2 text-amber-900 font-bold text-sm">
             <Boxes className="h-4 w-4 text-amber-700" />
-            Auckland Trade Counter Pickup
+            Auckland Store Pickup
           </div>
           <div className="text-xs text-amber-950 space-y-1">
             <p>
-              <strong>Depot Address:</strong> 18 Industry Road, Penrose, Auckland 1061 (Trade Counter Hub 1)
+              <strong>Warehouse Address:</strong> 18 Industry Road, Penrose, Auckland 1061
             </p>
             <p>
-              <strong>Trade Counter Hours:</strong> Mon–Fri 7:30am – 4:30pm NZST | Sat 8:00am – 12:30pm NZST
+              <strong>Store Hours:</strong> Mon–Fri 7:30am – 5:00pm NZST | Sat 8:00am – 1:00pm NZST
             </p>
             <p>
-              <strong>Collection Requirement:</strong> Quote Order #
-              <strong>{order.orderNumber}</strong> and present photo ID (NZ Driver Licence or trade
-              authorization).
+              <strong>Pickup Instructions:</strong> Quote Order #
+              <strong>{order.orderNumber}</strong> and present photo ID (NZ Driver Licence or ID).
             </p>
           </div>
         </div>
@@ -367,7 +366,7 @@ export default function CustomerOrderDetailPage() {
                 Dispatched with {shipment.carrierName}
               </div>
               <p>
-                Consignment Tracking Number:{' '}
+                Tracking Number:{' '}
                 <strong className="font-mono text-slate-900">{shipment.trackingNumber}</strong>
               </p>
               <p className="text-slate-600">
@@ -390,7 +389,7 @@ export default function CustomerOrderDetailPage() {
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-1.5 bg-indigo-600 hover:bg-indigo-700 text-white font-medium px-4 py-2 rounded-lg text-xs transition-colors shrink-0"
               >
-                Track Consignment <ExternalLink className="h-3.5 w-3.5" />
+                Track Courier Delivery <ExternalLink className="h-3.5 w-3.5" />
               </a>
             )}
           </div>
@@ -405,7 +404,7 @@ export default function CustomerOrderDetailPage() {
             <div className="px-5 py-4 border-b border-slate-200 bg-slate-50/60">
               <h2 className="text-sm font-bold text-slate-800 flex items-center gap-2">
                 <Package className="h-4 w-4 text-slate-500" />
-                Purchased Line Items ({order.items.length})
+                Items Ordered ({order.items.length})
               </h2>
             </div>
 
@@ -422,13 +421,13 @@ export default function CustomerOrderDetailPage() {
                       </span>
                       {item.serializedItemId && (
                         <Badge className="bg-purple-50 text-purple-700 border-purple-200 text-[10px]">
-                          <Barcode className="mr-1 h-3 w-3" /> Serialized & Tested
+                          <Barcode className="mr-1 h-3 w-3" /> Tested Part
                         </Badge>
                       )}
                     </div>
                     <div className="font-semibold text-sm text-slate-900">{item.titleSnapshot}</div>
                     <div className="text-slate-500">
-                      Sale Unit: <strong>{item.saleUnitNameSnapshot}</strong> • Quantity:{' '}
+                      Pack: <strong>{item.saleUnitNameSnapshot}</strong> • Quantity:{' '}
                       <strong>{item.quantity}</strong>
                     </div>
                   </div>
@@ -561,18 +560,17 @@ export default function CustomerOrderDetailPage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-xs p-4">
           <div className="w-full max-w-lg rounded-xl bg-white p-6 shadow-xl space-y-4 max-h-[90vh] overflow-y-auto">
             <h3 className="text-base font-bold text-slate-900 flex items-center gap-2">
-              <RotateCcw className="h-5 w-5 text-purple-600" /> Lodge Return Request (RMA)
+              <RotateCcw className="h-5 w-5 text-purple-600" /> Request a Return
             </h3>
             <p className="text-xs text-slate-500">
-              Submit an official return request for Order <strong>{order.orderNumber}</strong>. Our
-              Auckland Penrose parts inspection team will assess your claim and issue return shipping
-              instructions.
+              Submit a return request for Order <strong>{order.orderNumber}</strong>. Our
+              Auckland team will review your request and send return shipping instructions.
             </p>
 
             <form onSubmit={handleReturnSubmit} className="space-y-4 text-xs">
               <div>
                 <label className="font-semibold text-slate-700 block mb-1">
-                  Primary Reason Code *
+                  Reason for Return *
                 </label>
                 <select
                   value={returnReasonCode}
@@ -580,21 +578,21 @@ export default function CustomerOrderDetailPage() {
                   className="w-full h-9 rounded-md border border-slate-300 bg-white px-3 text-xs"
                 >
                   <option value="INCORRECT_FITMENT">
-                    INCORRECT_FITMENT — Did not fit vehicle chassis
+                    Did not fit my vehicle
                   </option>
                   <option value="DEFECTIVE_PART">
-                    DEFECTIVE_PART — Functional failure or fault
+                    Faulty or defective part
                   </option>
-                  <option value="DAMAGED_IN_SHIPPING">DAMAGED_IN_SHIPPING — Transit damage</option>
+                  <option value="DAMAGED_IN_SHIPPING">Damaged in delivery</option>
                   <option value="CUSTOMER_CHANGED_MIND">
-                    CUSTOMER_CHANGED_MIND — No longer required
+                    Changed mind / no longer needed
                   </option>
                 </select>
               </div>
 
               <div>
                 <label className="font-semibold text-slate-700 block mb-1">
-                  Items to Return & Quantities *
+                  Items to Return &amp; Quantities *
                 </label>
                 <div className="space-y-2 border border-slate-200 rounded-lg p-3 bg-slate-50/50">
                   {order.items.map((item) => (
@@ -626,12 +624,12 @@ export default function CustomerOrderDetailPage() {
 
               <div>
                 <label className="font-semibold text-slate-700 block mb-1">
-                  Detailed Explanation & Fault Description *
+                  Details / Notes *
                 </label>
                 <textarea
                   required
                   rows={3}
-                  placeholder="Please describe why this item is being returned, vehicle VIN, or fitting issue..."
+                  placeholder="Please describe why this item is being returned, your car rego or VIN, or any issue..."
                   value={returnNotes}
                   onChange={(e) => setReturnNotes(e.target.value)}
                   className="w-full rounded-md border border-slate-300 p-2 text-xs"
@@ -652,7 +650,7 @@ export default function CustomerOrderDetailPage() {
                   disabled={actionLoading || !returnNotes.trim()}
                   className="bg-purple-600 hover:bg-purple-700 text-white text-xs h-8"
                 >
-                  {actionLoading ? 'Lodging...' : 'Submit Return Authorization'}
+                  {actionLoading ? 'Submitting...' : 'Submit Return Request'}
                 </Button>
               </div>
             </form>

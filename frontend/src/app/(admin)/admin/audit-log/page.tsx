@@ -46,11 +46,11 @@ export default function AdminAuditLogPage() {
   }, [loadLogs]);
 
   const domains = [
-    { value: '', label: 'All Domains' },
+    { value: '', label: 'All Categories' },
     { value: 'ORDERS', label: 'Orders & Refunds' },
-    { value: 'INVENTORY', label: 'Inventory & Movements' },
+    { value: 'INVENTORY', label: 'Stock & Inventory' },
     { value: 'STAFF', label: 'Staff & Roles' },
-    { value: 'SETTINGS', label: 'Business Settings' },
+    { value: 'SETTINGS', label: 'Store Settings' },
     { value: 'EXPORT', label: 'Data Exports' },
   ];
 
@@ -61,14 +61,14 @@ export default function AdminAuditLogPage() {
         <div>
           <div className="flex items-center gap-2">
             <h1 className="text-2xl font-bold tracking-tight text-slate-900">
-              Security & Audit Trail
+              Activity &amp; Audit Log
             </h1>
             <Badge variant="outline" className="font-mono text-xs">
-              Immutable Ledger
+              Audit Trail
             </Badge>
           </div>
           <p className="text-xs text-slate-500 mt-1">
-            Complete tamper-evident audit logs of sensitive order modifications, stock write-offs, role updates, and settings changes.
+            Complete history of order changes, stock adjustments, staff permission updates, and settings.
           </p>
         </div>
 
@@ -116,7 +116,7 @@ export default function AdminAuditLogPage() {
           <div className="relative w-48">
             <Search className="absolute left-2.5 top-2.5 h-3.5 w-3.5 text-slate-400" />
             <Input
-              placeholder="Filter by action code..."
+              placeholder="Filter by action..."
               value={action}
               onChange={(e) => setAction(e.target.value)}
               className="pl-8 text-xs h-8 bg-slate-50"
@@ -125,7 +125,7 @@ export default function AdminAuditLogPage() {
         </div>
 
         <div className="text-xs font-mono text-slate-500">
-          Showing <strong>{logs.length}</strong> of <strong>{total}</strong> logged events
+          Showing <strong>{logs.length}</strong> of <strong>{total}</strong> events
         </div>
       </div>
 
@@ -136,13 +136,13 @@ export default function AdminAuditLogPage() {
             <table className="w-full text-left text-xs">
               <thead className="bg-slate-50 border-b border-slate-200 text-slate-500 uppercase tracking-wider font-semibold">
                 <tr>
-                  <th className="py-3 px-4">Timestamp (NZST)</th>
-                  <th className="py-3 px-4">Domain</th>
-                  <th className="py-3 px-4">Action Code</th>
-                  <th className="py-3 px-4">Entity Ref</th>
-                  <th className="py-3 px-4">Actor</th>
-                  <th className="py-3 px-4">Client IP</th>
-                  <th className="py-3 px-4 text-right">State Diff</th>
+                  <th className="py-3 px-4">Date &amp; Time</th>
+                  <th className="py-3 px-4">Category</th>
+                  <th className="py-3 px-4">Action</th>
+                  <th className="py-3 px-4">Item / Reference</th>
+                  <th className="py-3 px-4">User / System</th>
+                  <th className="py-3 px-4">IP Address</th>
+                  <th className="py-3 px-4 text-right">Changes</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 font-mono">
@@ -193,7 +193,7 @@ export default function AdminAuditLogPage() {
                             className="h-7 text-xs text-blue-600 hover:text-blue-800 hover:bg-blue-50"
                           >
                             <Code className="h-3.5 w-3.5 mr-1" />
-                            View Diff
+                            View Details
                           </Button>
                         ) : (
                           <span className="text-slate-300 text-xs italic">—</span>
@@ -204,7 +204,7 @@ export default function AdminAuditLogPage() {
                 ) : (
                   <tr>
                     <td colSpan={7} className="py-8 text-center text-slate-500 font-sans">
-                      {loading ? 'Querying immutable audit logs...' : 'No audit entries found for the selected filters.'}
+                      {loading ? 'Loading audit log...' : 'No audit events found for the selected filters.'}
                     </td>
                   </tr>
                 )}
@@ -221,7 +221,7 @@ export default function AdminAuditLogPage() {
             <div className="flex items-center justify-between border-b border-slate-200 pb-3">
               <div>
                 <h2 className="text-base font-bold text-slate-900">
-                  State Mutation Diff
+                  Event Details &amp; Changes
                 </h2>
                 <span className="text-xs text-slate-500 font-mono">
                   {selectedLog.domain} &bull; {selectedLog.action}
@@ -239,19 +239,19 @@ export default function AdminAuditLogPage() {
             {/* Metadata */}
             <div className="p-3 bg-slate-50 rounded-lg border border-slate-200 space-y-1.5 font-mono text-[11px]">
               <div>
-                <span className="text-slate-400">Timestamp: </span>
+                <span className="text-slate-400">Date &amp; Time: </span>
                 <span className="text-slate-800">{new Date(selectedLog.createdAt).toLocaleString('en-AU')}</span>
               </div>
               <div>
-                <span className="text-slate-400">Actor: </span>
+                <span className="text-slate-400">User: </span>
                 <span className="text-slate-800">{selectedLog.actorName} ({selectedLog.actorEmail || 'N/A'})</span>
               </div>
               <div>
-                <span className="text-slate-400">Target Entity: </span>
+                <span className="text-slate-400">Target Item: </span>
                 <span className="text-slate-800">{selectedLog.entityType} ID: {selectedLog.entityId}</span>
               </div>
               <div>
-                <span className="text-slate-400">User Agent: </span>
+                <span className="text-slate-400">Browser / Client: </span>
                 <span className="text-slate-600 truncate block">{selectedLog.userAgent || 'N/A'}</span>
               </div>
             </div>
@@ -259,24 +259,24 @@ export default function AdminAuditLogPage() {
             {/* Before State */}
             <div>
               <span className="font-semibold text-slate-700 uppercase tracking-wider text-[11px] block mb-1">
-                Before Mutation:
+                Before Change:
               </span>
               <pre className="p-3 rounded-lg bg-slate-900 text-slate-200 font-mono text-[11px] overflow-x-auto">
                 {selectedLog.beforeState
                   ? JSON.stringify(selectedLog.beforeState, null, 2)
-                  : '(null / initial creation)'}
+                  : '(None / newly created)'}
               </pre>
             </div>
 
             {/* After State */}
             <div>
               <span className="font-semibold text-slate-700 uppercase tracking-wider text-[11px] block mb-1">
-                After Mutation:
+                After Change:
               </span>
               <pre className="p-3 rounded-lg bg-slate-900 text-emerald-400 font-mono text-[11px] overflow-x-auto">
                 {selectedLog.afterState
                   ? JSON.stringify(selectedLog.afterState, null, 2)
-                  : '(null / deleted)'}
+                  : '(None / deleted)'}
               </pre>
             </div>
           </div>

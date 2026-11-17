@@ -118,8 +118,7 @@ export default async function FitmentResultsPage({ searchParams }: FitmentPagePr
                     : 'Vehicle Compatibility Results'}
                 </h1>
                 <p className="text-xs text-slate-500 mt-0.5">
-                  Components verified against OEM assembly diagrams and workshop interchange
-                  matrices.
+                  Parts verified for guaranteed fit with your vehicle.
                 </p>
               </div>
             </div>

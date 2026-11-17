@@ -54,7 +54,7 @@ export function StorefrontHeader() {
           <div className="flex items-center gap-6">
             <span className="hidden sm:inline-flex items-center gap-1.5 font-medium text-slate-700">
               <span className="h-2 w-2 rounded-full bg-emerald-500" />
-              <span>Registered NZ Motor Vehicle Trader · Penrose Auckland Hub</span>
+              <span>Trusted NZ Auto Parts · Auckland Warehouse</span>
             </span>
             <span className="hidden md:inline text-slate-400">|</span>
             <span className="hidden md:inline text-slate-500">
@@ -124,7 +124,7 @@ export function StorefrontHeader() {
                 className="inline-flex items-center gap-1.5 rounded-lg px-3 py-2 hover:bg-slate-100 hover:text-blue-700 transition-colors"
               >
                 <Disc className="h-4 w-4 text-slate-500" />
-                <span>Commercial Tyres</span>
+                <span>Tyres</span>
                 <ChevronDown className="h-3.5 w-3.5 text-slate-400" />
               </Link>
               {tyresDropdownOpen && (
@@ -140,20 +140,20 @@ export function StorefrontHeader() {
                       href="/tyres?terrain=HIGHWAY"
                       className="block rounded-lg px-3 py-2 text-xs text-slate-600 hover:bg-slate-50 hover:text-blue-700"
                     >
-                      Passenger &amp; Highway Terrain
+                      Cars &amp; SUVs
                     </Link>
                     <Link
                       href="/tyres?terrain=COMMERCIAL_CARGO"
                       className="block rounded-lg px-3 py-2 text-xs text-slate-600 hover:bg-slate-50 hover:text-blue-700"
                     >
-                      Commercial Light Truck &amp; Van
+                      Vans &amp; Light Trucks
                     </Link>
                     <div className="my-1 border-t border-slate-100" />
                     <Link
                       href="/tyres?sectionWidth=205&aspectRatio=55&rimDiameter=16"
                       className="block rounded-lg px-3 py-1.5 text-xs text-slate-500 hover:bg-slate-50 hover:text-blue-700"
                     >
-                      Popular: 205/55 R16
+                      Popular Size: 205/55 R16
                     </Link>
                   </div>
                 </div>
@@ -165,14 +165,14 @@ export function StorefrontHeader() {
               className="inline-flex items-center gap-1.5 rounded-lg px-3 py-2 hover:bg-slate-100 hover:text-blue-700 transition-colors"
             >
               <ShieldCheck className="h-4 w-4 text-emerald-600" />
-              <span>Tested Seat Belts</span>
+              <span>Seat Belts</span>
             </Link>
 
             <Link
               href="/fitment"
               className="inline-flex items-center gap-1.5 rounded-lg px-3 py-2 text-slate-600 hover:bg-slate-100 hover:text-blue-700 transition-colors"
             >
-              <span>Fitment Finder</span>
+              <span>Vehicle Search</span>
             </Link>
           </nav>
         </div>
@@ -267,21 +267,21 @@ export function StorefrontHeader() {
                 onClick={() => setMobileMenuOpen(false)}
                 className="block rounded-lg px-3 py-2 text-sm font-semibold text-slate-900 hover:bg-slate-100"
               >
-                Commercial Tyres
+                Tyres
               </Link>
               <Link
                 href="/seat-belts"
                 onClick={() => setMobileMenuOpen(false)}
                 className="block rounded-lg px-3 py-2 text-sm font-semibold text-slate-900 hover:bg-slate-100"
               >
-                Tested Seat Belts
+                Seat Belts
               </Link>
               <Link
                 href="/fitment"
                 onClick={() => setMobileMenuOpen(false)}
                 className="block rounded-lg px-3 py-2 text-sm font-semibold text-slate-900 hover:bg-slate-100"
               >
-                Fitment Finder
+                Vehicle Search
               </Link>
               <Link
                 href="/cart"
@@ -296,7 +296,7 @@ export function StorefrontHeader() {
                   onClick={() => setMobileMenuOpen(false)}
                   className="block rounded-lg px-3 py-2 text-xs font-semibold text-blue-700 bg-blue-50"
                 >
-                  Staff Admin Portal &rarr;
+                  Staff Portal &rarr;
                 </Link>
               </div>
             </nav>

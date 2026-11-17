@@ -17,7 +17,7 @@ export default function AdminCategoriesPage() {
       name: 'Commercial & Passenger Tyres',
       slug: 'tyres',
       description:
-        'Commodity pneumatic tyres sold from bulk warehouse inventory in single, pair (2x), and vehicle set (4x) sale units.',
+        'Tyres sold in singles (1x), pairs (2x), and vehicle sets of 4 (4x) directly from warehouse inventory.',
       activeProducts: 10,
       productType: 'BULK_QUANTITY',
       saleUnits: ['Single Tyre (1x)', 'Pair (2x)', 'Vehicle Set (4x)'],
@@ -36,16 +36,16 @@ export default function AdminCategoriesPage() {
       name: 'Seat Belts & Safety Harnesses',
       slug: 'seat-belts',
       description:
-        'Individually inspected and serialized second-hand safety components, retractors, buckles, and stalks compliant with New Zealand WOF / Land Transport vehicle safety standards.',
+        'Individually safety-inspected second-hand seat belts, retractors, and buckles compliant with NZ WOF safety standards.',
       activeProducts: 6,
       productType: 'INDIVIDUALLY_SERIALIZED',
       saleUnits: ['Individual Serialized Unit (1x)'],
       mandatorySpecs: [
         'Vehicle Position (Front Left, Front Right, Rear Centre, etc.)',
         'Component Type (3-Point Retractor, Stalk, Buckle)',
-        'Pretensioner Pyrotechnic Status (Active / Non-Deployed)',
+        'Pretensioner Status (Safety Tested / Active)',
         'Physical Condition Grade (A / B / C)',
-        'Fitment Verification Reference',
+        'Vehicle Fitment / Compatibility',
       ],
     },
   ];
@@ -57,14 +57,14 @@ export default function AdminCategoriesPage() {
         <div>
           <div className="flex items-center gap-2">
             <h1 className="text-2xl font-bold tracking-tight text-slate-900">
-              Category Architecture & Schemas
+              Product Categories
             </h1>
             <Badge variant="outline" className="font-mono text-xs">
-              Domain Specifications
+              Categories &amp; Specs
             </Badge>
           </div>
           <p className="text-xs text-slate-500 mt-1">
-            Category hierarchies, inventory modality configuration, and required technical specification schemas.
+            Manage product categories, pack options, and required technical specifications.
           </p>
         </div>
 
@@ -72,7 +72,7 @@ export default function AdminCategoriesPage() {
           <Button asChild size="sm" className="h-8 text-xs gap-1.5 bg-blue-600 hover:bg-blue-700">
             <Link href="/admin/products/new">
               <Plus className="h-3.5 w-3.5" />
-              Add Product to Category
+              Add Product
             </Link>
           </Button>
         </div>
@@ -98,7 +98,7 @@ export default function AdminCategoriesPage() {
                   </div>
 
                   <Badge variant={cat.productType === 'BULK_QUANTITY' ? 'default' : 'outline'} className="text-[10px]">
-                    {cat.productType === 'BULK_QUANTITY' ? 'Bulk Inventory' : 'Serialized Parts'}
+                    {cat.productType === 'BULK_QUANTITY' ? 'Bulk Stock' : 'Serialized Parts'}
                   </Badge>
                 </div>
                 <CardDescription className="text-xs mt-2 leading-relaxed text-slate-600">
@@ -110,7 +110,7 @@ export default function AdminCategoriesPage() {
                 {/* Sale Unit Multipliers */}
                 <div className="p-3 bg-slate-50 rounded-lg border border-slate-200 space-y-1.5">
                   <span className="font-semibold text-slate-700 uppercase tracking-wider text-[10px] block">
-                    Supported Sale Units (Base Stock Multipliers):
+                    Available Selling Packs:
                   </span>
                   <div className="flex flex-wrap gap-1.5">
                     {cat.saleUnits.map((su) => (
@@ -124,7 +124,7 @@ export default function AdminCategoriesPage() {
                 {/* Mandatory Specifications */}
                 <div>
                   <span className="font-semibold text-slate-700 uppercase tracking-wider text-[10px] block mb-2">
-                    Enforced Attribute Schema ({cat.mandatorySpecs.length} fields):
+                    Required Specifications ({cat.mandatorySpecs.length} fields):
                   </span>
                   <ul className="space-y-1">
                     {cat.mandatorySpecs.map((spec) => (
@@ -140,11 +140,11 @@ export default function AdminCategoriesPage() {
 
             <div className="p-4 border-t border-slate-100 bg-slate-50/50 rounded-b-lg flex items-center justify-between text-xs">
               <span className="font-mono font-semibold text-slate-700">
-                {cat.activeProducts} published catalogue items
+                {cat.activeProducts} active products
               </span>
               <Button asChild variant="outline" size="sm" className="h-7 text-xs">
                 <Link href={`/admin/products?category=${cat.slug}`}>
-                  Browse Catalogue &rarr;
+                  View Products &rarr;
                 </Link>
               </Button>
             </div>

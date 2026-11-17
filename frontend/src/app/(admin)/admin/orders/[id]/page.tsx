@@ -107,7 +107,7 @@ export default function AdminOrderDetailPage() {
         notes: 'Order picked and staged in Auckland Bay 4',
       });
       setOrder(updated);
-      flashSuccess('Order marked as PROCESSING (Pick & Pack initiated)');
+      flashSuccess('Order marked as Packing');
     } catch (e: any) {
       setErrorMsg(e.message || 'Pick & pack failed');
     } finally {
@@ -129,7 +129,7 @@ export default function AdminOrderDetailPage() {
       setShowDispatchModal(false);
       setTrackingNumber('');
       flashSuccess(
-        `Shipment booked with ${carrierName} (${trackingNumber}). Order set to SHIPPED.`,
+        `Shipment updated with ${carrierName} (${trackingNumber}). Order marked as Shipped.`,
       );
     } catch (e: any) {
       setErrorMsg(e.message || 'Dispatch failed');
@@ -150,7 +150,7 @@ export default function AdminOrderDetailPage() {
       });
       setOrder(updated);
       setShowCollectModal(false);
-      flashSuccess('Trade counter pickup verified! Order set to DELIVERED.');
+      flashSuccess('Warehouse pickup confirmed. Order marked as Delivered / Collected.');
     } catch (e: any) {
       setErrorMsg(e.message || 'Depot collection failed');
     } finally {
@@ -170,7 +170,7 @@ export default function AdminOrderDetailPage() {
       setOrder(updated);
       setShowCancelModal(false);
       setCancelReason('');
-      flashSuccess('Order cancelled. Inventory has been restocked/released to available pool.');
+      flashSuccess('Order cancelled. Stock has been returned to available inventory.');
     } catch (e: any) {
       setErrorMsg(e.message || 'Cancellation failed');
     } finally {
@@ -205,11 +205,11 @@ export default function AdminOrderDetailPage() {
         action,
         staffNotes:
           action === 'APPROVE'
-            ? 'Approved for physical return to Auckland depot'
+            ? 'Approved for return to Auckland warehouse'
             : 'Declined per store policy',
       });
       await loadOrder();
-      flashSuccess(`RMA return request ${action === 'APPROVE' ? 'APPROVED' : 'REJECTED'}.`);
+      flashSuccess(`Return request ${action === 'APPROVE' ? 'Approved' : 'Rejected'}.`);
     } catch (e: any) {
       setErrorMsg(e.message || 'RMA review failed');
     } finally {
@@ -232,7 +232,7 @@ export default function AdminOrderDetailPage() {
       setInspectionNotes('');
       await loadOrder();
       flashSuccess(
-        `Inspection recorded with disposition: ${inspectionDisposition}. Stock movement executed.`,
+        `Inspection saved: ${inspectionDisposition}. Stock updated.`,
       );
     } catch (e: any) {
       setErrorMsg(e.message || 'Inspection recording failed');
@@ -258,7 +258,7 @@ export default function AdminOrderDetailPage() {
         <p className="text-sm mt-1">{errorMsg || 'Could not locate order in database'}</p>
         <Link href="/admin/orders">
           <Button variant="outline" className="mt-4">
-            Back to Orders List
+            Back to Orders
           </Button>
         </Link>
       </div>
@@ -275,9 +275,9 @@ export default function AdminOrderDetailPage() {
           href="/admin/orders"
           className="text-xs font-semibold text-slate-600 hover:text-slate-900 flex items-center gap-1.5"
         >
-          <ArrowLeft className="h-3.5 w-3.5" /> Back to Orders Management
+          <ArrowLeft className="h-3.5 w-3.5" /> Back to Orders
         </Link>
-        <span className="text-xs font-mono text-slate-500">Depot Code: AKL-CENTRAL</span>
+        <span className="text-xs font-mono text-slate-500">Warehouse: AKL-CENTRAL</span>
       </div>
 
       {/* Alert Banners */}
@@ -307,13 +307,8 @@ export default function AdminOrderDetailPage() {
         <div className="rounded-xl border border-amber-200 bg-amber-50/70 p-3 text-xs text-amber-900 flex items-center gap-2">
           <Lock className="h-4 w-4 text-amber-700 shrink-0" />
           <div>
-            <strong>Sensitive Contact Information Masked:</strong> Your operator role does not
-            possess the{' '}
-            <code className="font-mono bg-amber-100 px-1 py-0.5 rounded text-amber-800">
-              customers:view:pii_contact
-            </code>{' '}
-            privilege. Customer phone, email, and address lines are restricted per the privacy
-            policy.
+            <strong>Customer contact information masked:</strong> Your staff role does not have
+            permission to view full personal customer details.
           </div>
         </div>
       )}
@@ -333,7 +328,7 @@ export default function AdminOrderDetailPage() {
                 Payment: {order.paymentStatus}
               </Badge>
               <Badge variant="outline" className="text-xs">
-                Fulfilment: {order.fulfillmentStatus}
+                Fulfillment: {order.fulfillmentStatus}
               </Badge>
             </div>
             <p className="mt-1 text-xs text-slate-500 flex items-center gap-2">
@@ -361,7 +356,7 @@ export default function AdminOrderDetailPage() {
                 disabled={actionLoading}
                 className="bg-amber-600 hover:bg-amber-700 text-white text-xs h-9"
               >
-                <Boxes className="mr-1.5 h-4 w-4" /> Start Pick & Pack
+                <Boxes className="mr-1.5 h-4 w-4" /> Start Packing
               </Button>
             )}
 
@@ -373,7 +368,7 @@ export default function AdminOrderDetailPage() {
                     disabled={actionLoading}
                     className="bg-emerald-600 hover:bg-emerald-700 text-white text-xs h-9"
                   >
-                    <CheckCircle2 className="mr-1.5 h-4 w-4" /> Verify Trade Counter Pickup
+                    <CheckCircle2 className="mr-1.5 h-4 w-4" /> Confirm Warehouse Pickup
                   </Button>
                 ) : (
                   <Button
@@ -381,7 +376,7 @@ export default function AdminOrderDetailPage() {
                     disabled={actionLoading}
                     className="bg-indigo-600 hover:bg-indigo-700 text-white text-xs h-9"
                   >
-                    <Truck className="mr-1.5 h-4 w-4" /> Dispatch Courier Consignment
+                    <Truck className="mr-1.5 h-4 w-4" /> Ship via Courier
                   </Button>
                 )}
 
@@ -391,7 +386,7 @@ export default function AdminOrderDetailPage() {
                   disabled={actionLoading}
                   className="text-rose-700 border-rose-200 hover:bg-rose-50 text-xs h-9"
                 >
-                  <XCircle className="mr-1.5 h-4 w-4" /> Cancel & Restock
+                  <XCircle className="mr-1.5 h-4 w-4" /> Cancel Order
                 </Button>
               </>
             )}
@@ -412,7 +407,7 @@ export default function AdminOrderDetailPage() {
 
         {/* State Machine Permitted Transitions Indicator */}
         <div className="flex items-center gap-2 text-xs text-slate-500">
-          <span className="font-semibold text-slate-700">Permitted Transitions:</span>
+          <span className="font-semibold text-slate-700">Next Steps:</span>
           {order.allowedTransitions.length > 0 ? (
             order.allowedTransitions.map((t) => (
               <Badge key={t} variant="secondary" className="font-mono text-[11px] font-normal">
@@ -420,7 +415,7 @@ export default function AdminOrderDetailPage() {
               </Badge>
             ))
           ) : (
-            <span className="italic text-slate-400">Terminal state — no transitions permitted</span>
+            <span className="italic text-slate-400">Order complete</span>
           )}
         </div>
       </div>
@@ -429,14 +424,14 @@ export default function AdminOrderDetailPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Left Column (2 Cols wide): Line Items, Consignments, RMAs, Timeline */}
         <div className="lg:col-span-2 space-y-6">
-          {/* Card: Immutable Line Item Snapshots */}
+          {/* Card: Line Items */}
           <div className="rounded-xl border border-slate-200 bg-white overflow-hidden shadow-2xs">
             <div className="px-5 py-4 border-b border-slate-200 bg-slate-50/60 flex items-center justify-between">
               <h2 className="text-sm font-bold text-slate-800 flex items-center gap-2">
                 <Package className="h-4 w-4 text-slate-500" />
-                Immutable Line-Item Snapshots ({order.items.length} items)
+                Order Items ({order.items.length})
               </h2>
-              <span className="text-xs text-slate-500">Preserved at time of purchase</span>
+              <span className="text-xs text-slate-500">Items ordered by customer</span>
             </div>
 
             <div className="divide-y divide-slate-100">
@@ -452,16 +447,16 @@ export default function AdminOrderDetailPage() {
                       </span>
                       {item.serializedItemId && (
                         <Badge className="bg-purple-50 text-purple-700 border-purple-200 text-[10px]">
-                          <Barcode className="mr-1 h-3 w-3" /> Serialized Used Part
+                          <Barcode className="mr-1 h-3 w-3" /> Inspected Part (Seat Belt)
                         </Badge>
                       )}
                     </div>
                     <div className="font-semibold text-sm text-slate-900">{item.titleSnapshot}</div>
                     <div className="text-xs text-slate-500">
-                      Sale Unit:{' '}
+                      Pack:{' '}
                       <strong className="text-slate-700">{item.saleUnitNameSnapshot}</strong>{' '}
-                      (Multiplier: {item.baseQuantityMultiplierSnapshot}) • Physical stock consumed:{' '}
-                      <strong className="text-slate-700">{item.baseUnitsConsumed} units</strong>
+                      • Total items:{' '}
+                      <strong className="text-slate-700">{item.baseUnitsConsumed}</strong>
                     </div>
                   </div>
 
@@ -486,17 +481,16 @@ export default function AdminOrderDetailPage() {
             <div className="flex items-center justify-between border-b border-slate-100 pb-3">
               <h2 className="text-sm font-bold text-slate-800 flex items-center gap-2">
                 <Truck className="h-4 w-4 text-indigo-600" />
-                Consignments & Tracking
+                Shipping &amp; Tracking
               </h2>
               <span className="text-xs text-slate-500">
-                {order.shipments.length} consignment{order.shipments.length === 1 ? '' : 's'}{' '}
-                recorded
+                {order.shipments.length} shipment{order.shipments.length === 1 ? '' : 's'}
               </span>
             </div>
 
             {order.shipments.length === 0 ? (
               <p className="text-xs text-slate-500 italic py-2">
-                No courier consignments or trade pickups recorded yet for this order.
+                No shipments or pickups recorded yet for this order.
               </p>
             ) : (
               <div className="space-y-3">
@@ -508,7 +502,7 @@ export default function AdminOrderDetailPage() {
                     <div className="space-y-1">
                       <div className="font-semibold text-slate-900 text-sm">{s.carrierName}</div>
                       <div className="font-mono text-slate-600">
-                        Consignment #: <strong>{s.trackingNumber}</strong>
+                        Tracking #: <strong>{s.trackingNumber}</strong>
                       </div>
                       <div className="text-[11px] text-slate-500">
                         Dispatched:{' '}
@@ -557,7 +551,7 @@ export default function AdminOrderDetailPage() {
               <div className="flex items-center justify-between border-b border-slate-100 pb-3">
                 <h2 className="text-sm font-bold text-slate-800 flex items-center gap-2">
                   <RotateCcw className="h-4 w-4 text-purple-600" />
-                  Return Authorizations & RMAs ({order.returnRequests.length})
+                  Return Requests ({order.returnRequests.length})
                 </h2>
               </div>
 
@@ -611,7 +605,7 @@ export default function AdminOrderDetailPage() {
                     {/* Return Items and Inspection details */}
                     <div className="space-y-2 pt-2">
                       <div className="text-xs font-semibold text-slate-600">
-                        Returned Part Line Items:
+                        Returned Items:
                       </div>
                       {rma.items.map((item) => (
                         <div
@@ -643,7 +637,7 @@ export default function AdminOrderDetailPage() {
                                 onClick={() => setInspectingItem(item)}
                                 className="h-7 text-xs border-indigo-200 text-indigo-700 hover:bg-indigo-50"
                               >
-                                <Wrench className="mr-1 h-3 w-3" /> Record Quality Inspection
+                                <Wrench className="mr-1 h-3 w-3" /> Record Inspection
                               </Button>
                             )}
                           </div>
@@ -660,7 +654,7 @@ export default function AdminOrderDetailPage() {
           <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-2xs space-y-4">
             <h2 className="text-sm font-bold text-slate-800 flex items-center gap-2 border-b border-slate-100 pb-3">
               <Clock className="h-4 w-4 text-slate-500" />
-              Complete Order Audit Timeline
+              Order History &amp; Timeline
             </h2>
 
             <div className="relative pl-6 space-y-6 before:absolute before:left-2.5 before:top-2 before:bottom-2 before:w-0.5 before:bg-slate-200">
@@ -681,7 +675,7 @@ export default function AdminOrderDetailPage() {
                   <p className="mt-0.5 text-slate-600">{evt.description}</p>
                   {evt.actor && (
                     <span className="inline-block mt-1 text-[10px] font-medium text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded">
-                      Actor: {evt.actor}
+                      By: {evt.actor}
                     </span>
                   )}
                 </div>
@@ -700,18 +694,18 @@ export default function AdminOrderDetailPage() {
 
             <div className="space-y-2 text-xs">
               <div className="flex justify-between text-slate-600">
-                <span>Items Gross Subtotal:</span>
+                <span>Items Subtotal:</span>
                 <span className="font-mono">${order.subtotal.toFixed(2)}</span>
               </div>
               <div className="flex justify-between text-slate-500">
-                <span>Included Statutory 15% GST:</span>
+                <span>Included 15% GST:</span>
                 <span className="font-mono">${order.taxAmount.toFixed(2)}</span>
               </div>
               <div className="flex justify-between text-slate-600">
-                <span>Freight & Handling:</span>
+                <span>Delivery Fee:</span>
                 <span className="font-mono">
                   {order.shippingFee === 0
-                    ? 'FREE (Depot Pickup)'
+                    ? 'FREE (Warehouse Pickup)'
                     : `$${order.shippingFee.toFixed(2)}`}
                 </span>
               </div>
@@ -729,7 +723,7 @@ export default function AdminOrderDetailPage() {
 
             {/* Payment Transactions */}
             <div className="pt-3 border-t border-slate-100 space-y-2">
-              <div className="text-xs font-semibold text-slate-700">Gateway Transactions:</div>
+              <div className="text-xs font-semibold text-slate-700">Payment Records:</div>
               {order.paymentTransactions.length === 0 ? (
                 <div className="text-xs text-slate-400 italic">No transaction records found.</div>
               ) : (
@@ -784,11 +778,11 @@ export default function AdminOrderDetailPage() {
                 <div className="mt-1">
                   {isClickAndCollect ? (
                     <span className="font-semibold text-amber-800 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded text-xs inline-flex items-center gap-1">
-                      <Boxes className="h-3 w-3" /> Auckland Depot Trade Counter Collection
+                      <Boxes className="h-3 w-3" /> Auckland Warehouse Pickup
                     </span>
                   ) : (
                     <span className="font-semibold text-indigo-800 bg-indigo-50 border border-indigo-200 px-2 py-0.5 rounded text-xs inline-flex items-center gap-1">
-                      <Truck className="h-3 w-3" /> Standard New Zealand Courier Freight
+                      <Truck className="h-3 w-3" /> NZ Courier Delivery
                     </span>
                   )}
                 </div>
@@ -823,7 +817,7 @@ export default function AdminOrderDetailPage() {
               {order.notes && (
                 <div className="border-t border-slate-100 pt-2">
                   <div className="font-semibold text-slate-500 text-[11px] uppercase tracking-wider">
-                    Staff & Order Internal Notes
+                    Order Notes
                   </div>
                   <pre className="mt-1 p-2 bg-slate-50 border border-slate-200 rounded text-[11px] text-slate-700 whitespace-pre-wrap font-sans">
                     {order.notes}
@@ -836,22 +830,22 @@ export default function AdminOrderDetailPage() {
       </div>
 
       {/* ------------------------------------------------------------------ */}
-      {/* MODAL: Dispatch Courier Consignment */}
+      {/* MODAL: Dispatch Courier Shipment */}
       {/* ------------------------------------------------------------------ */}
       {showDispatchModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-xs p-4">
           <div className="w-full max-w-md rounded-xl bg-white p-6 shadow-xl space-y-4">
             <h3 className="text-base font-bold text-slate-900 flex items-center gap-2">
-              <Truck className="h-5 w-5 text-indigo-600" /> Dispatch Courier Shipment
+              <Truck className="h-5 w-5 text-indigo-600" /> Ship via Courier
             </h3>
             <p className="text-xs text-slate-500">
-              Generate a consignment tracking record for Order <strong>{order.orderNumber}</strong>.
-              This action marks the order as <strong>SHIPPED</strong>.
+              Enter tracking information for Order <strong>{order.orderNumber}</strong>.
+              This will mark the order as <strong>Shipped</strong>.
             </p>
 
             <form onSubmit={handleDispatch} className="space-y-3 text-xs">
               <div>
-                <label className="font-semibold text-slate-700 block mb-1">Carrier Provider</label>
+                <label className="font-semibold text-slate-700 block mb-1">Courier / Carrier</label>
                 <select
                   value={carrierName}
                   onChange={(e) => setCarrierName(e.target.value)}
@@ -866,7 +860,7 @@ export default function AdminOrderDetailPage() {
 
               <div>
                 <label className="font-semibold text-slate-700 block mb-1">
-                  Consignment / Tracking Number *
+                  Tracking Number *
                 </label>
                 <Input
                   required
@@ -879,7 +873,7 @@ export default function AdminOrderDetailPage() {
 
               <div>
                 <label className="font-semibold text-slate-700 block mb-1">
-                  Dispatcher Notes (Optional)
+                  Shipping Notes (Optional)
                 </label>
                 <Input
                   placeholder="e.g. 2 pallets staged at Dock 3"
@@ -903,7 +897,7 @@ export default function AdminOrderDetailPage() {
                   disabled={actionLoading || !trackingNumber.trim()}
                   className="bg-indigo-600 hover:bg-indigo-700 text-white text-xs h-8"
                 >
-                  {actionLoading ? 'Booking...' : 'Confirm Dispatch'}
+                  {actionLoading ? 'Saving...' : 'Confirm Shipment'}
                 </Button>
               </div>
             </form>
@@ -918,17 +912,17 @@ export default function AdminOrderDetailPage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-xs p-4">
           <div className="w-full max-w-md rounded-xl bg-white p-6 shadow-xl space-y-4">
             <h3 className="text-base font-bold text-slate-900 flex items-center gap-2">
-              <CheckCircle2 className="h-5 w-5 text-emerald-600" /> Gate 2 Trade Counter Collection
+              <CheckCircle2 className="h-5 w-5 text-emerald-600" /> Confirm Warehouse Pickup
             </h3>
             <p className="text-xs text-slate-500">
-              Verify customer ID at Gate 2 counter before releasing goods. This action transitions
-              order to <strong>DELIVERED</strong>.
+              Verify customer name and ID before releasing items. This marks the order as{' '}
+              <strong>Delivered / Collected</strong>.
             </p>
 
             <form onSubmit={handleDepotCollection} className="space-y-3 text-xs">
               <div>
                 <label className="font-semibold text-slate-700 block mb-1">
-                  Collector Full Name *
+                  Person Collecting *
                 </label>
                 <Input
                   required
@@ -939,7 +933,7 @@ export default function AdminOrderDetailPage() {
               </div>
 
               <div>
-                <label className="font-semibold text-slate-700 block mb-1">ID Document Type</label>
+                <label className="font-semibold text-slate-700 block mb-1">ID Type</label>
                 <select
                   value={idDocType}
                   onChange={(e) => setIdDocType(e.target.value)}
@@ -956,7 +950,7 @@ export default function AdminOrderDetailPage() {
 
               <div>
                 <label className="font-semibold text-slate-700 block mb-1">
-                  ID Last 4 Digits (Audit Proof)
+                  ID Last 4 Digits (Optional)
                 </label>
                 <Input
                   placeholder="e.g. 8842"
@@ -981,7 +975,7 @@ export default function AdminOrderDetailPage() {
                   disabled={actionLoading || !collectedByName.trim()}
                   className="bg-emerald-600 hover:bg-emerald-700 text-white text-xs h-8"
                 >
-                  {actionLoading ? 'Saving...' : 'Confirm Delivery & Release'}
+                  {actionLoading ? 'Saving...' : 'Confirm Pickup'}
                 </Button>
               </div>
             </form>
@@ -996,12 +990,11 @@ export default function AdminOrderDetailPage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-xs p-4">
           <div className="w-full max-w-md rounded-xl bg-white p-6 shadow-xl space-y-4">
             <h3 className="text-base font-bold text-rose-900 flex items-center gap-2">
-              <ShieldAlert className="h-5 w-5 text-rose-600" /> Cancel Order & Restock Inventory
+              <ShieldAlert className="h-5 w-5 text-rose-600" /> Cancel Order
             </h3>
             <p className="text-xs text-slate-600">
-              Are you sure you want to cancel Order <strong>{order.orderNumber}</strong>? All line
-              items will be automatically restocked to available inventory with an auditable
-              movement record.
+              Are you sure you want to cancel Order <strong>{order.orderNumber}</strong>? All
+              items will be returned to available stock.
             </p>
 
             <form onSubmit={handleCancelOrder} className="space-y-3 text-xs">
@@ -1026,7 +1019,7 @@ export default function AdminOrderDetailPage() {
                     onChange={(e) => setRefundOnCancel(e.target.checked)}
                     className="rounded text-rose-600 focus:ring-rose-500"
                   />
-                  <span>Automatically execute payment refund via gateway</span>
+                  <span>Automatically refund customer payment</span>
                 </label>
               )}
 
@@ -1059,11 +1052,11 @@ export default function AdminOrderDetailPage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-xs p-4">
           <div className="w-full max-w-md rounded-xl bg-white p-6 shadow-xl space-y-4">
             <h3 className="text-base font-bold text-purple-900 flex items-center gap-2">
-              <RefreshCw className="h-5 w-5 text-purple-600" /> Execute Gateway Refund
+              <RefreshCw className="h-5 w-5 text-purple-600" /> Process Refund
             </h3>
             <p className="text-xs text-slate-600">
               Process a full or partial refund for Order <strong>{order.orderNumber}</strong>. Funds
-              will be credited back to the original payment method.
+              will be returned to the customer&apos;s payment method.
             </p>
 
             <form onSubmit={handleProcessRefund} className="space-y-3 text-xs">
@@ -1088,7 +1081,7 @@ export default function AdminOrderDetailPage() {
                 </label>
                 <Input
                   required
-                  placeholder="e.g. RMA return approved / damaged part allowance"
+                  placeholder="e.g. Return approved / damaged part allowance"
                   value={refundReason}
                   onChange={(e) => setRefundReason(e.target.value)}
                   className="text-xs h-9"
@@ -1124,18 +1117,17 @@ export default function AdminOrderDetailPage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-xs p-4">
           <div className="w-full max-w-md rounded-xl bg-white p-6 shadow-xl space-y-4">
             <h3 className="text-base font-bold text-slate-900 flex items-center gap-2">
-              <Wrench className="h-5 w-5 text-indigo-600" /> Physical Part Inspection Disposition
+              <Wrench className="h-5 w-5 text-indigo-600" /> Returned Part Inspection
             </h3>
             <p className="text-xs text-slate-500">
-              Inspect physical part: <strong>{inspectingItem.productTitle}</strong> (
-              {inspectingItem.sku}). Your disposition choice triggers auditable inventory stock
-              movements.
+              Inspect returned part: <strong>{inspectingItem.productTitle}</strong> (
+              {inspectingItem.sku}). Choose what to do with the stock.
             </p>
 
             <form onSubmit={handleInspectionSubmit} className="space-y-3 text-xs">
               <div>
                 <label className="font-semibold text-slate-700 block mb-1">
-                  Quality Disposition Decision *
+                  Inspection Result *
                 </label>
                 <select
                   value={inspectionDisposition}
@@ -1143,20 +1135,20 @@ export default function AdminOrderDetailPage() {
                   className="w-full h-9 rounded-md border border-slate-300 bg-white px-3 text-xs"
                 >
                   <option value="RESTOCK_TO_INVENTORY">
-                    RESTOCK_TO_INVENTORY (Passed test; return to live sellable stock)
+                    Restock to Inventory (Passed inspection; return to sellable stock)
                   </option>
                   <option value="SCRAP_WRITEOFF">
-                    SCRAP_WRITEOFF (Failed quality test; decommission/scrap item)
+                    Scrap / Write-off (Failed inspection; dispose of item)
                   </option>
                   <option value="RETURN_TO_SENDER">
-                    RETURN_TO_SENDER (Customer damaged / out of warranty)
+                    Return to Customer (Customer damaged / not covered)
                   </option>
                 </select>
               </div>
 
               <div>
                 <label className="font-semibold text-slate-700 block mb-1">
-                  Inspection Notes & Test Readings *
+                  Inspection Notes *
                 </label>
                 <Input
                   required

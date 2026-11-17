@@ -68,14 +68,14 @@ export default function AdminCustomersPage() {
         <div>
           <div className="flex items-center gap-2">
             <h1 className="text-2xl font-bold tracking-tight text-slate-900">
-              Customer Directory
+              Customers
             </h1>
             <Badge variant="outline" className="font-mono text-xs">
               Privacy-Protected
             </Badge>
           </div>
           <p className="text-xs text-slate-500 mt-1">
-            Registered trade and retail accounts, address books, and lifetime checkout history.
+            Registered trade and customer accounts, saved addresses, and order history.
           </p>
         </div>
 
@@ -107,7 +107,7 @@ export default function AdminCustomersPage() {
 
         <div className="flex items-center gap-2 text-xs text-slate-500 w-full sm:w-auto justify-end">
           <ShieldCheck className="h-4 w-4 text-emerald-600" />
-          <span>PII Masking Active: Contact information protected per role permissions</span>
+          <span>Privacy Protection: Contact information protected per role permissions</span>
         </div>
       </div>
 
@@ -118,11 +118,11 @@ export default function AdminCustomersPage() {
             <table className="w-full text-left text-xs">
               <thead className="bg-slate-50 border-b border-slate-200 text-slate-500 uppercase tracking-wider font-semibold">
                 <tr>
-                  <th className="py-3 px-4">Customer Name</th>
-                  <th className="py-3 px-4">Company / Trade</th>
-                  <th className="py-3 px-4">Contact (Masked)</th>
+                  <th className="py-3 px-4">Customer</th>
+                  <th className="py-3 px-4">Company / Type</th>
+                  <th className="py-3 px-4">Contact Info</th>
                   <th className="py-3 px-4 text-center">Orders</th>
-                  <th className="py-3 px-4 text-right">Lifetime Spend</th>
+                  <th className="py-3 px-4 text-right">Total Spend</th>
                   <th className="py-3 px-4">Registered</th>
                   <th className="py-3 px-4 text-right">Actions</th>
                 </tr>
@@ -151,7 +151,7 @@ export default function AdminCustomersPage() {
                             <span>{c.companyName}</span>
                           </div>
                         ) : (
-                          <span className="text-slate-400 italic">Retail Consumer</span>
+                          <span className="text-slate-400 italic">Retail Customer</span>
                         )}
                       </td>
 
@@ -251,7 +251,7 @@ export default function AdminCustomersPage() {
                     </span>
                   </div>
                   <div className="p-3 bg-slate-50 rounded-lg border border-slate-200">
-                    <span className="text-slate-500 block mb-1">Total Paid Spend</span>
+                    <span className="text-slate-500 block mb-1">Total Spend</span>
                     <span className="text-xl font-bold font-mono text-emerald-700">
                       ${detail.totalSpend.toFixed(2)} NZD
                     </span>
@@ -263,9 +263,9 @@ export default function AdminCustomersPage() {
                   <div className="p-3 bg-amber-50 rounded-lg border border-amber-200 text-amber-900 flex items-start gap-2">
                     <Lock className="h-4 w-4 text-amber-600 shrink-0 mt-0.5" />
                     <div>
-                      <span className="font-semibold block">Protected Personal Data</span>
+                      <span className="font-semibold block">Privacy Protected</span>
                       <span>
-                        Full street addresses and raw phone numbers are masked because your account does not hold the <code>customers:view:pii_contact</code> permission.
+                        Customer phone numbers and addresses are hidden based on your account permissions.
                       </span>
                     </div>
                   </div>
@@ -274,7 +274,7 @@ export default function AdminCustomersPage() {
                 {/* Contact Information */}
                 <div>
                   <h3 className="font-semibold text-slate-900 uppercase tracking-wider text-[11px] mb-2">
-                    Contact & Organization
+                    Contact Information
                   </h3>
                   <div className="space-y-2 border border-slate-200 rounded-lg p-3 bg-white">
                     <div className="flex justify-between">
@@ -322,7 +322,7 @@ export default function AdminCustomersPage() {
                 {/* Saved Garage Vehicles */}
                 <div>
                   <h3 className="font-semibold text-slate-900 uppercase tracking-wider text-[11px] mb-2">
-                    Saved Garage Vehicles ({detail.savedVehicles.length})
+                    Saved Vehicles ({detail.savedVehicles.length})
                   </h3>
                   <div className="space-y-2">
                     {detail.savedVehicles.length > 0 ? (
@@ -342,7 +342,7 @@ export default function AdminCustomersPage() {
                         </div>
                       ))
                     ) : (
-                      <p className="text-slate-400 italic">No vehicles saved in customer garage.</p>
+                      <p className="text-slate-400 italic">No vehicles saved yet.</p>
                     )}
                   </div>
                 </div>

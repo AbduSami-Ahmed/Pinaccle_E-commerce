@@ -103,7 +103,7 @@ export default function AdminStockAdjustmentPage() {
           </BreadcrumbItem>
           <BreadcrumbSeparator />
           <BreadcrumbItem>
-            <BreadcrumbPage>Stock Adjustment</BreadcrumbPage>
+            <BreadcrumbPage>Adjust Stock</BreadcrumbPage>
           </BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb>
@@ -118,11 +118,10 @@ export default function AdminStockAdjustmentPage() {
           <div>
             <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900 flex items-center gap-2">
               <SlidersHorizontal className="h-6 w-6 text-slate-700" />
-              <span>Explicit Stock Adjustment</span>
+              <span>Adjust Stock Level</span>
             </h1>
             <p className="text-xs text-slate-500 mt-0.5">
-              Adjust physical balances with required reason codes. Negative stock is strictly
-              blocked.
+              Update stock on hand for count corrections, damaged parts, or workshop use.
             </p>
           </div>
         </div>
@@ -138,7 +137,7 @@ export default function AdminStockAdjustmentPage() {
       {successMessage && (
         <Alert variant="default" className="border-emerald-500 bg-emerald-50 text-emerald-900">
           <Check className="h-4 w-4 text-emerald-600" />
-          <AlertTitle>Adjustment Committed</AlertTitle>
+          <AlertTitle>Adjustment Saved</AlertTitle>
           <AlertDescription>{successMessage}</AlertDescription>
         </Alert>
       )}
@@ -146,15 +145,15 @@ export default function AdminStockAdjustmentPage() {
       <form onSubmit={handleSubmit} className="max-w-2xl space-y-6">
         <Card>
           <CardHeader>
-            <CardTitle>Target Inventory Location</CardTitle>
+            <CardTitle>Product &amp; Warehouse Bin</CardTitle>
             <CardDescription>
-              Select the catalogue product and warehouse bin item to adjust.
+              Choose the product and warehouse storage bin to update.
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div>
               <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
-                Catalogue Product *
+                Product *
               </label>
               <select
                 required
@@ -174,7 +173,7 @@ export default function AdminStockAdjustmentPage() {
             {activeProduct && activeProduct.inventoryItems.length > 0 && (
               <div>
                 <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
-                  Warehouse Location Bin *
+                  Warehouse &amp; Bin Location *
                 </label>
                 <select
                   required
@@ -195,19 +194,19 @@ export default function AdminStockAdjustmentPage() {
             {activeItem && (
               <div className="p-3 bg-slate-50 rounded-md border border-slate-200 text-xs text-slate-600 grid grid-cols-3 gap-2">
                 <div>
-                  <span className="text-slate-400 block">Current On Hand</span>
+                  <span className="text-slate-400 block">In Stock (On Hand)</span>
                   <span className="font-bold font-mono text-slate-900 text-sm">
                     {activeItem.quantityOnHand} units
                   </span>
                 </div>
                 <div>
-                  <span className="text-slate-400 block">Active Reserved Holds</span>
+                  <span className="text-slate-400 block">Reserved for Orders</span>
                   <span className="font-bold font-mono text-amber-600 text-sm">
                     {activeItem.quantityReserved} units
                   </span>
                 </div>
                 <div>
-                  <span className="text-slate-400 block">Net Available</span>
+                  <span className="text-slate-400 block">Available to Sell</span>
                   <span className="font-bold font-mono text-emerald-600 text-sm">
                     {activeItem.quantityAvailable} units
                   </span>
@@ -218,7 +217,7 @@ export default function AdminStockAdjustmentPage() {
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
-                  Direction *
+                  Adjustment Type *
                 </label>
                 <div className="flex gap-2">
                   <Button
@@ -244,7 +243,7 @@ export default function AdminStockAdjustmentPage() {
 
               <div>
                 <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
-                  Quantity Units *
+                  Quantity *
                 </label>
                 <Input
                   type="number"
@@ -259,7 +258,7 @@ export default function AdminStockAdjustmentPage() {
 
             <div>
               <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
-                Reason Code *
+                Reason for Adjustment *
               </label>
               <select
                 required
@@ -267,20 +266,20 @@ export default function AdminStockAdjustmentPage() {
                 value={reasonCode}
                 onChange={(e) => setReasonCode(e.target.value)}
               >
-                <option value="CYCLE_COUNT_DISCREPANCY">Cycle Count Variance Correction</option>
-                <option value="DAMAGED_WRITE_OFF">Damaged / Defective Stock Write-off</option>
-                <option value="INTERNAL_USE">Internal Workshop Consumable</option>
-                <option value="SCRAP_EXPIRED">Expired / Scrapped Stock</option>
-                <option value="DATA_MIGRATION_INITIAL">Baseline Stocktake Intake</option>
+                <option value="CYCLE_COUNT_DISCREPANCY">Stock Count Correction</option>
+                <option value="DAMAGED_WRITE_OFF">Damaged / Defective Part</option>
+                <option value="INTERNAL_USE">Used in Workshop</option>
+                <option value="SCRAP_EXPIRED">Scrapped or Expired Stock</option>
+                <option value="DATA_MIGRATION_INITIAL">Initial Stocktake Setup</option>
               </select>
             </div>
 
             <div>
               <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
-                Reference / Justification Note
+                Notes / Reason Details
               </label>
               <Input
-                placeholder="e.g. Verified by Auditor John during Q1 stocktake"
+                placeholder="e.g. Counted during monthly stocktake"
                 value={referenceNote}
                 onChange={(e) => setReferenceNote(e.target.value)}
                 className="text-xs"
@@ -290,9 +289,8 @@ export default function AdminStockAdjustmentPage() {
             <div className="p-3 bg-amber-50 rounded-md border border-amber-200 text-xs text-amber-800 flex items-start gap-2">
               <AlertTriangle className="h-4 w-4 text-amber-600 flex-shrink-0 mt-0.5" />
               <span>
-                <strong>Negative stock protection</strong>: Decreases cannot reduce on-hand
-                inventory below zero or below currently reserved customer checkout holds (
-                {activeItem?.quantityReserved ?? 0} units).
+                <strong>Negative stock check</strong>: You cannot reduce stock below zero or below
+                items already reserved for customer orders ({activeItem?.quantityReserved ?? 0} units).
               </span>
             </div>
           </CardContent>
@@ -312,10 +310,10 @@ export default function AdminStockAdjustmentPage() {
             {isSubmitting ? (
               <>
                 <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                Submitting Adjustment...
+                Saving Adjustment...
               </>
             ) : (
-              'Commit Stock Adjustment'
+              'Save Adjustment'
             )}
           </Button>
         </div>

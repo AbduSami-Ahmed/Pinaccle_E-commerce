@@ -35,7 +35,7 @@ export function ProductCard({ product }: ProductCardProps) {
     }
     return (
       <span className="rounded-md bg-slate-100 px-2 py-0.5 text-[11px] font-bold text-slate-700 border border-slate-200">
-        Tested Grade B
+        Tested / Good
       </span>
     );
   };
@@ -109,7 +109,7 @@ export function ProductCard({ product }: ProductCardProps) {
               </span>
             </div>
             <p className="text-[11px] text-emerald-700 font-semibold">
-              8.0mm Factory Tread · Fresh DOT Date Code
+              Brand New Full Tread
             </p>
           </div>
         )}
@@ -122,7 +122,7 @@ export function ProductCard({ product }: ProductCardProps) {
                 Position: {product.seatBeltSpec.position.toLowerCase().replace(/_/g, ' ')}
               </span>
               <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200">
-                2.2Ω Tested OK
+                Safety Tested
               </span>
             </div>
             {product.fitmentSummary && (
@@ -136,7 +136,7 @@ export function ProductCard({ product }: ProductCardProps) {
         {/* Availability Status */}
         <div className="flex items-center gap-1 text-[11px] text-emerald-700 font-medium pt-1">
           <CheckCircle2 className="h-3.5 w-3.5" />
-          <span>In Stock · Penrose Depot Dispatch</span>
+          <span>In Stock · Auckland Warehouse</span>
         </div>
       </CardContent>
 
