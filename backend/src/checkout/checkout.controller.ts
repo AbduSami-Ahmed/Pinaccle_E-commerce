@@ -147,7 +147,7 @@ export class CheckoutController {
   ): Promise<{ sessionToken: string; customerId?: string }> {
     const cookies = req.cookies as Record<string, string | undefined> | undefined;
     const headerToken = req.headers['x-cart-session'] as string | undefined;
-    const sessionToken = cookies?.[CART_COOKIE_NAME] || headerToken || 'guest_default';
+    const sessionToken = headerToken || cookies?.[CART_COOKIE_NAME] || 'guest_default';
 
     let customerId: string | undefined = undefined;
     const rawJwt =

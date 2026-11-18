@@ -6,7 +6,6 @@ import {
   HttpCode,
   HttpStatus,
   Param,
-  ParseUUIDPipe,
   Patch,
   Post,
   Req,
@@ -82,7 +81,7 @@ export class CartController {
   async updateItemQuantity(
     @Req() req: Request,
     @Res({ passthrough: true }) res: Response,
-    @Param('itemId', ParseUUIDPipe) itemId: string,
+    @Param('itemId') itemId: string,
     @Body() dto: UpdateQuantityBodyDto,
   ): Promise<{ cart: CartDto }> {
     const { sessionToken, customerId } = await this.resolveSession(req, res);
@@ -106,7 +105,7 @@ export class CartController {
   async removeItem(
     @Req() req: Request,
     @Res({ passthrough: true }) res: Response,
-    @Param('itemId', ParseUUIDPipe) itemId: string,
+    @Param('itemId') itemId: string,
   ): Promise<{ cart: CartDto }> {
     const { sessionToken, customerId } = await this.resolveSession(req, res);
     const cart = await this.cartService.removeItem(sessionToken, itemId, customerId);
@@ -164,17 +163,22 @@ export class CartController {
   ): Promise<{ sessionToken: string; customerId?: string }> {
     const cookies = req.cookies as Record<string, string | undefined> | undefined;
     const headerToken = req.headers['x-cart-session'] as string | undefined;
-    let sessionToken = cookies?.[CART_COOKIE_NAME] || headerToken;
+    let sessionToken = headerToken || cookies?.[CART_COOKIE_NAME];
 
     if (!sessionToken) {
       sessionToken = `sess_${randomUUID()}`;
-      res.cookie(CART_COOKIE_NAME, sessionToken, {
-        httpOnly: false, // Allow client scripts to read for headers/fallbacks
-        sameSite: 'lax',
-        maxAge: CART_COOKIE_MAX_AGE_MS,
-        path: '/',
-      });
     }
+
+    const isProduction = process.env.NODE_ENV === 'production';
+    res.cookie(CART_COOKIE_NAME, sessionToken, {
+      httpOnly: false, // Allow client scripts to read for headers/fallbacks
+      secure: isProduction,
+      sameSite: isProduction ? 'none' : 'lax',
+      maxAge: CART_COOKIE_MAX_AGE_MS,
+      path: '/',
+    });
+
+    res.setHeader('x-cart-session', sessionToken);
 
     // Try extracting customerId from JWT
     let customerId: string | undefined = undefined;

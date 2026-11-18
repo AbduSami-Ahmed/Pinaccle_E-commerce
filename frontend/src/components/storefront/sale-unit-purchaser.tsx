@@ -121,12 +121,24 @@ export function SaleUnitPurchaser({
 
     try {
       const targetUnitConfigId = activeUnit.id || activeUnit.code;
-      await addToCart({
-        productId: _productId,
-        saleUnitConfigId: targetUnitConfigId,
-        quantity,
-        serializedItemId: isIndividuallyTracked && serializedItemId ? serializedItemId : undefined,
-      });
+      await addToCart(
+        {
+          productId: _productId,
+          saleUnitConfigId: targetUnitConfigId,
+          quantity,
+          serializedItemId: isIndividuallyTracked && serializedItemId ? serializedItemId : undefined,
+        },
+        {
+          productTitle: _productTitle,
+          categorySlug,
+          saleUnitName: activeUnit.name,
+          saleUnitMultiplier: activeUnit.multiplier,
+          unitPrice: activeUnit.price,
+          isIndividuallyTracked,
+          serializedItemId: isIndividuallyTracked && serializedItemId ? serializedItemId : undefined,
+          serializedStockBarcode: _stockNumber,
+        },
+      );
       setAddedToastMessage(
         `Added ${quantity}x ${activeUnit.name} to your cart.`,
       );

@@ -29,6 +29,25 @@ export const DEPOT_ADDRESS = {
 // In-memory demo orders map for offline/SSR fallback
 const inMemoryOrders = new Map<string, OrderDetailsDto>();
 
+function getCheckoutHeaders(): Record<string, string> {
+  const headers: Record<string, string> = {
+    'Content-Type': 'application/json',
+  };
+  if (typeof window !== 'undefined') {
+    const sessionToken = localStorage.getItem('pinnacle_cart_session_token');
+    if (sessionToken) {
+      headers['x-cart-session'] = sessionToken;
+    }
+    const authToken =
+      sessionStorage.getItem('pinnacle_access_token') ||
+      localStorage.getItem('pinnacle_access_token');
+    if (authToken) {
+      headers['Authorization'] = `Bearer ${authToken}`;
+    }
+  }
+  return headers;
+}
+
 /**
  * Validate active cart items and compute real-time shipping + statutory 15% GST (NZ IRD)
  */
@@ -38,9 +57,7 @@ export async function validateCheckout(
   try {
     const res = await fetch(`${API_BASE_URL}/checkout/validate`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: getCheckoutHeaders(),
       credentials: 'include',
       body: JSON.stringify(req),
     });
@@ -90,15 +107,17 @@ export async function createCheckoutOrder(req: InitiateCheckoutOrderDto): Promis
   try {
     const res = await fetch(`${API_BASE_URL}/checkout/orders`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: getCheckoutHeaders(),
       credentials: 'include',
       body: JSON.stringify(req),
     });
 
     if (res.ok) {
       const data = await res.json();
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem('pinnacle_cart_data');
+        window.dispatchEvent(new CustomEvent('pinnacle_cart_updated', { detail: null }));
+      }
       return data.order;
     }
 

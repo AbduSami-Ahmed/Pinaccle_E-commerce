@@ -49,6 +49,18 @@ export default function CartPage() {
 
   React.useEffect(() => {
     loadCart();
+
+    const handleCartUpdated = (e: Event) => {
+      const customEvent = e as CustomEvent<CartDto>;
+      if (customEvent.detail) {
+        setCart(customEvent.detail);
+      } else {
+        loadCart();
+      }
+    };
+
+    window.addEventListener('pinnacle_cart_updated', handleCartUpdated);
+    return () => window.removeEventListener('pinnacle_cart_updated', handleCartUpdated);
   }, [loadCart]);
 
   const handleQuantityChange = async (itemId: string, newQty: number) => {
@@ -69,6 +81,8 @@ export default function CartPage() {
     try {
       const updated = await removeFromCart(itemId);
       setCart(updated);
+    } catch (err) {
+      alert(err instanceof Error ? err.message : 'Error removing item from cart');
     } finally {
       setUpdatingItemId(null);
     }

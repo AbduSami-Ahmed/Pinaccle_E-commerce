@@ -466,7 +466,7 @@ export class CartService {
     });
 
     if (!item) {
-      throw new NotFoundException(`Cart item ${itemId} not found`);
+      return this.getCart(sessionToken, customerId);
     }
 
     this.assertCartOwnership(item.cart, sessionToken, customerId);
